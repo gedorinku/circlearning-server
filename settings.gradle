@@ -1,1 +1,2 @@
 include ':StudyBattleApp'
+include ':StudyBattleServer'
