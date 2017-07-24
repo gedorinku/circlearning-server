@@ -1,11 +1,15 @@
 package com.kurume_nct.studybattleserver
 
+import com.kurume_nct.studybattleserver.dao.AuthenticationKeys
 import com.kurume_nct.studybattleserver.dao.Users
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils.create
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.ktor.application.Application
 import org.jetbrains.ktor.application.install
+import org.jetbrains.ktor.features.Compression
+import org.jetbrains.ktor.features.DefaultHeaders
+import org.jetbrains.ktor.gson.GsonSupport
 import org.jetbrains.ktor.locations.Locations
 import org.jetbrains.ktor.locations.location
 import org.jetbrains.ktor.logging.CallLogging
@@ -23,37 +27,39 @@ import javax.xml.bind.DatatypeConverter
 @location("/login")
 data class Login(val userName: String = "", val password: String = "")
 
-class StudyBattleServerApp {
+private val random = SecureRandom()
 
-    private val random = SecureRandom()
+fun Application.studyBattleServerApp() {
+    connectDataBase()
 
-    fun Application.install() {
-        connectDataBase()
-
-        install(CallLogging)
-        install(Locations)
-
-        install(Routing) {
-            login(random)
-        }
+    install(DefaultHeaders)
+    install(Compression)
+    install(CallLogging)
+    install(Locations)
+    install(GsonSupport) {
+        setPrettyPrinting()
     }
 
-    fun connectDataBase() {
-        val properties = Properties()
-        File("database.properties").reader().use {
-            properties.load(it)
-        }
+    install(Routing) {
+        login(random)
+    }
+}
 
-        Database.connect(
-                url = properties.getProperty("url"),
-                driver = properties.getProperty("driver"),
-                user = properties.getProperty("user"),
-                password = properties.getProperty("password")
-        )
+fun connectDataBase() {
+    val properties = Properties()
+    File("database.properties").reader().use {
+        properties.load(it)
+    }
 
-        transaction {
-            create(Users)
-        }
+    Database.connect(
+            url = properties.getProperty("url"),
+            driver = properties.getProperty("driver"),
+            user = properties.getProperty("user"),
+            password = properties.getProperty("password")
+    )
+
+    transaction {
+        create(Users, AuthenticationKeys)
     }
 }
 
