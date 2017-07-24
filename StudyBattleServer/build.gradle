@@ -63,6 +63,7 @@ dependencies {
     compile "org.jetbrains.ktor:ktor-netty:$ktor_version"
     compile "org.jetbrains.ktor:ktor-html-builder:$ktor_version"
     compile "org.jetbrains.ktor:ktor-locations:$ktor_version"
+    testCompile "org.jetbrains.ktor:ktor-test-host:$ktor_version"
     compile "org.jetbrains.exposed:exposed:0.8.2"
     compile "mysql:mysql-connector-java:5.1.42"
 
