@@ -11,7 +11,7 @@ import org.jetbrains.exposed.dao.IntIdTable
 object Users : IntIdTable() {
 
     val userName = varchar("user_name", 20).uniqueIndex()
-    val displayName = varchar("screen_name", 20)
+    val displayName = varchar("display_name", 20)
     val hashSalt = varchar("hash_salt", 127)
     val passwordHash = varchar("password_hash", 127)
 }
