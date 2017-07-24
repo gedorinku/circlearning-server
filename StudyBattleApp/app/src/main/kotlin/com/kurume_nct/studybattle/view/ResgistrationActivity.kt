@@ -42,7 +42,7 @@ class RegistrationActivityUI : AnkoComponent<RegistrationActivity>{
                     }
                     else{
                         toast("登録完了しました")
-                        //startActivity<>()
+                        startActivity<GroupDrawerActivity>()
                     }
                 }
             }.lparams{
