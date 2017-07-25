@@ -67,6 +67,7 @@ dependencies {
     testCompile "org.jetbrains.ktor:ktor-test-host:$ktor_version"
     compile "org.jetbrains.exposed:exposed:0.8.2"
     compile "mysql:mysql-connector-java:5.1.42"
+    compile "com.google.code.gson:gson:2.8.1"
 
     testCompile "junit:junit:4.12"
 }

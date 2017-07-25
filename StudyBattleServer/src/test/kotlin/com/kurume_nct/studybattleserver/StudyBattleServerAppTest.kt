@@ -1,5 +1,6 @@
 package com.kurume_nct.studybattleserver
 
+import com.google.gson.Gson
 import com.kurume_nct.studybattleserver.dao.User
 import com.kurume_nct.studybattleserver.dao.Users
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -63,7 +64,7 @@ class StudyBattleServerAppTest {
     fun loginTest() = withTestApplication(Application::studyBattleServerApp) {
         val login: (String, String, TestApplicationCall.() -> Unit) -> Unit = {
             userName, password, test ->
-            val values = listOf("userName" to "test", "password" to "hogehoge")
+            val values = listOf("userName" to userName, "password" to password)
             test(handleRequest(HttpMethod.Post, "/login") {
                 addHeader(HttpHeaders.ContentType, "application/x-www-form-urlencoded")
                 body = values.formUrlEncode()
@@ -74,7 +75,9 @@ class StudyBattleServerAppTest {
         login("test", "hogehoge") {
             println(response.content)
             assertEquals(HttpStatusCode.OK, response.status())
-            assertEquals(response.content.orEmpty().length, 64)
+            val gson = Gson()
+            val key = gson.fromJson(response.content.orEmpty(), LoginResponse::class.java)
+            assertEquals(key.authenticationKey.length, 64)
         }
 
         //invalid
