@@ -16,21 +16,6 @@ import org.jetbrains.anko.support.v4.drawerLayout
 class GroupDrawerActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        GroupDrawerActivityUI().setContentView(this)
-    }
-}
 
-class GroupDrawerActivityUI : AnkoComponent<GroupDrawerActivity>{
-    override fun createView(ui: AnkoContext<GroupDrawerActivity>) = with(ui) {
-        drawerLayout {
-            setStatusBarBackgroundColor(R.color.colorAccent)
-            frameLayout{
-            }
-            toolbar {
-            }
-            listView {
-            }
-        }
     }
-
 }
