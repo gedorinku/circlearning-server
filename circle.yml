@@ -3,4 +3,4 @@ machine:
     - mkdir $ANDROID_HOME/licenses
     - echo 8933bad161af4178b1185d1a37fbf41ea5269c55 > $ANDROID_HOME/licenses/android-sdk-license
     - cp ~/study-battle/StudyBattleServer/database.properties.sample ~/study-battle/StudyBattleServer/database.properties
-    - cat db_setup | mysql -u root
+    - cat ~/study-battle/db_setup | mysql -u root
