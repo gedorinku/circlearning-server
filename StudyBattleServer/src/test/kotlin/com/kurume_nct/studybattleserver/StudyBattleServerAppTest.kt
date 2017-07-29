@@ -27,9 +27,9 @@ class StudyBattleServerAppTest {
 
     companion object {
 
-        val userName = "test"
-        val displayName = "Test"
-        val password = "hogehoge"
+        val testUserName = "test"
+        val testDisplayName = "Test"
+        lateinit var testPassword: String
 
         @BeforeClass
         @JvmStatic
@@ -37,26 +37,33 @@ class StudyBattleServerAppTest {
             connectDataBase()
 
             val random = SecureRandom()
+            testPassword = randomPassword(random)
             val salt = generateSalt(random)
-            val passwordHash = hashWithSalt(password, salt)
+            val passwordHash = hashWithSalt(testPassword, salt)
 
             transaction {
-                val testUser = User.find { Users.userName.eq(userName) }
+                val testUser = User.find { Users.userName.eq(testUserName) }
                         .takeIf { !it.empty() }
                         ?.first()
                 if (testUser == null) {
                     User.new {
-                        this.userName = StudyBattleServerAppTest.userName
-                        this.displayName = StudyBattleServerAppTest.displayName
+                        this.userName = StudyBattleServerAppTest.testUserName
+                        this.displayName = StudyBattleServerAppTest.testDisplayName
                         this.hashSalt = salt
                         this.passwordHash = passwordHash
                     }
                 } else {
-                    testUser.displayName = displayName
+                    testUser.displayName = testDisplayName
                     testUser.hashSalt = salt
                     testUser.passwordHash = passwordHash
                 }
             }
+        }
+
+        fun randomPassword(random: SecureRandom): String {
+            val password = ByteArray(32, { 0 })
+            random.nextBytes(password)
+            return DatatypeConverter.printHexBinary(password)
         }
     }
 
@@ -72,8 +79,7 @@ class StudyBattleServerAppTest {
         }
 
         //valid
-        login("test", "hogehoge") {
-            println(response.content)
+        login(testUserName, testPassword) {
             assertEquals(HttpStatusCode.OK, response.status())
             val gson = Gson()
             val key = gson.fromJson(response.content.orEmpty(), LoginResponse::class.java)
@@ -81,9 +87,9 @@ class StudyBattleServerAppTest {
         }
 
         //invalid
-        login("test", "piyopiyo") {
-            println(response.content)
+        login(testUserName, "piyopiyo") {
             assertEquals(HttpStatusCode.Unauthorized, response.status())
+            assertEquals(response.content, null)
         }
     }
 
