@@ -34,7 +34,7 @@ fun Route.login(random: SecureRandom) = post<Login> {
             val key = generateAuthenticationKey(random)
             transaction {
                 AuthenticationKey.new {
-                    this.keyHash = hashWithSalt(key, user.hashSalt)
+                    this.keyHash = hashWithSalt(key, "")
                     this.user = user
                     createdAt = DateTime.now()
                 }
