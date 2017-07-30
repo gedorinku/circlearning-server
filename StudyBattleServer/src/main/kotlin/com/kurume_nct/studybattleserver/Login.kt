@@ -18,34 +18,36 @@ import javax.xml.bind.DatatypeConverter
  */
 data class LoginResponse(val authenticationKey: String)
 
-fun Route.login(random: SecureRandom) {
-    post<Login> {
-        val result = transaction {
-            User.find { Users.userName.eq(it.userName) }.toList()
-        }
-
-        if (!result.isEmpty()) {
-            val user = result.first()
-            val hash = hashWithSalt(it.password, user.hashSalt)
-            if (hash == user.passwordHash) {
-                val key = generateAuthenticationKey(random)
-                transaction {
-                    AuthenticationKey.new {
-                        this.keyHash = hashWithSalt(key, user.hashSalt)
-                        this.user = user
-                        createdAt = DateTime.now()
-                    }
-                }
-                val gson = Gson()
-                val json = gson.toJson(LoginResponse(key))
-                call.respond(json)
-
-                return@post
-            }
-        }
-
+fun Route.login(random: SecureRandom) = post<Login> {
+    if (!isValidUserName(it.userName)) {
         call.respond(HttpStatusCode.Unauthorized)
+        return@post
     }
+    val result = transaction {
+        User.find { Users.userName.eq(it.userName) }.toList()
+    }
+
+    if (!result.isEmpty()) {
+        val user = result.first()
+        val hash = hashWithSalt(it.password, user.hashSalt)
+        if (hash == user.passwordHash) {
+            val key = generateAuthenticationKey(random)
+            transaction {
+                AuthenticationKey.new {
+                    this.keyHash = hashWithSalt(key, user.hashSalt)
+                    this.user = user
+                    createdAt = DateTime.now()
+                }
+            }
+            val gson = Gson()
+            val json = gson.toJson(LoginResponse(key))
+            call.respond(json)
+
+            return@post
+        }
+    }
+
+    call.respond(HttpStatusCode.Unauthorized)
 }
 
 fun generateAuthenticationKey(random: SecureRandom): String {

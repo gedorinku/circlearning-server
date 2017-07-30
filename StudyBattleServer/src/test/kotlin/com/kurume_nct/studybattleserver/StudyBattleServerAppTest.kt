@@ -30,13 +30,13 @@ class StudyBattleServerAppTest {
         val testUserName = "test"
         val testDisplayName = "Test"
         lateinit var testPassword: String
+        val random = SecureRandom()
 
         @BeforeClass
         @JvmStatic
         fun insertTestUser() {
             connectDataBase()
 
-            val random = SecureRandom()
             testPassword = randomPassword(random)
             val salt = generateSalt(random)
             val passwordHash = hashWithSalt(testPassword, salt)
@@ -90,6 +90,62 @@ class StudyBattleServerAppTest {
         login(testUserName, "piyopiyo") {
             assertEquals(HttpStatusCode.Unauthorized, response.status())
             assertEquals(response.content, null)
+        }
+    }
+
+    @Test
+    fun registerTest() = withTestApplication(Application::studyBattleServerApp) {
+        val register: (String, String, String, TestApplicationCall.() -> Unit) -> Unit = {
+            userName, displayName, password, test ->
+            transaction {
+                User.find { Users.userName.eq(userName) }
+                        .forEach { it.delete() }
+            }
+            val values = listOf("userName" to userName, "displayName" to displayName, "password" to password)
+            test(handleRequest(HttpMethod.Post, "/register") {
+                addHeader(HttpHeaders.ContentType, "application/x-www-form-urlencoded")
+                body = values.formUrlEncode()
+            })
+        }
+
+        //valid
+        val test2UserName = "test2"
+        val test2DisplayName = "テスト2"
+        val test2Password = randomPassword(random)
+        register(test2UserName, test2DisplayName, test2Password) {
+            assertEquals(HttpStatusCode.OK, response.status())
+            val user = transaction {
+                val result = User.find { Users.userName.eq(test2UserName) }
+                assertEquals(1, result.count())
+                result.first()
+            }
+            assertEquals(test2DisplayName, user.displayName)
+            assertEquals(hashWithSalt(test2Password, user.hashSalt), user.passwordHash)
+        }
+
+        //invalid
+        register("a", "Test2", randomPassword(random)) {
+            assertEquals(HttpStatusCode.BadRequest.value, response.status()?.value)
+        }
+
+        //invalid
+        register("hoge;", "Test2", randomPassword(random)) {
+            assertEquals(HttpStatusCode.BadRequest.value, response.status()?.value)
+        }
+
+        //invalid
+        register("a", "Test2", randomPassword(random)) {
+            assertEquals(HttpStatusCode.BadRequest.value, response.status()?.value)
+        }
+
+        //invalid
+        register("test2", "あ", randomPassword(random)) {
+            assertEquals(HttpStatusCode.BadRequest.value, response.status()?.value)
+        }
+
+        //invalid
+        register("test2", "test2;", randomPassword(random)) {
+            assertEquals(HttpStatusCode.BadRequest.value, response.status()?.value)
         }
     }
 

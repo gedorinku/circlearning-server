@@ -27,6 +27,9 @@ import javax.xml.bind.DatatypeConverter
 @location("/login")
 data class Login(val userName: String = "", val password: String = "")
 
+@location("/register")
+data class Register(val displayName: String = "", val userName: String = "", val password: String = "")
+
 private val random = SecureRandom()
 
 fun Application.studyBattleServerApp() {
@@ -42,6 +45,7 @@ fun Application.studyBattleServerApp() {
 
     install(Routing) {
         login(random)
+        register(random)
     }
 }
 
@@ -75,3 +79,10 @@ fun generateSalt(random: SecureRandom): String {
     random.nextBytes(salt)
     return DatatypeConverter.printHexBinary(salt)
 }
+
+fun isValidUserName(userName: String): Boolean = userNamePattern.matches(userName)
+
+fun isValidDisplayName(displayName: String): Boolean = displayNamePattern.matches(displayName)
+
+private val userNamePattern = "^[a-zA-Z0-9_]{2,20}".toRegex()
+private val displayNamePattern = "^[0-9a-zA-Zぁ-んァ-ヶ一-龠々ー]{2,20}".toRegex()
