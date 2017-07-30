@@ -69,8 +69,17 @@ fun connectDataBase() {
 
 fun hashWithSalt(password: String, salt: String): String {
     val sha256 = MessageDigest.getInstance("SHA-256")
-    sha256.update(password.toByteArray(Charsets.UTF_8))
-    sha256.update(salt.toByteArray(Charsets.UTF_8))
+    val passwordBytes = password.toByteArray(Charsets.UTF_8)
+    val saltBytes = salt.toByteArray(Charsets.UTF_8)
+    sha256.update(passwordBytes)
+    sha256.update(saltBytes)
+
+    (1..stretchCount).forEach {
+        sha256.update(sha256.digest())
+        sha256.update(passwordBytes)
+        sha256.update(saltBytes)
+    }
+
     return DatatypeConverter.printHexBinary(sha256.digest())
 }
 
@@ -86,3 +95,4 @@ fun isValidDisplayName(displayName: String): Boolean = displayNamePattern.matche
 
 private val userNamePattern = "^[a-zA-Z0-9_]{2,20}".toRegex()
 private val displayNamePattern = "^[0-9a-zA-Zぁ-んァ-ヶ一-龠々ー]{2,20}".toRegex()
+private val stretchCount = 10000
