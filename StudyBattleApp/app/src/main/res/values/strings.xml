@@ -14,4 +14,9 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="errorLoginStatus">ユーザー名とパスワードを入力してください</string>
+    <string name="hint_input_user_name">ユーザー名</string>
+    <string name="hint_input_user_password">パスワード</string>
+    <string name="chenge_image_button_text">プロフィール画像を フォルダから選ぶ</string>
+    <string name="account_registe">アカウント登録</string>
 </resources>
