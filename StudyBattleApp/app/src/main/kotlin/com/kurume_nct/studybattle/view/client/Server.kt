@@ -14,8 +14,8 @@ import java.sql.Time
  */
 interface Server {
 
-    @POST("hoge/{userName}/{displayName}/{iconImage}")
-    fun postUserInfo(@Part("userName") userName: String, @Part("displayName") password: String, @Part("iconImage") iconImageUrl: ImageUrl): Observer<User>
+    @POST("hoge/{userName}/{password}/{iconImage}")
+    fun postUserInfo(@Part("userName") userName: String, @Part("password") password: String, @Part("iconImage") iconImageUrl: ImageUrl): Observer<User>
 
     @POST("hoge/{title}/{contentId}/{lifeTime}")
     fun setProblem(@Part("title") title : String, @Part("contnetId") content : Int, @Part("lifeTime") lifeTime : Time) : Observer<Problem> //Time->LocalDateTime
