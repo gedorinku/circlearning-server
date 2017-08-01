@@ -1,6 +1,8 @@
 package com.kurume_nct.studybattle.viewModel
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.databinding.BaseObservable
 import android.databinding.Bindable
 import android.databinding.BindingAdapter
@@ -19,6 +21,7 @@ import java.io.File
  */
 class RegistrationViewModel(private val context: Context, private val callback : Callback) : BaseObservable() {
 
+    val REQUEST_CODE = 114
     var iconImageUri: Uri? = null
 
     companion object {
@@ -28,7 +31,7 @@ class RegistrationViewModel(private val context: Context, private val callback :
             if(uri == null){
                 Glide.with(view).load(R.drawable.icon_gost).into(view)//loadの中にresourceを入れたらtestできる
             }else{
-                Glide.with(view).load(File(uri.path)).into(view)//loadの中にresourceを入れたらtestできる
+                Glide.with(view).load(File(uri.path)).into(view)//TODO : error
             }
         }
     }
@@ -79,15 +82,27 @@ class RegistrationViewModel(private val context: Context, private val callback :
         if(userName.isEmpty() || userPassword.isEmpty()){
             Toast.makeText(context,context.getString(R.string.errorLoginStatus),Toast.LENGTH_LONG).show()
         }else{
+            //login処理
             callback.onLogin()
         }
     }
 
-    fun onClickChengeIconImage(view: View){
+    fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?){
+        if(requestCode != REQUEST_CODE || resultCode != Activity.RESULT_OK || data?.data == null)return
+        iconImageUri = data.data
         imageUri = iconImageUri
     }
 
+    fun onClickChengeIconImage(view: View){
+        val intent = Intent(Intent.ACTION_GET_CONTENT).apply { type = "image/*" }
+        callback.startActivityForResult(intent, REQUEST_CODE)
+    }
+
     interface Callback{
+
         fun onLogin()
+
+        fun startActivityForResult(intent : Intent, requestCode : Int)
+
     }
 }

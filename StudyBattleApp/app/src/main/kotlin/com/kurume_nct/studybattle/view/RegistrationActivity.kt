@@ -1,5 +1,6 @@
 package com.kurume_nct.studybattle.view
 
+import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -25,6 +26,11 @@ class RegistrationActivity : AppCompatActivity() , RegistrationViewModel.Callbac
 
     override fun onLogin() {
         finish()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        binding.userEntity.onActivityResult(resultCode, resultCode, data)
     }
 
 }
