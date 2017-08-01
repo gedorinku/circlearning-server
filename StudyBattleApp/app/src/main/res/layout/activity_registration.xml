@@ -5,7 +5,7 @@
     <data>
         <variable
             name="userEntity"
-            type="com.kurume_nct.studybattle.view.viewModel.RegistrationViewModel" />
+            type="com.kurume_nct.studybattle.viewModel.RegistrationViewModel" />
     </data>
 
     <LinearLayout

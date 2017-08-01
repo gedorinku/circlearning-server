@@ -5,7 +5,7 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import com.kurume_nct.studybattle.R
 import com.kurume_nct.studybattle.databinding.ActivityRegistrationBinding
-import com.kurume_nct.studybattle.view.viewModel.RegistrationViewModel
+import com.kurume_nct.studybattle.viewModel.RegistrationViewModel
 
 /**
  * A login screen that offers login via email/password.
