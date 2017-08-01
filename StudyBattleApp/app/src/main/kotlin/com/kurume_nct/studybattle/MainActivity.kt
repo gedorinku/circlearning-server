@@ -1,12 +1,11 @@
-package com.kurume_nct.studybattle.view
+package com.kurume_nct.studybattle
 
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import com.jakewharton.threetenabp.AndroidThreeTen
 
-import com.kurume_nct.studybattle.R
-import com.kurume_nct.studybattle.view.view.RegistrationActivity
+import com.kurume_nct.studybattle.view.RegistrationActivity
 
 class MainActivity : AppCompatActivity() {
 

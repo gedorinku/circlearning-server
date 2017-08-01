@@ -1,7 +1,6 @@
-package com.kurume_nct.studybattle.view.client
+package com.kurume_nct.studybattle.client
 
 import com.google.gson.FieldNamingPolicy
-import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory

@@ -39,6 +39,15 @@
             android:inputType="textPassword"
             android:text="@={userEntity.userPassword}" />
 
+        <EditText
+            android:id="@+id/editText2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:hint="@string/displayNameHint"
+            android:text="@{userEntity.displayName}" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -76,7 +85,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:onClick="@{userEntity.onClickLoginButton}"
-            android:text="登録" />
+            android:text="@{userEntity.loginButtonText}" />
 
     </LinearLayout>
 

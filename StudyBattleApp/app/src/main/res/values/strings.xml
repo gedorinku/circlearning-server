@@ -19,4 +19,5 @@
     <string name="hint_input_user_password">パスワード</string>
     <string name="chenge_image_button_text">プロフィール画像を フォルダから選ぶ</string>
     <string name="account_registe">アカウント登録</string>
+    <string name="displayNameHint">表示する名前</string>
 </resources>

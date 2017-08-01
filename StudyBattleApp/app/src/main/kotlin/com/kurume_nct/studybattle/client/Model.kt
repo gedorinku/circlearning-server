@@ -1,13 +1,7 @@
-package com.kurume_nct.studybattle.view.client
+package com.kurume_nct.studybattle.client
 
-import android.graphics.Picture
-import io.reactivex.internal.operators.maybe.MaybeDoAfterSuccess
 import org.threeten.bp.LocalDateTime
-import twitter4j.util.TimeSpanConverter
-import java.net.URI
-import java.sql.RowIdLifetime
 import java.sql.Time
-import java.sql.Timestamp
 
 /**
  * Created by hanah on 7/31/2017.

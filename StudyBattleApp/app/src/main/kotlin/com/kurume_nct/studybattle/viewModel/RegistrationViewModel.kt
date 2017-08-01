@@ -1,4 +1,4 @@
-package com.kurume_nct.studybattle.view.viewModel
+package com.kurume_nct.studybattle.viewModel
 
 import android.content.Context
 import android.databinding.BaseObservable
@@ -35,7 +35,7 @@ class RegistrationViewModel(private val context: Context, private val callback :
 
 
     @Bindable
-    var loginScreenName = R.string.account_registe //既存アカウントのLogin画面も作るかもしれないためBindingしとく*/
+    var loginScreenName = R.string.account_registe //既存アカウントのLogin画面も作るかもしれないためBindingしとく
 
     @Bindable
     var userName = ""
@@ -54,7 +54,15 @@ class RegistrationViewModel(private val context: Context, private val callback :
         }
 
     @Bindable
-    var LoginButtonText = "登録"
+    var displayName = ""
+    get
+    set(value) {
+        field = value
+        notifyPropertyChanged(BR.displayName)
+    }
+
+    @Bindable
+    var loginButtonText = "登録"
 
     @Bindable
     var imageUri = iconImageUri
