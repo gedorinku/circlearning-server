@@ -1,7 +1,6 @@
 package com.kurume_nct.studybattleserver
 
-import com.kurume_nct.studybattleserver.dao.AuthenticationKeys
-import com.kurume_nct.studybattleserver.dao.Users
+import com.kurume_nct.studybattleserver.dao.*
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils.create
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -30,6 +29,9 @@ data class Login(val userName: String = "", val password: String = "")
 @location("/register")
 data class Register(val displayName: String = "", val userName: String = "", val password: String = "")
 
+@location("/group/new")
+data class GroupCreate(val authenticationKey: String = "", val name: String = "")
+
 private val random = SecureRandom()
 
 fun Application.studyBattleServerApp() {
@@ -46,6 +48,7 @@ fun Application.studyBattleServerApp() {
     install(Routing) {
         login(random)
         register(random)
+        createGroup()
     }
 }
 
@@ -63,7 +66,7 @@ fun connectDataBase() {
     )
 
     transaction {
-        create(Users, AuthenticationKeys)
+        create(Users, AuthenticationKeys, Groups)
     }
 }
 
@@ -89,10 +92,27 @@ fun generateSalt(random: SecureRandom): String {
     return DatatypeConverter.printHexBinary(salt)
 }
 
+fun verifyCredentials(authenticationKey: String): User? {
+    if (!authenticationKeyPattern.matches(authenticationKey)) {
+        return null
+    }
+
+    val keyHash = hashWithSalt(authenticationKey, "")
+    return transaction {
+        val keyOrEmpty = AuthenticationKey.find { AuthenticationKeys.keyHash.eq(keyHash) }
+        if (keyOrEmpty.empty()) {
+            null
+        } else {
+            keyOrEmpty.first().user
+        }
+    }
+}
+
 fun isValidUserName(userName: String): Boolean = userNamePattern.matches(userName)
 
 fun isValidDisplayName(displayName: String): Boolean = displayNamePattern.matches(displayName)
 
 private val userNamePattern = "^[a-zA-Z0-9_]{2,20}".toRegex()
 private val displayNamePattern = "^[0-9a-zA-Zぁ-んァ-ヶ一-龠々ー]{2,20}".toRegex()
+private val authenticationKeyPattern = "[a-zA-Z0-9_]+".toRegex()
 private val stretchCount = 10000
