@@ -31,7 +31,7 @@ class RegistrationViewModel(private val context: Context, private val callback :
             if(uri == null){
                 Glide.with(view).load(R.drawable.icon_gost).into(view)//loadの中にresourceを入れたらtestできる
             }else{
-                Glide.with(view).load(File(uri.path)).into(view)//TODO : error
+                Glide.with(view).load(uri).into(view)
             }
         }
     }
@@ -88,7 +88,9 @@ class RegistrationViewModel(private val context: Context, private val callback :
     }
 
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?){
-        if(requestCode != REQUEST_CODE || resultCode != Activity.RESULT_OK || data?.data == null)return
+        //if(requestCode != REQUEST_CODE || resultCode != Activity.RESULT_OK || data?.data == null)return
+        if(data?.data == null)return
+        //TODO : resize icon here
         iconImageUri = data.data
         imageUri = iconImageUri
     }
