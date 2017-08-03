@@ -14,6 +14,7 @@ import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.kurume_nct.studybattle.BR
 import com.kurume_nct.studybattle.R
+import com.kurume_nct.studybattle.client.ServerClient
 import java.io.File
 
 /**
@@ -83,6 +84,8 @@ class RegistrationViewModel(private val context: Context, private val callback :
             Toast.makeText(context,context.getString(R.string.errorLoginStatus),Toast.LENGTH_LONG).show()
         }else{
             //login処理
+            Log.d("Tag"," displayName = " + displayName +" userName = "+ userName + " password = " + userPassword)
+            ServerClient().onRegistration(displayName,userName,userPassword)
             callback.onLogin()
         }
     }
