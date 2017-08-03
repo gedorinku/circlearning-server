@@ -160,35 +160,32 @@ class StudyBattleServerAppTest {
     }
 
     @Test
-    fun createGroupTest() {
-        print(generateSalt(random))
-        return withTestApplication(Application::studyBattleServerApp) {
-            val createGroup: (String, String, TestApplicationCall.() -> Unit) -> Unit = {
-                authenticationKey, groupName, test ->
-                val user = com.kurume_nct.studybattleserver.verifyCredentials(authenticationKey)
-                        ?: throw IllegalStateException("Unauthorized")
-                transaction {
-                    Group.find { Groups.owner.eq(user.id) and Groups.name.eq(groupName) }
-                            .forEach { it.delete() }
-                }
-
-                val values = listOf("authenticationKey" to authenticationKey, "name" to groupName)
-                test(handleRequest(HttpMethod.Post, "/group/new") {
-                    addHeader(HttpHeaders.ContentType, "application/x-www-form-urlencoded")
-                    body = values.formUrlEncode()
-                })
+    fun createGroupTest() = withTestApplication(Application::studyBattleServerApp) {
+        val createGroup: (String, String, TestApplicationCall.() -> Unit) -> Unit = {
+            authenticationKey, groupName, test ->
+            val user = com.kurume_nct.studybattleserver.verifyCredentials(authenticationKey)
+                    ?: throw IllegalStateException("Unauthorized")
+            transaction {
+                Group.find { Groups.owner.eq(user.id) and Groups.name.eq(groupName) }
+                        .forEach { it.delete() }
             }
 
-            val authKey = login(testUserName, testPassword)!!
-            val groupName = "piyopiuo"
-            createGroup(authKey, groupName) {
-                assertEquals(HttpStatusCode.OK, response.status())
-                val user = verifyCredentials(authKey)!!
-                val count = transaction {
-                    Group.find { Groups.owner.eq(user.id) and Groups.name.eq(groupName) }.count()
-                }
-                assertEquals(1, count)
+            val values = listOf("authenticationKey" to authenticationKey, "name" to groupName)
+            test(handleRequest(HttpMethod.Post, "/group/new") {
+                addHeader(HttpHeaders.ContentType, "application/x-www-form-urlencoded")
+                body = values.formUrlEncode()
+            })
+        }
+
+        val authKey = login(testUserName, testPassword)!!
+        val groupName = "piyopiuo"
+        createGroup(authKey, groupName) {
+            assertEquals(HttpStatusCode.OK, response.status())
+            val user = verifyCredentials(authKey)!!
+            val count = transaction {
+                Group.find { Groups.owner.eq(user.id) and Groups.name.eq(groupName) }.count()
             }
+            assertEquals(1, count)
         }
     }
 
