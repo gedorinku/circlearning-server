@@ -20,7 +20,7 @@ import java.io.File
 /**
  * Created by hanah on 7/30/2017.
  */
-class RegistrationViewModel(private val context: Context, private val callback : Callback) : BaseObservable() {
+class RegistrationViewModel(private val context: Context, private val callback : Callback) : BaseObservable() , ServerClient.Callback{
 
     val REQUEST_CODE = 114
     var iconImageUri: Uri? = null
@@ -66,6 +66,9 @@ class RegistrationViewModel(private val context: Context, private val callback :
     }
 
     @Bindable
+    var errorDisplayText = ""
+
+    @Bindable
     var loginButtonText = "登録"
 
     @Bindable
@@ -82,11 +85,13 @@ class RegistrationViewModel(private val context: Context, private val callback :
     fun onClickLoginButton(view: View){
         if(userName.isEmpty() || userPassword.isEmpty()){
             Toast.makeText(context,context.getString(R.string.errorLoginStatus),Toast.LENGTH_LONG).show()
+        }else if(!userName.matches(Regex("[^a-zA-z0-9]"))){
+            Toast.makeText(context,"ユーザー名に不適切な文字列が含まれています.",Toast.LENGTH_LONG).show()
+            userName = ""
         }else{
             //login処理
             Log.d("Tag"," displayName = " + displayName +" userName = "+ userName + " password = " + userPassword)
-            ServerClient().onRegistration(displayName,userName,userPassword)
-            callback.onLogin()
+            ServerClient(this).onRegistration(displayName,userName,userPassword)
         }
     }
 
@@ -103,6 +108,14 @@ class RegistrationViewModel(private val context: Context, private val callback :
         callback.startActivityForResult(intent, REQUEST_CODE)
     }
 
+    override fun onError() {
+        Toast.makeText(context,context.getString(R.string.usedUserNameAlart),Toast.LENGTH_LONG).show()
+    }
+
+    override fun onSuccess() {
+        callback.onLogin()
+    }
+
     interface Callback{
 
         fun onLogin()
@@ -110,4 +123,5 @@ class RegistrationViewModel(private val context: Context, private val callback :
         fun startActivityForResult(intent : Intent, requestCode : Int)
 
     }
+
 }
