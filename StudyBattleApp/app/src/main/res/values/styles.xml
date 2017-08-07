@@ -6,6 +6,21 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+        <!-- Toolbarのnavigation & overflow icon の色 -->
+        <item name="colorControlNormal">@color/colorAccent</item>
+
+        <!-- ActionModeを使うのに必要（後述） -->
+        <item name="windowActionModeOverlay">true</item>
+
+        <!-- Toolarのスタイル -->
+        <item name="toolbarStyle">@style/MyApp.Toolbar</item>
+    </style>
+
+    　　　　　　　　<style name="MyApp.Toolbar" parent="Widget.AppCompat.Toolbar">
+    <item name="android:background">@color/colorPrimaryDark</item>
+    <item name="titleTextAppearance">@style/TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse</item>
+    <item name="subtitleTextAppearance">@style/TextAppearance.AppCompat.Widget.ActionBar.Subtitle.Inverse</item>
     </style>
 
 </resources>

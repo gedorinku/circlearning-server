@@ -15,29 +15,37 @@ interface Server {
     @POST("/register")
     fun register(@Part("displayName") displayName : String, @Part("userName") userName: String, @Part("password") password: String) : Observable<String>
 
+    @Multipart
     @POST("/login")
     fun login(@Part("userName") userName: String, @Part("password") password: String) : Observable<String>
 
+    @Multipart
     @POST("hoge/{title}/{contentId}/{lifeTime}")
     fun setProblem(@Path("title") title : String, @Path("contnetId") content : Int, @Path("lifeTime") lifeTime : Time) : Observable<Problem> //Time->LocalDateTime
 
     //いらない機能？
+    @Multipart
     @POST("hoge/{id}/{title}/{contentId}/{text}/{lifeTime}")
-    fun refactorProblem(@Path("id") id : Int, @Path("title") title: String, @Path("contentId") content: Int, @Path("text") text : String, @Path("lifeTime")lifeTime: Time) : Observable<Problem> //Time->TimeSpan
+    fun repairProblem(@Path("id") id : Int, @Path("title") title: String, @Path("contentId") content: Int, @Path("text") text : String, @Path("lifeTime")lifeTime: Time) : Observable<Problem> //Time->TimeSpan
 
-    @GET("hoge/{id}")
+    @Multipart
+    @POST("hoge/{id}")
     fun searchContent(@Path("id") id : Int) : Observable<Content>
 
-    @GET("hoge/{id}")
+    @Multipart
+    @POST("hoge/{id}")
     fun searchProblem(@Path("id") id: Int) : Observable<Problem>
 
-    @GET("hoge/{id}")
+    @Multipart
+    @POST("hoge/{id}")
     fun getProblemItem(@Path("id") id: Int) : Observable<List<ItemStack>> //問題についているアイテム一覧の取得
 
-    @GET("hoge/{id}")
+    @Multipart
+    @POST("hoge/{id}")
     fun getSolution(@Path("id") id: Int) : Observable<Solution>
 
-    @GET("hoge/{id}") //Comment.id : ProblemIdと思ってる
+    @Multipart
+    @POST("hoge/{id}") //Comment.id : ProblemIdと思ってる
     fun getComment(@Path("id") id: Int) : Observable<Comment>
 
     //AuthenticationResult??

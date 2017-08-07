@@ -1,12 +1,16 @@
 package com.kurume_nct.studybattle.viewModel
 
 import android.app.Activity
+import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
 import android.databinding.BaseObservable
 import android.databinding.Bindable
 import android.databinding.BindingAdapter
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
+import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
@@ -15,12 +19,15 @@ import com.bumptech.glide.Glide
 import com.kurume_nct.studybattle.BR
 import com.kurume_nct.studybattle.R
 import com.kurume_nct.studybattle.client.ServerClient
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import java.io.BufferedInputStream
 import java.io.File
 
 /**
  * Created by hanah on 7/30/2017.
  */
-class RegistrationViewModel(private val context: Context, private val callback : Callback) : BaseObservable() , ServerClient.Callback{
+class RegistrationViewModel(private val context: Context, private val callback : Callback) : BaseObservable(){
 
     val REQUEST_CODE = 114
     var iconImageUri: Uri? = null
@@ -36,7 +43,6 @@ class RegistrationViewModel(private val context: Context, private val callback :
             }
         }
     }
-
 
     @Bindable
     var loginScreenName = R.string.account_registe //既存アカウントのLogin画面も作るかもしれないためBindingしとく
@@ -91,7 +97,13 @@ class RegistrationViewModel(private val context: Context, private val callback :
         }else{
             //login処理
             Log.d("Tag"," displayName = " + displayName +" userName = "+ userName + " password = " + userPassword)
-            ServerClient(this).onRegistration(displayName,userName,userPassword)
+            ServerClient().onRegistration(displayName,userName,userPassword)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
+                    },{ Toast.makeText(context,context.getString(R.string.usedUserNameAlart),Toast.LENGTH_LONG).show()
+                    },{ callback.onLogin()}
+                    )
         }
     }
 
@@ -108,12 +120,10 @@ class RegistrationViewModel(private val context: Context, private val callback :
         callback.startActivityForResult(intent, REQUEST_CODE)
     }
 
-    override fun onError() {
-        Toast.makeText(context,context.getString(R.string.usedUserNameAlart),Toast.LENGTH_LONG).show()
-    }
-
-    override fun onSuccess() {
-        callback.onLogin()
+    fun changeImageSize(uri: Uri) : Bitmap{
+        val stream = context.contentResolver.openInputStream(uri)
+        val bitmap = BitmapFactory.decodeStream(BufferedInputStream(stream))
+        return Bitmap.createScaledBitmap(bitmap, 100, 100, false)
     }
 
     interface Callback{

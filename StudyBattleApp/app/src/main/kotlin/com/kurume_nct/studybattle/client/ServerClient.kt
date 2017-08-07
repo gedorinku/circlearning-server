@@ -18,7 +18,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.Converter
-import retrofit2.HttpException
 import java.io.IOException
 import java.lang.reflect.Type
 
@@ -26,10 +25,12 @@ import java.lang.reflect.Type
 /**
  * Created by hanah on 7/31/2017.
  */
-class ServerClient(private val callback : Callback) {
+class ServerClient{
+
     var gson : Gson
     var retrofit : Retrofit
     var server : Server
+
     init {
         gson = GsonBuilder()
                 .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES)
@@ -42,24 +43,10 @@ class ServerClient(private val callback : Callback) {
                 .build()
         server = retrofit.create(Server::class.java)
     }
-    fun onRegistration(displayName : String, userName: String, password: String){
-        Log.d("Tag"," displayName = " + displayName +" userName = "+ userName + " password = " + password)
-        server.register(displayName, userName, password)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    //callback実装
-                    Log.d("tag",it)
-                },{callback.onError()},{callback.onSuccess()})
-    }
 
-    interface Callback{
+    fun onRegistration(displayName : String, userName: String, password: String)
+        = server.register(displayName, userName, password)
 
-        fun onSuccess()
-
-        fun onError()
-
-    }
 }
 
 class StringConverterFactory : Converter.Factory() {
