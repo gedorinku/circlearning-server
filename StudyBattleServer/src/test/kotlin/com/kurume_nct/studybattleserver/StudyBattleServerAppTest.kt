@@ -1,10 +1,8 @@
 package com.kurume_nct.studybattleserver
 
 import com.google.gson.Gson
-import com.kurume_nct.studybattleserver.dao.Group
-import com.kurume_nct.studybattleserver.dao.Groups
-import com.kurume_nct.studybattleserver.dao.User
-import com.kurume_nct.studybattleserver.dao.Users
+import com.kurume_nct.studybattleserver.dao.*
+import org.jetbrains.exposed.dao.EntityID
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.ktor.application.Application
@@ -22,6 +20,7 @@ import org.junit.BeforeClass
 import org.junit.Test
 import java.security.MessageDigest
 import java.security.SecureRandom
+import java.util.*
 import javax.xml.bind.DatatypeConverter
 
 /**
@@ -186,6 +185,44 @@ class StudyBattleServerAppTest {
                 Group.find { Groups.owner.eq(user.id) and Groups.name.eq(groupName) }.count()
             }
             assertEquals(1, count)
+        }
+    }
+
+    @Test
+    fun joinGroupTest() = withTestApplication(Application::studyBattleServerApp) {
+        val joinGroup: (String, EntityID<Int>, TestApplicationCall.() -> Unit) -> Unit = {
+            authenticationKey, groupId, test ->
+            val values = listOf(
+                    "authenticationKey" to authenticationKey,
+                    "groupId" to groupId.toString()
+            )
+            test(handleRequest(HttpMethod.Post, "/group/join") {
+                addHeader(HttpHeaders.ContentType, "application/x-www-form-urlencoded")
+                body = values.formUrlEncode()
+            })
+        }
+
+        val authenticationKey = login(testUserName, testPassword)!!
+        val user = verifyCredentials(authenticationKey)!!
+        val random = Random()
+        val groupName = "test" + random.nextLong().toString(16)
+        val group = transaction {
+            Group.new {
+                name = groupName
+                owner = user
+            }
+        }
+
+        joinGroup(authenticationKey, group.id) {
+            assertEquals(HttpStatusCode.OK, response.status())
+            val result = transaction {
+                Belonging.find {
+                    Belongings.user.eq(user.id) and
+                            Belongings.group.eq(group.id)
+                }.count()
+            }
+
+            assertEquals(1, result)
         }
     }
 

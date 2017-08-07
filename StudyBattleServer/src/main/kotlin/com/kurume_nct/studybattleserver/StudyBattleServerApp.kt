@@ -32,6 +32,9 @@ data class Register(val displayName: String = "", val userName: String = "", val
 @location("/group/new")
 data class GroupCreate(val authenticationKey: String = "", val name: String = "")
 
+@location("/group/join")
+data class GroupJoin(val authenticationKey: String = "", val groupId: Int = 0)
+
 private val random = SecureRandom()
 
 fun Application.studyBattleServerApp() {
@@ -49,6 +52,7 @@ fun Application.studyBattleServerApp() {
         login(random)
         register(random)
         createGroup()
+        joinGroup()
     }
 }
 
@@ -66,7 +70,7 @@ fun connectDataBase() {
     )
 
     transaction {
-        create(Users, AuthenticationKeys, Groups)
+        create(Users, AuthenticationKeys, Groups, Belongings)
     }
 }
 
