@@ -21,4 +21,10 @@
     <string name="account_registe">アカウント登録</string>
     <string name="displayNameHint">表示する名前（2文字以上20文字以下）</string>
     <string name="usedUserNameAlart">すでに使われているUserNameです.</string>
+    <string name="title_activity_main2">Main2Activity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
 </resources>
