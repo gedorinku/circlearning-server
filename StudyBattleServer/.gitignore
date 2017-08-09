@@ -9,4 +9,5 @@
 .externalNativeBuild
 /out
 
+/images
 database.properties

@@ -35,6 +35,9 @@ data class GroupCreate(val authenticationKey: String = "", val name: String = ""
 @location("/group/join")
 data class GroupJoin(val authenticationKey: String = "", val groupId: Int = 0)
 
+@location("/image/upload")
+class ImageUpload
+
 private val random = SecureRandom()
 
 fun Application.studyBattleServerApp() {
@@ -53,6 +56,7 @@ fun Application.studyBattleServerApp() {
         register(random)
         createGroup()
         joinGroup()
+        uploadImage()
     }
 }
 
@@ -70,7 +74,13 @@ fun connectDataBase() {
     )
 
     transaction {
-        create(Users, AuthenticationKeys, Groups, Belongings)
+        create(
+                Users,
+                AuthenticationKeys,
+                Groups,
+                Belongings,
+                Images
+        )
     }
 }
 

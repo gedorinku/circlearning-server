@@ -10,14 +10,17 @@ import org.jetbrains.ktor.http.HttpHeaders
 import org.jetbrains.ktor.http.HttpMethod
 import org.jetbrains.ktor.http.HttpStatusCode
 import org.jetbrains.ktor.http.formUrlEncode
+import org.jetbrains.ktor.request.PartData
 import org.jetbrains.ktor.testing.TestApplicationCall
 import org.jetbrains.ktor.testing.TestApplicationHost
 import org.jetbrains.ktor.testing.handleRequest
 import org.jetbrains.ktor.testing.withTestApplication
+import org.jetbrains.ktor.util.ValuesMap
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.BeforeClass
 import org.junit.Test
+import java.io.File
 import java.security.MessageDigest
 import java.security.SecureRandom
 import java.util.*
@@ -223,6 +226,50 @@ class StudyBattleServerAppTest {
             }
 
             assertEquals(1, result)
+        }
+    }
+
+    @Test
+    fun uploadImageTest() = withTestApplication(Application::studyBattleServerApp) {
+        val uploadImage: (String, File, TestApplicationCall.() -> Unit) -> Unit = {
+            authenticationKey, image, test ->
+            test(handleRequest(HttpMethod.Post, "image/upload") {
+                addHeader(HttpHeaders.ContentType, "multipart/form-data")
+                val authPart = PartData.FormItem(
+                        authenticationKey, {},
+                        ValuesMap.build {
+                            append(HttpHeaders.ContentDisposition, "form-data; name=\"authenticationKey\"")
+                        }
+                )
+                val imagePart = PartData.FileItem(
+                        { image.inputStream() }, {},
+                        ValuesMap.build {
+                            append(HttpHeaders.ContentDisposition, "form-data; name=\"image\"")
+                        }
+                )
+                multiPartEntries = listOf(authPart, imagePart)
+            })
+        }
+
+        val authenticationKey = login(testUserName, testPassword)!!
+        uploadImage(authenticationKey, File("assets/worry.png")) {
+            assertEquals(HttpStatusCode.OK, response.status())
+            val id = Gson()
+                    .fromJson(response.content.orEmpty(), ImageUploadResponse::class.java)
+                    .imageId
+            assert(0 < id)
+        }
+
+        uploadImage(authenticationKey, File("assets/worry.jpg")) {
+            assertEquals(HttpStatusCode.OK, response.status())
+            val id = Gson()
+                    .fromJson(response.content.orEmpty(), ImageUploadResponse::class.java)
+                    .imageId
+            assert(0 < id)
+        }
+
+        uploadImage(authenticationKey, File("assets/worry.pdf")) {
+            assertEquals(HttpStatusCode.BadRequest, response.status())
         }
     }
 
