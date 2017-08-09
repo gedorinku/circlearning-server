@@ -17,7 +17,7 @@ import javax.xml.bind.DatatypeConverter
 /**
  * Created by gedorinku on 2017/08/09.
  */
-data class ImageUploadResponse(var imageId: Int = 0)
+data class ImageUploadResponse(var imageId: Int = 0, var url: String = "", var fileName: String = "")
 
 fun Route.uploadImage() = post<ImageUpload> {
     var authenticationKey = ""
@@ -26,7 +26,7 @@ fun Route.uploadImage() = post<ImageUpload> {
     call.receiveMultipart().parts.forEach {
         if (it is PartData.FormItem && it.partName == "authenticationKey") {
             authenticationKey = it.value
-        } else if (it is PartData.FileItem && it.partName == "image"){
+        } else if (it is PartData.FileItem && it.partName == "image") {
             image = it.streamProvider.invoke().use { it.readBytes() }.toList()
         }
     }
@@ -48,16 +48,16 @@ fun Route.uploadImage() = post<ImageUpload> {
     sha256.update(
             ByteBuffer.allocate(java.lang.Long.BYTES).apply {
                 putLong(System.currentTimeMillis())
-            }
+            }.array()
     )
 
-    val baseDir = "images"
-    File(baseDir).mkdir()
-    val fileName = "$baseDir/" +
-            DatatypeConverter.printHexBinary(sha256.digest()) +
+    val fileName = DatatypeConverter.printHexBinary(sha256.digest()) +
             fileExtension
 
-    File(fileName).outputStream().use {
+    val baseDir = "images/"
+    File(baseDir).mkdir()
+
+    File(baseDir + fileName).outputStream().use {
         stream ->
         stream.write(image.toByteArray())
     }
@@ -68,7 +68,7 @@ fun Route.uploadImage() = post<ImageUpload> {
         }.id
     }
 
-    call.respond(Gson().toJson(ImageUploadResponse(id.value)))
+    call.respond(Gson().toJson(ImageUploadResponse(id.value, getFullUrl("image/$fileName"), fileName)))
 }
 
 /***

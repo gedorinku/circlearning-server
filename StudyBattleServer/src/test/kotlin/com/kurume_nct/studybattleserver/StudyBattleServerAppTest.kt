@@ -261,11 +261,22 @@ class StudyBattleServerAppTest {
         }
 
         uploadImage(authenticationKey, File("assets/worry.jpg")) {
+            val originHash = {
+                val sha256 = MessageDigest.getInstance("SHA-256")
+                val bytes = File("assets/worry.jpg").inputStream().use { it.readBytes() }
+                DatatypeConverter.printHexBinary(sha256.digest(bytes))
+            }()
+
             assertEquals(HttpStatusCode.OK, response.status())
-            val id = Gson()
+            val uploadResponse = Gson()
                     .fromJson(response.content.orEmpty(), ImageUploadResponse::class.java)
-                    .imageId
-            assert(0 < id)
+            assert(0 < uploadResponse.imageId)
+
+            handleRequest(HttpMethod.Get, "image/${uploadResponse.fileName}").apply {
+                val sha256 = MessageDigest.getInstance("SHA-256")
+                val hash = DatatypeConverter.printHexBinary(sha256.digest(response.byteContent))
+                assertEquals(originHash, hash)
+            }
         }
 
         uploadImage(authenticationKey, File("assets/worry.pdf")) {

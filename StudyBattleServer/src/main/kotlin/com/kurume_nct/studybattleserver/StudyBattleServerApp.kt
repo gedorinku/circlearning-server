@@ -38,6 +38,9 @@ data class GroupJoin(val authenticationKey: String = "", val groupId: Int = 0)
 @location("/image/upload")
 class ImageUpload
 
+@location("/image/{fileName}")
+data class ImageGet(val fileName: String = "")
+
 private val random = SecureRandom()
 
 fun Application.studyBattleServerApp() {
@@ -57,6 +60,7 @@ fun Application.studyBattleServerApp() {
         createGroup()
         joinGroup()
         uploadImage()
+        getImage()
     }
 }
 
@@ -125,6 +129,8 @@ fun verifyCredentials(authenticationKey: String): User? {
 fun isValidUserName(userName: String): Boolean = userNamePattern.matches(userName)
 
 fun isValidDisplayName(displayName: String): Boolean = displayNamePattern.matches(displayName)
+
+fun getFullUrl(relativePath: String): String = "http://studybattle.dip.jp/$relativePath"
 
 private val userNamePattern = "^[a-zA-Z0-9_]{2,20}".toRegex()
 private val displayNamePattern = "^[0-9a-zA-Zぁ-んァ-ヶ一-龠々ー]{2,20}".toRegex()
