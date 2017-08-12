@@ -8,9 +8,9 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/icon"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/icon"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         <activity android:name=".MainActivity">
@@ -26,6 +26,7 @@
             android:name=".Main2Activity"
             android:label="@string/title_activity_main2"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity android:name=".view.LoginActivity"></activity>
     </application>
 
 </manifest>

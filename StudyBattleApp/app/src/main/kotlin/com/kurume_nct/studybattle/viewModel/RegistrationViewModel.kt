@@ -45,9 +45,6 @@ class RegistrationViewModel(private val context: Context, private val callback :
     }
 
     @Bindable
-    var loginScreenName = R.string.account_registe //既存アカウントのLogin画面も作るかもしれないためBindingしとく
-
-    @Bindable
     var userName = ""
         get
         set(value){
@@ -72,9 +69,6 @@ class RegistrationViewModel(private val context: Context, private val callback :
     }
 
     @Bindable
-    var errorDisplayText = ""
-
-    @Bindable
     var loginButtonText = "登録"
 
     @Bindable
@@ -85,8 +79,9 @@ class RegistrationViewModel(private val context: Context, private val callback :
         notifyPropertyChanged(BR.imageUri)
     }
 
-    @Bindable
-    var imageButtonText = R.string.chenge_image_button_text
+    fun onClicktoLoginButton(view: View){
+        callback.toLoginActivity()
+    }
 
     fun onClickLoginButton(view: View){
         if(userName.isEmpty() || userPassword.isEmpty()){
@@ -127,6 +122,8 @@ class RegistrationViewModel(private val context: Context, private val callback :
     }
 
     interface Callback{
+
+        fun toLoginActivity()
 
         fun onLogin()
 

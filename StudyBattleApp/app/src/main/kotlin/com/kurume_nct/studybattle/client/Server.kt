@@ -19,6 +19,8 @@ interface Server {
     @POST("/login")
     fun login(@Part("userName") userName: String, @Part("password") password: String) : Observable<String>
 
+    /*これ以降は企画書のapiのところに合わせて書きなおす*/
+
     @Multipart
     @POST("hoge/{title}/{contentId}/{lifeTime}")
     fun setProblem(@Path("title") title : String, @Path("contnetId") content : Int, @Path("lifeTime") lifeTime : Time) : Observable<Problem> //Time->LocalDateTime

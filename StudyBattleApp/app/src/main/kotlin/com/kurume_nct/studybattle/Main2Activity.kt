@@ -1,5 +1,6 @@
 package com.kurume_nct.studybattle
 
+import android.content.Intent
 import android.databinding.Bindable
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
@@ -16,6 +17,7 @@ import android.view.Menu
 import android.view.MenuItem
 
 import com.kurume_nct.studybattle.R
+import com.kurume_nct.studybattle.view.RegistrationActivity
 
 class Main2Activity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -32,6 +34,11 @@ class Main2Activity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
 
         val navigationView = findViewById(R.id.nav_view) as NavigationView
         navigationView.setNavigationItemSelectedListener(this)
+
+        if(true){
+            startActivity(Intent(this, RegistrationActivity::class.java))
+        }
+
     }
 
     override fun onBackPressed() {

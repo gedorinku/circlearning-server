@@ -7,7 +7,7 @@ android {
     compileSdkVersion 25
     buildToolsVersion "26.0.0"
     defaultConfig {
-        applicationId "com.kurume_nct.meshitter"
+        applicationId "com.kurume_nct.study_battle"
         minSdkVersion 19
         targetSdkVersion 25
         versionCode 1

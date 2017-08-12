@@ -47,31 +47,22 @@ class ServerClient{
     fun onRegistration(displayName : String, userName: String, password: String)
         = server.register(displayName, userName, password)
 
+
+
 }
 
 class StringConverterFactory : Converter.Factory() {
 
     override fun responseBodyConverter(type: Type, annotations: Array<Annotation>, retrofit: Retrofit): Converter<ResponseBody, *>? {
         if (String::class.java == type) {
-            return object : Converter<ResponseBody, String> {
-
-                @Throws(IOException::class)
-                override fun convert(value: ResponseBody): String {
-                    return value.string()
-                }
-            }
+            return Converter<ResponseBody, String> { value -> value.string() }
         }
         return null
     }
 
     override fun requestBodyConverter(type: Type, parameterAnnotations: Array<Annotation>, methodAnnotations: Array<Annotation>, retrofit: Retrofit): Converter<*, RequestBody>? {
         if (String::class.java == type) {
-            return object : Converter<String, RequestBody> {
-                @Throws(IOException::class)
-                override fun convert(value: String): RequestBody {
-                    return RequestBody.create(MEDIA_TYPE, value)
-                }
-            }
+            return Converter<String, RequestBody> { value -> RequestBody.create(MEDIA_TYPE, value) }
         }
 
         return null

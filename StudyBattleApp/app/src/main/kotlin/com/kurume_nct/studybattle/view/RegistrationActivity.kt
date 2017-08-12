@@ -24,6 +24,10 @@ class RegistrationActivity : AppCompatActivity() , RegistrationViewModel.Callbac
 
     }
 
+    override fun toLoginActivity() {
+        startActivity(Intent(this,LoginActivity::class.java))
+    }
+
     override fun onLogin() {
         finish()
     }
