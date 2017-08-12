@@ -1,8 +1,11 @@
 package com.kurume_nct.studybattle.client
 
+import android.media.Image
 import android.view.Display
 import io.reactivex.Observable
 import io.reactivex.Observer
+import io.reactivex.Single
+import okhttp3.RequestBody
 import retrofit2.http.*
 import java.sql.Time
 
@@ -19,6 +22,9 @@ interface Server {
     @POST("/login")
     fun login(@Part("userName") userName: String, @Part("password") password: String) : Observable<String>
 
+    @Multipart
+    @POST("/image/upload")
+    fun imageUpload(@Part("authenticationKey") password: RequestBody,@Part("image") image: RequestBody) : Single<Int>
     /*これ以降は企画書のapiのところに合わせて書きなおす*/
 
     @Multipart

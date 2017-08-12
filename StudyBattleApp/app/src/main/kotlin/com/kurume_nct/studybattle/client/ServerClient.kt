@@ -1,5 +1,6 @@
 package com.kurume_nct.studybattle.client
 
+import android.net.Uri
 import android.util.Log
 import android.widget.Toast
 import com.google.gson.FieldNamingPolicy
@@ -8,6 +9,7 @@ import com.google.gson.GsonBuilder
 import com.kurume_nct.studybattle.viewModel.RegistrationViewModel
 import io.reactivex.Observer
 import io.reactivex.Scheduler
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.exceptions.OnErrorNotImplementedException
 import io.reactivex.schedulers.Schedulers
@@ -18,6 +20,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.Converter
+import java.io.File
 import java.io.IOException
 import java.lang.reflect.Type
 
@@ -47,7 +50,12 @@ class ServerClient{
     fun onRegistration(displayName : String, userName: String, password: String)
         = server.register(displayName, userName, password)
 
-
+    fun onUploadImage(authorityKey : String, url: Uri): Single<Int> {
+        val file = File(url.path)
+        val keyRequestBody = RequestBody.create(MediaType.parse("multipart/form-data"), authorityKey)
+        val imageRequestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file)
+        return server.imageUpload(keyRequestBody,imageRequestBody)
+    }
 
 }
 
