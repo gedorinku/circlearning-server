@@ -16,6 +16,8 @@ import org.jetbrains.ktor.testing.TestApplicationHost
 import org.jetbrains.ktor.testing.handleRequest
 import org.jetbrains.ktor.testing.withTestApplication
 import org.jetbrains.ktor.util.ValuesMap
+import org.joda.time.DateTime
+import org.joda.time.Duration
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.BeforeClass
@@ -281,6 +283,49 @@ class StudyBattleServerAppTest {
 
         uploadImage(authenticationKey, File("assets/worry.pdf")) {
             assertEquals(HttpStatusCode.BadRequest, response.status())
+        }
+    }
+
+    @Test
+    fun createProblemTest() = withTestApplication(Application::studyBattleServerApp) {
+        val createProblem: (ProblemCreate, TestApplicationCall.() -> Unit) -> Unit = {
+            (authenticationKey, title, text, imageIds, startsAt, durationMillis), test ->
+            val imageIdsEncoded = imageIds
+                    .mapIndexed { index, id -> index.toString() to id.toString() }
+                    .toList()
+                    .formUrlEncode()
+            val values = listOf(
+                    "authenticationKey" to authenticationKey,
+                    "tile" to title,
+                    "text" to text,
+                    "imageIds" to imageIdsEncoded,
+                    "startsAt" to startsAt.toString(),
+                    "durationMillis" to durationMillis.toString())
+
+            test(handleRequest(HttpMethod.Post, "/problem/create") {
+                addHeader(HttpHeaders.ContentType, "application/x-www-form-urlencoded")
+                body = values.formUrlEncode()
+            })
+        }
+
+        val authenticationKey = login(testUserName, testPassword)!!
+        createProblem(ProblemCreate(
+                authenticationKey,
+                "hoge",
+                "うぇい\n" +
+                        "ほげほげ\n" +
+                        "abc",
+                emptyList(),
+                DateTime.now(),
+                Duration.standardHours(1).millis)) {
+            assertEquals(HttpStatusCode.OK, response.status())
+            val problemId = Gson()
+                    .fromJson(
+                            response.content.orEmpty(),
+                            ProblemCreateResponse::class.java
+                    )
+                    .id
+            assert(0 < problemId)
         }
     }
 
