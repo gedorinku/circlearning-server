@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import com.kurume_nct.studybattle.R
 import com.kurume_nct.studybattle.databinding.FragmentProblemBinding
-import com.kurume_nct.studybattle.view.dummy.DummyContent.DummyItem
 
 class ProblemListAdapter(context: Context, var problems: Problems) : BaseAdapter(){
 

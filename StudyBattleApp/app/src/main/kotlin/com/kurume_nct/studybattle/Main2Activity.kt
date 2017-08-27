@@ -15,6 +15,7 @@ import android.util.AttributeSet
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import com.kurume_nct.studybattle.ListFragment.BlankFragment
 import com.kurume_nct.studybattle.ListFragment.MainListFragment
 import com.kurume_nct.studybattle.view.RegistrationActivity
 
@@ -37,10 +38,12 @@ class Main2Activity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
         val navigationView = findViewById(R.id.nav_view) as NavigationView
         navigationView.setNavigationItemSelectedListener(this)
 
+        //val mf = MainListFragment()
         val fragment = MainListFragment().newInstance(0)
         val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.fragment, fragment)
-        transaction.addToBackStack(null)
+      //  transaction.replace(R.id.fragment, fragment)
+        transaction.add(R.id.container,fragment)
+        //transaction.addToBackStack(null)
 
         transaction.commit()
 

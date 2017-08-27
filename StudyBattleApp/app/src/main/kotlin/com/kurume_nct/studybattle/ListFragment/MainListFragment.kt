@@ -32,15 +32,14 @@ class MainListFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        tabId = arguments.getInt("id", 3)
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        tabId = arguments.getInt("id", 3)
 
-        //binding = DataBindingUtil.inflate(inflater, R.layout.fragment_problem_list,container,false)
-        binding = FragmentProblemListBinding.inflate(inflater, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_problem_list,container,false)
+        //binding = FragmentProblemListBinding.inflate(inflater, container, false)
         problemList = mutableListOf(Problem())
         when(tabId){
             0->{problemList.add(Problem("0",":;(∩´﹏`∩);:"))}
