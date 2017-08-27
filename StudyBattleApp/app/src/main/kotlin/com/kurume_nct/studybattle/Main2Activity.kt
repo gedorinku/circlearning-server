@@ -1,25 +1,27 @@
 package com.kurume_nct.studybattle
 
+import android.content.Context
 import android.content.Intent
-import android.databinding.Bindable
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
-import android.support.design.widget.Snackbar
-import android.view.View
 import android.support.design.widget.NavigationView
+import android.support.v4.app.FragmentTransaction
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
-import android.util.Log
+import android.util.AttributeSet
+
 import android.view.Menu
 import android.view.MenuItem
-
-import com.kurume_nct.studybattle.R
+import android.view.View
+import com.kurume_nct.studybattle.ListFragment.MainListFragment
 import com.kurume_nct.studybattle.view.RegistrationActivity
 
+
 class Main2Activity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+
+    //TODO : TagFragment からの callbackを継承する。
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +36,18 @@ class Main2Activity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
 
         val navigationView = findViewById(R.id.nav_view) as NavigationView
         navigationView.setNavigationItemSelectedListener(this)
+
+        val fragment = MainListFragment().newInstance(0)
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.fragment, fragment)
+        transaction.addToBackStack(null)
+
+        transaction.commit()
+
+        /**
+         * これを参照しましょう。
+         * http://y-anz-m.blogspot.jp/2012/04/android-fragment-fragmenttransaction.html
+         */
 
         if(true){
             startActivity(Intent(this, RegistrationActivity::class.java))
@@ -71,7 +85,6 @@ class Main2Activity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         // Handle navigation view item clicks here.
         val id = item.itemId
-
         val drawer = findViewById(R.id.drawer_layout) as DrawerLayout
         drawer.closeDrawer(GravityCompat.START)
         return true

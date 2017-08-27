@@ -18,7 +18,9 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:tabContentStart="?attr/dialogPreferredPadding"
-        app:tabIndicatorColor="@android:color/holo_orange_light">
+        app:tabIndicatorColor="@android:color/holo_orange_light"
+        android:layout_marginTop="-59dp"
+        app:layout_constraintHorizontal_bias="0.0">
 
         <android.support.design.widget.TabItem
             android:id="@+id/problem_list_fragment_tab"
@@ -28,6 +30,7 @@
             android:text="問題" />
 
         <android.support.design.widget.TabItem
+            android:id="@+id/tabItem"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:icon="@drawable/answer_icon"
@@ -45,5 +48,35 @@
             android:icon="@android:drawable/checkbox_on_background"
             android:text="提出済み" />
     </android.support.design.widget.TabLayout>
+
+    <ScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:layout_editor_absoluteX="8dp"
+        tools:layout_editor_absoluteY="8dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="70dp"
+                android:layout_weight="1"
+                android:text="問題一覧"
+                android:textSize="18sp" />
+
+            <fragment
+                android:id="@+id/fragment"
+                android:name="com.kurume_nct.studybattle.ListFragment.MainListFragment"
+                android:layout_width="match_parent"
+                android:layout_height="0dp" />
+
+        </LinearLayout>
+    </ScrollView>
 
 </android.support.constraint.ConstraintLayout>

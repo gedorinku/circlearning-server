@@ -34,11 +34,13 @@ import java.util.concurrent.CountDownLatch
 class RegistrationViewModel(private val context: Context, private val callback: Callback) : BaseObservable() {
 
     val REQUEST_CODE = 114
-    var iconImageUri: Uri? = null
+    var iconImageUri: Uri
     var iconId: Int
+    var imageBitmap: Bitmap
 
     init {
-        iconImageUri = convertUrlFromDrawableResId(context,R.drawable.icon_gost)
+        iconImageUri = convertUrlFromDrawableResId(context, R.drawable.icon_gost)!!
+        imageBitmap = ImageCustom().onUriToBitmap(context, iconImageUri)
         iconId = 0
     }
 
@@ -46,6 +48,7 @@ class RegistrationViewModel(private val context: Context, private val callback: 
         @BindingAdapter("loadImage")
         @JvmStatic
         fun setIconImage(view: ImageView, uri: Uri?) {
+
             if (uri == null) {
                 Glide.with(view).load(R.drawable.icon_gost).into(view)//loadの中にresourceを入れたらtestできる
             } else {
@@ -114,7 +117,8 @@ class RegistrationViewModel(private val context: Context, private val callback: 
                         countSuccess++
                         countDown.countDown()
                     })
-            ServerClient().onUploadImage(userPassword, imageUri!!)
+            ServerClient().onUploadImage(userPassword, imageUri
+            )
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({
@@ -126,7 +130,7 @@ class RegistrationViewModel(private val context: Context, private val callback: 
                         countDown.countDown()
                     })
             countDown.await()
-            if(countSuccess == 2) {
+            if (countSuccess == 2) {
                 callback.onLogin()
             }
         }
@@ -138,6 +142,7 @@ class RegistrationViewModel(private val context: Context, private val callback: 
         //TODO : resize icon here
         iconImageUri = data.data
         imageUri = iconImageUri
+        imageBitmap = ImageCustom().onUriToBitmap(context,iconImageUri)
     }
 
     fun onClickChengeIconImage(view: View) {
@@ -162,14 +167,15 @@ class RegistrationViewModel(private val context: Context, private val callback: 
         sb.append(context.resources.getResourceEntryName(drawableResId))
         return Uri.parse(sb.toString())
     }
-}
 
-interface Callback {
+    interface Callback {
 
-    fun toLoginActivity()
+        fun toLoginActivity()
 
-    fun onLogin()
+        fun onLogin()
 
-    fun startActivityForResult(intent: Intent, requestCode: Int)
+        fun startActivityForResult(intent: Intent, requestCode: Int)
+
+    }
 
 }
