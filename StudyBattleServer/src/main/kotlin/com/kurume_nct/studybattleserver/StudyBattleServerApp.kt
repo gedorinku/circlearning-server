@@ -48,7 +48,7 @@ data class ProblemCreate(
         val title: String = "",
         val text: String = "",
         val imageIds: List<Int> = emptyList(),
-        val startsAt: DateTime,
+        val startsAt: String = "",
         val durationMillis: Long = 0)
 
 
@@ -97,7 +97,8 @@ fun connectDataBase() {
                 Belongings,
                 Images,
                 Contents,
-                Problems
+                Problems,
+                ContentImageRelations
         )
     }
 }

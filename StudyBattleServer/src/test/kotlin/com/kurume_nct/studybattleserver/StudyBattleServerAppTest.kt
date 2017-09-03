@@ -291,16 +291,14 @@ class StudyBattleServerAppTest {
         val createProblem: (ProblemCreate, TestApplicationCall.() -> Unit) -> Unit = {
             (authenticationKey, title, text, imageIds, startsAt, durationMillis), test ->
             val imageIdsEncoded = imageIds
-                    .mapIndexed { index, id -> index.toString() to id.toString() }
-                    .toList()
-                    .formUrlEncode()
-            val values = listOf(
+                    .mapIndexed { index, id -> "imageIds" to id.toString() }
+            val values = mutableListOf(
                     "authenticationKey" to authenticationKey,
                     "tile" to title,
                     "text" to text,
-                    "imageIds" to imageIdsEncoded,
-                    "startsAt" to startsAt.toString(),
+                    "startsAt" to startsAt,
                     "durationMillis" to durationMillis.toString())
+            values.addAll(imageIdsEncoded)
 
             test(handleRequest(HttpMethod.Post, "/problem/create") {
                 addHeader(HttpHeaders.ContentType, "application/x-www-form-urlencoded")
@@ -316,7 +314,7 @@ class StudyBattleServerAppTest {
                         "ほげほげ\n" +
                         "abc",
                 emptyList(),
-                DateTime.now(),
+                DateTime.now().toString(),
                 Duration.standardHours(1).millis)) {
             assertEquals(HttpStatusCode.OK, response.status())
             val problemId = Gson()
