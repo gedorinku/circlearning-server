@@ -10,20 +10,25 @@ import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
-import android.util.AttributeSet
+import android.util.Log
 
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import com.kurume_nct.studybattle.ListFragment.BlankFragment
+import android.widget.TabHost
+import android.widget.Toast
 import com.kurume_nct.studybattle.ListFragment.MainListFragment
 import com.kurume_nct.studybattle.view.RegistrationActivity
+import android.widget.TabHost.TabContentFactory
 
 
-class Main2Activity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class Main2Activity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, TabHost.OnTabChangeListener {
 
-    //TODO : TagFragment からの callbackを継承する。
-
+    private lateinit var tabHost: TabHost
+    var fragment_exist = false
+    var fragment_id = "Problem"
+    lateinit var fragment: MainListFragment
+    lateinit var transaction: FragmentTransaction
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main2)
@@ -38,24 +43,70 @@ class Main2Activity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
         val navigationView = findViewById(R.id.nav_view) as NavigationView
         navigationView.setNavigationItemSelectedListener(this)
 
-        //val mf = MainListFragment()
-        val fragment = MainListFragment().newInstance(0)
-        val transaction = supportFragmentManager.beginTransaction()
-      //  transaction.replace(R.id.fragment, fragment)
-        transaction.add(R.id.container,fragment)
-        //transaction.addToBackStack(null)
 
-        transaction.commit()
+        //val mf = MainListFragment()
+        if (!fragment_exist) {
+         //   onFragmentCreate()
+        }
+        //TabSetup() //bug here
 
         /**
          * これを参照しましょう。
          * http://y-anz-m.blogspot.jp/2012/04/android-fragment-fragmenttransaction.html
          */
 
-        if(true){
+        if (true) {
             startActivity(Intent(this, RegistrationActivity::class.java))
         }
 
+    }
+
+    fun TabSetup() {
+        tabHost = findViewById(R.id.tabs) as TabHost
+        tabHost.setup()
+        val tab1: TabHost.TabSpec = tabHost.newTabSpec("Problem")
+        tab1.setIndicator("PROBLEM")
+        tab1.setContent(DummyTabFactory(this))
+        tabHost.addTab(tab1)
+        val tab2: TabHost.TabSpec = tabHost.newTabSpec("Answer")
+        tab1.setIndicator("ANSWER")
+        tab1.setContent(DummyTabFactory(this))
+        tabHost.addTab(tab2)
+        val tab3: TabHost.TabSpec = tabHost.newTabSpec("MadeProblem")
+        tab1.setIndicator("MADEPROBLEM")
+        tab1.setContent(DummyTabFactory(this))
+        tabHost.addTab(tab3)
+        val tab4: TabHost.TabSpec = tabHost.newTabSpec("Submitted")
+        tab1.setIndicator("SUBMITTED")
+        tab1.setContent(DummyTabFactory(this))
+        tabHost.addTab(tab4)
+
+        tabHost.setOnTabChangedListener(this)
+        onTabChanged("Problem")
+    }
+
+    override fun onTabChanged(tabId: String?) {
+        if(fragment_id != tabId){
+            if(tabId.equals("Problem")) {
+                transaction.replace(R.id.container, fragment)
+                transaction.commit()
+            }else if(tabId.equals("Answer")){
+                fragment.changeList(2)
+            }else if(tabId.equals("ModeProblem")){
+                fragment.changeList(3)
+            }else if(tabId.equals("Submitted")){
+                fragment.changeList(4)
+            }
+            fragment_id = tabId ?: "Problem"
+        }
+        Log.d("hoge", tabId.toString())
+    }
+
+    fun onFragmentCreate() {
+        fragment = MainListFragment().newInstance(0)
+        transaction = supportFragmentManager.beginTransaction()
+        transaction.add(R.id.container, fragment)
+        transaction.commit()
     }
 
     override fun onBackPressed() {
@@ -75,13 +126,6 @@ class Main2Activity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        val id = item.itemId
-
-        //右にあるList
-        if (id == R.id.action_settings) {
-            return true
-        }
-
         return super.onOptionsItemSelected(item)
     }
 
@@ -93,15 +137,33 @@ class Main2Activity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
         return true
     }
 
-    fun onClickRankingButton(view: View){
+    fun onClickRankingButton(view: View) {
+        Toast.makeText(this, "Ranking...", Toast.LENGTH_SHORT).show()
+    }
+
+    fun onClickItemButton(view: View) {
+        Toast.makeText(this, "Items...", Toast.LENGTH_SHORT).show()
+    }
+
+    fun onClickNewProblemButton(view: View) {
 
     }
 
-    fun onClickItemButton(view: View){
+    override fun onStop() {
+        super.onStop()
+        if (fragment_exist) {
+            fragment.finish()
+        }
 
     }
 
-    fun onClickNewProblemButton(view: View){
+    private class DummyTabFactory internal constructor(
+            /* Context */
+            private val mContext: Context) : TabContentFactory {
 
+        override fun createTabContent(tag: String): View {
+            return View(mContext)
+        }
     }
+
 }
