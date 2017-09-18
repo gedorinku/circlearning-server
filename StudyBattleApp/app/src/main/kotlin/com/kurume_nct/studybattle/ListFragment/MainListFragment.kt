@@ -35,7 +35,6 @@ class MainListFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        tabId = arguments.getInt("id", 3)
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,

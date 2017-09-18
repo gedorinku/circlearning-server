@@ -4,8 +4,10 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.NavigationView
+import android.support.design.widget.TabLayout
 import android.support.v4.app.FragmentTransaction
 import android.support.v4.view.GravityCompat
+import android.support.v4.view.ViewPager
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
@@ -20,15 +22,12 @@ import android.widget.Toast
 import com.kurume_nct.studybattle.ListFragment.MainListFragment
 import com.kurume_nct.studybattle.view.RegistrationActivity
 import android.widget.TabHost.TabContentFactory
+import com.kurume_nct.studybattle.adapter.MainPagerAdapter
 
 
-class Main2Activity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, TabHost.OnTabChangeListener {
+class Main2Activity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private lateinit var tabHost: TabHost
-    var fragment_exist = false
-    var fragment_id = "Problem"
-    lateinit var fragment: MainListFragment
-    lateinit var transaction: FragmentTransaction
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main2)
@@ -43,70 +42,14 @@ class Main2Activity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
         val navigationView = findViewById(R.id.nav_view) as NavigationView
         navigationView.setNavigationItemSelectedListener(this)
 
+        val viewPaper : ViewPager = findViewById(R.id.pager) as ViewPager
+        val tabLayout : TabLayout = findViewById(R.id.tabs) as TabLayout
 
-        //val mf = MainListFragment()
-        if (!fragment_exist) {
-         //   onFragmentCreate()
-        }
-        //TabSetup() //bug here
+        var mAdapter = MainPagerAdapter(supportFragmentManager)
+        viewPaper.adapter = mAdapter
+        viewPaper.offscreenPageLimit = mAdapter.count
+        tabLayout.setupWithViewPager(viewPaper)
 
-        /**
-         * これを参照しましょう。
-         * http://y-anz-m.blogspot.jp/2012/04/android-fragment-fragmenttransaction.html
-         */
-
-        if (true) {
-            startActivity(Intent(this, RegistrationActivity::class.java))
-        }
-
-    }
-
-    fun TabSetup() {
-        tabHost = findViewById(R.id.tabs) as TabHost
-        tabHost.setup()
-        val tab1: TabHost.TabSpec = tabHost.newTabSpec("Problem")
-        tab1.setIndicator("PROBLEM")
-        tab1.setContent(DummyTabFactory(this))
-        tabHost.addTab(tab1)
-        val tab2: TabHost.TabSpec = tabHost.newTabSpec("Answer")
-        tab1.setIndicator("ANSWER")
-        tab1.setContent(DummyTabFactory(this))
-        tabHost.addTab(tab2)
-        val tab3: TabHost.TabSpec = tabHost.newTabSpec("MadeProblem")
-        tab1.setIndicator("MADEPROBLEM")
-        tab1.setContent(DummyTabFactory(this))
-        tabHost.addTab(tab3)
-        val tab4: TabHost.TabSpec = tabHost.newTabSpec("Submitted")
-        tab1.setIndicator("SUBMITTED")
-        tab1.setContent(DummyTabFactory(this))
-        tabHost.addTab(tab4)
-
-        tabHost.setOnTabChangedListener(this)
-        onTabChanged("Problem")
-    }
-
-    override fun onTabChanged(tabId: String?) {
-        if(fragment_id != tabId){
-            if(tabId.equals("Problem")) {
-                transaction.replace(R.id.container, fragment)
-                transaction.commit()
-            }else if(tabId.equals("Answer")){
-                fragment.changeList(2)
-            }else if(tabId.equals("ModeProblem")){
-                fragment.changeList(3)
-            }else if(tabId.equals("Submitted")){
-                fragment.changeList(4)
-            }
-            fragment_id = tabId ?: "Problem"
-        }
-        Log.d("hoge", tabId.toString())
-    }
-
-    fun onFragmentCreate() {
-        fragment = MainListFragment().newInstance(0)
-        transaction = supportFragmentManager.beginTransaction()
-        transaction.add(R.id.container, fragment)
-        transaction.commit()
     }
 
     override fun onBackPressed() {
@@ -151,19 +94,8 @@ class Main2Activity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
 
     override fun onStop() {
         super.onStop()
-        if (fragment_exist) {
-            fragment.finish()
-        }
-
-    }
-
-    private class DummyTabFactory internal constructor(
-            /* Context */
-            private val mContext: Context) : TabContentFactory {
-
-        override fun createTabContent(tag: String): View {
-            return View(mContext)
-        }
     }
 
 }
+
+
