@@ -15,20 +15,18 @@ class MainPagerAdapter(mf: FragmentManager) : FragmentPagerAdapter(mf){
     init {
         mFragment.add(MainListFragment())
         mFragment.add(MainListFragment())
-    }
-
-    override fun getPageTitle(position: Int): CharSequence {
-        when(position){
-            0 -> return "Problem"
-            1 -> return "ExpensiveSushi"
-        }
-        return "HOGE"
+        mFragment.add(MainListFragment())
+        mFragment.add(MainListFragment())
     }
 
     override fun getItem(position: Int): Fragment {
         //transration de layout to connect do.
         val fragment = mFragment[position]
         return fragment
+    }
+
+    fun addFragment(fragment: Fragment){
+        mFragment.add(fragment)
     }
 
     override fun getCount(): Int = mFragment.size

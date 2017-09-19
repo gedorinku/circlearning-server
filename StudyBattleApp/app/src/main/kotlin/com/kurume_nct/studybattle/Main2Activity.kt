@@ -1,33 +1,25 @@
 package com.kurume_nct.studybattle
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.design.widget.TabLayout
-import android.support.v4.app.FragmentTransaction
 import android.support.v4.view.GravityCompat
 import android.support.v4.view.ViewPager
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
-import android.util.Log
+import android.view.LayoutInflater
 
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.TabHost
 import android.widget.Toast
-import com.kurume_nct.studybattle.ListFragment.MainListFragment
-import com.kurume_nct.studybattle.view.RegistrationActivity
-import android.widget.TabHost.TabContentFactory
 import com.kurume_nct.studybattle.adapter.MainPagerAdapter
 
 
 class Main2Activity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
-    private lateinit var tabHost: TabHost
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main2)
@@ -45,11 +37,29 @@ class Main2Activity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
         val viewPaper : ViewPager = findViewById(R.id.pager) as ViewPager
         val tabLayout : TabLayout = findViewById(R.id.tabs) as TabLayout
 
-        var mAdapter = MainPagerAdapter(supportFragmentManager)
-        viewPaper.adapter = mAdapter
-        viewPaper.offscreenPageLimit = mAdapter.count
+        (0 until tabLayout.tabCount).forEach{
+            tabLayout.addTab(tabLayout.newTab())
+        }
+
+        val pagerAdapter = MainPagerAdapter(supportFragmentManager)
+        viewPaper.adapter = pagerAdapter
+        viewPaper.offscreenPageLimit = pagerAdapter.count
         tabLayout.setupWithViewPager(viewPaper)
 
+
+        (0 until tabLayout.tabCount).forEach {
+            val tab = tabLayout.getTabAt(it)
+            when(it) {
+                0 -> tab?.customView =
+                        LayoutInflater.from(this).inflate(R.layout.tab_custom_0,null)
+                1 -> tab?.customView =
+                        LayoutInflater.from(this).inflate(R.layout.tab_custom_1,null)
+                2 -> tab?.customView =
+                        LayoutInflater.from(this).inflate(R.layout.tab_custom_0,null)
+                3 -> tab?.customView =
+                        LayoutInflater.from(this).inflate(R.layout.tab_custom_1,null)
+            }
+        }
     }
 
     override fun onBackPressed() {
