@@ -43,9 +43,20 @@ class MainListFragment : Fragment() {
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_problem_list,container,false)
         binding = FragmentProblemListBinding.inflate(inflater, container, false)
-        problemList = mutableListOf(Problem())
+        problemList = mutableListOf(Problem("hoge","hoge"))
         listAdapter = ProblemListAdapter(context, problemList)
+        binding.list.adapter = listAdapter
+        binding.list.layoutManager = LinearLayoutManager(binding.list.context)
+        setList()
         return binding.root
+    }
+
+    fun setList(){
+        listAdapter.notifyItemRangeRemoved(0,problemList.size)
+        problemList.clear()
+        //readProblemList from serve
+        (0..11).forEach { problemList.add(Problem("hoge","gedorin",it))}
+        listAdapter.notifyItemRangeInserted(0,problemList.size)
     }
 
     override fun onStart() {
