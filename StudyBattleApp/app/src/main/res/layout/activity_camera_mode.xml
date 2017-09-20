@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".CameraModeActivity">
+
+    <Button
+        android:id="@+id/camera_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="CAMERA"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="46dp"
+        tools:ignore="HardcodedText" />
+
+    <Button
+        android:id="@+id/return_button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignTop="@+id/camera_button"
+        android:layout_marginStart="24dp"
+        android:text="return "
+        tools:ignore="HardcodedText" />
+
+    <ImageButton
+        android:id="@+id/image_view"
+        android:layout_width="300sp"
+        android:layout_height="300sp"
+        android:foregroundGravity="center"
+        android:scaleType="fitCenter"
+        tools:ignore="ContentDescription"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:id="@+id/library_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/camera_button"
+        android:layout_marginStart="28dp"
+        android:layout_toEndOf="@+id/camera_button"
+        android:text="library"
+        tools:ignore="HardcodedText" />
+
+    <TextView
+        android:id="@+id/text_view2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/image_view"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="23dp"
+        android:text="TextView"
+        tools:ignore="HardcodedText" />
+
+    <Button
+        android:id="@+id/pass_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/text_view2"
+        android:layout_toStartOf="@+id/camera_button"
+        android:text="パス"
+        tools:ignore="HardcodedText" />
+
+    <Button
+        android:id="@+id/submission_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/pass_button"
+        android:layout_toEndOf="@+id/camera_button"
+        android:text="提出"
+        tools:ignore="HardcodedText" />
+</RelativeLayout>
