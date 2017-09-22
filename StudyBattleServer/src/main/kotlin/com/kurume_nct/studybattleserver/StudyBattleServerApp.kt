@@ -13,7 +13,6 @@ import org.jetbrains.ktor.locations.Locations
 import org.jetbrains.ktor.locations.location
 import org.jetbrains.ktor.logging.CallLogging
 import org.jetbrains.ktor.routing.Routing
-import org.joda.time.DateTime
 import java.io.File
 import java.security.MessageDigest
 import java.security.SecureRandom
@@ -60,6 +59,12 @@ data class SolutionCreate(
         val imageIds: List<Int> = emptyList()
 )
 
+@location("/solution/{id}")
+data class SolutionGet(
+        val authenticationKey: String = "",
+        val id: Int = -1
+)
+
 private val random = SecureRandom()
 
 fun Application.studyBattleServerApp() {
@@ -82,6 +87,7 @@ fun Application.studyBattleServerApp() {
         getImage()
         createProblem()
         createSolution()
+        getSolution()
     }
 }
 

@@ -316,6 +316,16 @@ class StudyBattleServerAppTest {
             })
         }
 
+        val getSolution: (SolutionGet, TestApplicationCall.() -> Unit) -> Unit = {
+            (authenticationKey, id), test ->
+            val values = listOf("authenticationKey" to authenticationKey)
+
+            test(handleRequest(HttpMethod.Post, "/solution/$id") {
+                addHeader(HttpHeaders.ContentType, "application/x-www-form-urlencoded")
+                body = values.formUrlEncode()
+            })
+        }
+
         val authenticationKey = login(testUserName, testPassword)!!
         createProblem(
                 ProblemCreate(
@@ -336,11 +346,14 @@ class StudyBattleServerAppTest {
                     .id
             assert(0 < problemId)
 
+            val solutionText =
+                    "そい\n" +
+                    "そおお"
+
             createSolution(
                     SolutionCreate(
                             authenticationKey,
-                            "そい\n" +
-                                    "そおお",
+                            solutionText,
                             problemId,
                             emptyList()
                     )) {
@@ -352,6 +365,18 @@ class StudyBattleServerAppTest {
                         )
                         .id
                 assert(0 < solutionId)
+                println(solutionId)
+
+                getSolution(SolutionGet(authenticationKey, solutionId)) {
+                    assertEquals(HttpStatusCode.OK, response.status())
+                    val solution = Gson()
+                            .fromJson(
+                                    response.content.orEmpty(),
+                                    SolutionGetResponse::class.java
+                            )
+                    assertEquals(solutionText, solution.text)
+                    assertEquals(problemId, solution.problemId)
+                }
             }
         }
     }

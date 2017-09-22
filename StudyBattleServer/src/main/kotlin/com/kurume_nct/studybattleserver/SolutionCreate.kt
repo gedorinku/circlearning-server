@@ -51,7 +51,7 @@ fun Route.createSolution() = post<SolutionCreate> {
 
     content.relateImages(*images.filterNotNull().toTypedArray())
 
-    transaction {
+    val solution = transaction {
         Solution.new {
             this.author = user
             this.content = content
@@ -60,5 +60,5 @@ fun Route.createSolution() = post<SolutionCreate> {
         }
     }
 
-    call.respond(Gson().toJson(SolutionCreateResponse(problem.id.value)))
+    call.respond(Gson().toJson(SolutionCreateResponse(solution.id.value)))
 }

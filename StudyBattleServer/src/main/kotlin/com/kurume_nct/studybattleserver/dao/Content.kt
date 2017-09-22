@@ -30,4 +30,11 @@ class Content(id: EntityID<Int>) : IntEntity(id) {
             }
         }
     }
+
+    fun fetchRelatedImages(): List<Image> = transaction {
+        ContentImageRelation
+                .find { ContentImageRelations.content.eq(this@Content.id) }
+                .map { it.image }
+                .toList()
+    }
 }
