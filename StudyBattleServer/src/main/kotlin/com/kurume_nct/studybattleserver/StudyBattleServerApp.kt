@@ -49,8 +49,16 @@ data class ProblemCreate(
         val text: String = "",
         val imageIds: List<Int> = emptyList(),
         val startsAt: String = "",
-        val durationMillis: Long = 0)
+        val durationMillis: Long = 0
+)
 
+@location("/solution/create")
+data class SolutionCreate(
+        val authenticationKey: String = "",
+        val text: String = "",
+        val problemId: Int = -1,
+        val imageIds: List<Int> = emptyList()
+)
 
 private val random = SecureRandom()
 
@@ -73,6 +81,7 @@ fun Application.studyBattleServerApp() {
         uploadImage()
         getImage()
         createProblem()
+        createSolution()
     }
 }
 
@@ -98,7 +107,8 @@ fun connectDataBase() {
                 Images,
                 Contents,
                 Problems,
-                ContentImageRelations
+                ContentImageRelations,
+                Solutions
         )
     }
 }

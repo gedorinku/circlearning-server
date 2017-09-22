@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.kurume_nct.studybattleserver.dao.Content
 import com.kurume_nct.studybattleserver.dao.Image
 import com.kurume_nct.studybattleserver.dao.Problem
+import com.kurume_nct.studybattleserver.dao.Solution
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.ktor.http.HttpStatusCode
 import org.jetbrains.ktor.locations.post
@@ -12,22 +13,17 @@ import org.jetbrains.ktor.routing.Route
 import org.joda.time.DateTime
 
 /**
- * Created by gedorinku on 2017/08/11.
+ * Created by gedorinku on 2017/09/22.
  */
-data class ProblemCreateResponse(val id: Int)
+data class SolutionCreateResponse(val id: Int)
 
-fun Route.createProblem() = post<ProblemCreate> {
+fun Route.createSolution() = post<SolutionCreate> {
     val user = verifyCredentials(it.authenticationKey)
     if (user == null) {
         call.respond(HttpStatusCode.Unauthorized)
         return@post
     }
 
-    val parsedStartsAt = DateTime.parse(it.startsAt)
-    if (parsedStartsAt == null) {
-        call.respond(HttpStatusCode.BadRequest)
-        return@post
-    }
 
     val images = it.imageIds.map {
         transaction {
@@ -35,6 +31,14 @@ fun Route.createProblem() = post<ProblemCreate> {
         }
     }
     if (images.contains(null)) {
+        call.respond(HttpStatusCode.BadRequest)
+        return@post
+    }
+
+    val problem = transaction {
+        Problem.findById(it.problemId)
+    }
+    if (problem == null) {
         call.respond(HttpStatusCode.BadRequest)
         return@post
     }
@@ -47,18 +51,14 @@ fun Route.createProblem() = post<ProblemCreate> {
 
     content.relateImages(*images.filterNotNull().toTypedArray())
 
-    val problem = transaction {
-        Problem.new {
-            title = it.title
-            owner = user
+    transaction {
+        Solution.new {
+            this.author = user
             this.content = content
-            createdAt = DateTime.now()
-            startedAt = parsedStartsAt
-            durationMillis = it.durationMillis
-            point = 0
+            this.createdAt = DateTime.now()
+            this.problem = problem
         }
     }
 
-    val json = Gson().toJson(ProblemCreateResponse(problem.id.value))
-    call.respond(json)
+    call.respond(Gson().toJson(SolutionCreateResponse(problem.id.value)))
 }

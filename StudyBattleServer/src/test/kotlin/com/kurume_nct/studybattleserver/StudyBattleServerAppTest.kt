@@ -109,8 +109,7 @@ class StudyBattleServerAppTest {
 
     @Test
     fun registerTest() = withTestApplication(Application::studyBattleServerApp) {
-        val register: (String, String, String, TestApplicationCall.() -> Unit) -> Unit = {
-            userName, displayName, password, test ->
+        val register: (String, String, String, TestApplicationCall.() -> Unit) -> Unit = { userName, displayName, password, test ->
             transaction {
                 User.find { Users.userName.eq(userName) }
                         .forEach { it.delete() }
@@ -165,8 +164,7 @@ class StudyBattleServerAppTest {
 
     @Test
     fun createGroupTest() = withTestApplication(Application::studyBattleServerApp) {
-        val createGroup: (String, String, TestApplicationCall.() -> Unit) -> Unit = {
-            authenticationKey, groupName, test ->
+        val createGroup: (String, String, TestApplicationCall.() -> Unit) -> Unit = { authenticationKey, groupName, test ->
             val user = com.kurume_nct.studybattleserver.verifyCredentials(authenticationKey)
                     ?: throw IllegalStateException("Unauthorized")
             transaction {
@@ -195,8 +193,7 @@ class StudyBattleServerAppTest {
 
     @Test
     fun joinGroupTest() = withTestApplication(Application::studyBattleServerApp) {
-        val joinGroup: (String, EntityID<Int>, TestApplicationCall.() -> Unit) -> Unit = {
-            authenticationKey, groupId, test ->
+        val joinGroup: (String, EntityID<Int>, TestApplicationCall.() -> Unit) -> Unit = { authenticationKey, groupId, test ->
             val values = listOf(
                     "authenticationKey" to authenticationKey,
                     "groupId" to groupId.toString()
@@ -233,8 +230,7 @@ class StudyBattleServerAppTest {
 
     @Test
     fun uploadImageTest() = withTestApplication(Application::studyBattleServerApp) {
-        val uploadImage: (String, File, TestApplicationCall.() -> Unit) -> Unit = {
-            authenticationKey, image, test ->
+        val uploadImage: (String, File, TestApplicationCall.() -> Unit) -> Unit = { authenticationKey, image, test ->
             test(handleRequest(HttpMethod.Post, "image/upload") {
                 addHeader(HttpHeaders.ContentType, "multipart/form-data")
                 val authPart = PartData.FormItem(
@@ -287,9 +283,8 @@ class StudyBattleServerAppTest {
     }
 
     @Test
-    fun createProblemTest() = withTestApplication(Application::studyBattleServerApp) {
-        val createProblem: (ProblemCreate, TestApplicationCall.() -> Unit) -> Unit = {
-            (authenticationKey, title, text, imageIds, startsAt, durationMillis), test ->
+    fun createProblemAndSolutionTest() = withTestApplication(Application::studyBattleServerApp) {
+        val createProblem: (ProblemCreate, TestApplicationCall.() -> Unit) -> Unit = { (authenticationKey, title, text, imageIds, startsAt, durationMillis), test ->
             val imageIdsEncoded = imageIds
                     .mapIndexed { index, id -> "imageIds" to id.toString() }
             val values = mutableListOf(
@@ -306,16 +301,32 @@ class StudyBattleServerAppTest {
             })
         }
 
+        val createSolution: (SolutionCreate, TestApplicationCall.() -> Unit) -> Unit = { (authenticationKey, text, problemId, imageIds), test ->
+            val imageIdsEncoded = imageIds
+                    .mapIndexed { index, id -> "imageIds" to id.toString() }
+            val values = mutableListOf(
+                    "authenticationKey" to authenticationKey,
+                    "text" to text,
+                    "problemId" to problemId.toString())
+            values.addAll(imageIdsEncoded)
+
+            test(handleRequest(HttpMethod.Post, "/solution/create") {
+                addHeader(HttpHeaders.ContentType, "application/x-www-form-urlencoded")
+                body = values.formUrlEncode()
+            })
+        }
+
         val authenticationKey = login(testUserName, testPassword)!!
-        createProblem(ProblemCreate(
-                authenticationKey,
-                "hoge",
-                "うぇい\n" +
-                        "ほげほげ\n" +
-                        "abc",
-                emptyList(),
-                DateTime.now().toString(),
-                Duration.standardHours(1).millis)) {
+        createProblem(
+                ProblemCreate(
+                        authenticationKey,
+                        "hoge",
+                        "うぇい\n" +
+                                "ほげほげ\n" +
+                                "abc",
+                        emptyList(),
+                        DateTime.now().toString(),
+                        Duration.standardHours(1).millis)) {
             assertEquals(HttpStatusCode.OK, response.status())
             val problemId = Gson()
                     .fromJson(
@@ -324,6 +335,24 @@ class StudyBattleServerAppTest {
                     )
                     .id
             assert(0 < problemId)
+
+            createSolution(
+                    SolutionCreate(
+                            authenticationKey,
+                            "そい\n" +
+                                    "そおお",
+                            problemId,
+                            emptyList()
+                    )) {
+                assertEquals(HttpStatusCode.OK, response.status())
+                val solutionId = Gson()
+                        .fromJson(
+                                response.content.orEmpty(),
+                                SolutionCreateResponse::class.java
+                        )
+                        .id
+                assert(0 < solutionId)
+            }
         }
     }
 
