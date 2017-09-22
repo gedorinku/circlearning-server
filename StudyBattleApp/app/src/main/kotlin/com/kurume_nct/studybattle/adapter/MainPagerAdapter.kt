@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentPagerAdapter
 import android.util.Log
 import com.kurume_nct.studybattle.ListFragment.MainListFragment
 import com.kurume_nct.studybattle.R
+import com.kurume_nct.studybattle.view.ProbemMainFragment
 
 /**
  * Created by hanah on 9/18/2017.
@@ -13,13 +14,13 @@ import com.kurume_nct.studybattle.R
 class MainPagerAdapter(mf: FragmentManager) : FragmentPagerAdapter(mf){
 
     private val mFragment = ArrayList<Fragment>()
-    val mf = mf
+    private val mf = mf
 
     init {
-        mFragment.add(MainListFragment())
-        mFragment.add(MainListFragment())
-        mFragment.add(MainListFragment())
-        mFragment.add(MainListFragment())
+        mFragment.add(ProbemMainFragment.newInstance())
+        mFragment.add(MainListFragment().newInstance(1))
+        mFragment.add(MainListFragment().newInstance(2))
+        mFragment.add(MainListFragment().newInstance(3))
     }
 
     override fun getItem(position: Int): Fragment {

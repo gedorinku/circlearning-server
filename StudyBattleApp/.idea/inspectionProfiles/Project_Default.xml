@@ -6,6 +6,7 @@
     <inspection_tool class="AndroidKLintInflateParams" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="AndroidKLintPrivateResource" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="AndroidKLintShowToast" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="AndroidKLintViewHolder" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="AndroidLintAppCompatResource" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="AndroidLintExtraText" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="AndroidLintGradlePluginVersion" enabled="false" level="ERROR" enabled_by_default="false" />

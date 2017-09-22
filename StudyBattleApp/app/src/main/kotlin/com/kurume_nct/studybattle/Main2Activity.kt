@@ -8,6 +8,7 @@ import android.support.v4.view.ViewPager
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 
@@ -15,7 +16,9 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import com.kurume_nct.studybattle.ListFragment.GroupListFragment
 import com.kurume_nct.studybattle.adapter.MainPagerAdapter
+import com.kurume_nct.studybattle.databinding.GroupListBinding
 
 
 class Main2Activity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -26,6 +29,7 @@ class Main2Activity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
         val toolbar = findViewById(R.id.toolbar) as Toolbar
 
         val drawer = findViewById(R.id.drawer_layout) as DrawerLayout
+
         val toggle = ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
         drawer.setDrawerListener(toggle)
@@ -33,6 +37,11 @@ class Main2Activity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
 
         val navigationView = findViewById(R.id.nav_view) as NavigationView
         navigationView.setNavigationItemSelectedListener(this)
+
+        /*val fragment = GroupListFragment().newInstance(0)
+        val translation = supportFragmentManager.beginTransaction()
+        translation.replace(R.id.drawer_list_layout,fragment)
+        translation.commit()*/
 
         val viewPaper : ViewPager = findViewById(R.id.pager) as ViewPager
         val tabLayout : TabLayout = findViewById(R.id.tabs) as TabLayout
