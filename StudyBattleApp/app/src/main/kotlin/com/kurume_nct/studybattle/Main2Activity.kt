@@ -79,22 +79,22 @@ class Main2Activity : AppCompatActivity() {
         val groupID : Int = intent.getIntExtra("groupID",0)
         var count  = 0
         val list : MutableList<Person_Group> = mutableListOf(Person_Group(id = 0))
-        count++
-        list.add(Person_Group(id = 1))
-        count++
+        list.add(Person_Group(id = list.size))
         // Create the AccountHeader
         val headerResult = AccountHeaderBuilder()
                 .withActivity(this)
                 .withHeaderBackground(R.color.md_red_A700)
                 .addProfiles(
-                        ProfileDrawerItem().withName("Mike Penz").withEmail(groupID.toString()).withIcon(R.drawable.icon_gost)
+                        ProfileDrawerItem().withName("Mike Penz").withEmail(groupID.toString()).withIcon(R.drawable.icon_gost).withIdentifier(0)
                 )
                 .addProfiles(
-                        ProfileDrawerItem().withName("huna").withIcon(R.drawable.icon)
+                        ProfileDrawerItem().withName("huna").withIcon(R.drawable.icon).withIdentifier(1)
                 )
-                .withOnAccountHeaderListener(AccountHeader.OnAccountHeaderListener { view, profile, currentProfile -> false })
+                .withOnAccountHeaderListener(AccountHeader.OnAccountHeaderListener { view, profile, currentProfile ->
+                    false
+                })
                 .build()
-        //add profileでアカウント切り替えも可能
+        //add profileでアカウント切り替えも可能?
 
         val result = DrawerBuilder()
                 .withAccountHeader(headerResult)
@@ -114,6 +114,8 @@ class Main2Activity : AppCompatActivity() {
                     false
                 }
                 .build()
+        supportActionBar?.setDisplayHomeAsUpEnabled(false)
+        result.actionBarDrawerToggle.isDrawerIndicatorEnabled = true
 
         for ((name, id) in list) result.addItem(PrimaryDrawerItem().withIdentifier(id.toLong()).withName(name).withIcon(GoogleMaterial.Icon.gmd_people))
         result.addItem(PrimaryDrawerItem().withIdentifier(list.size.toLong() + 1).withName("新しくグループを作る").withIcon(GoogleMaterial.Icon.gmd_add))
