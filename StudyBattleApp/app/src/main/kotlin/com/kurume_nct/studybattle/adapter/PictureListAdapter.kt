@@ -19,7 +19,6 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter
 class PictureListAdapter(context: Context, val list: MutableList<Person_Group>, val callbacks : (Int) -> Unit)
     : RecyclerView.Adapter<PictureListAdapter.GroupListHolder>(){
 
-    ///////////////////////////
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GroupListHolder{
         val view = LayoutInflater
                 .from(parent.context)

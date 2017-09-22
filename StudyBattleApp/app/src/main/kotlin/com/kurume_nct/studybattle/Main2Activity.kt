@@ -1,5 +1,7 @@
 package com.kurume_nct.studybattle
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.design.widget.TabLayout
@@ -10,6 +12,7 @@ import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
+import android.util.Log
 import android.view.LayoutInflater
 
 import android.view.Menu
@@ -18,31 +21,28 @@ import android.view.View
 import android.widget.Toast
 import com.kurume_nct.studybattle.ListFragment.GroupListFragment
 import com.kurume_nct.studybattle.adapter.MainPagerAdapter
+import com.kurume_nct.studybattle.`object`.Person_Group
 import com.kurume_nct.studybattle.databinding.GroupListBinding
+import com.kurume_nct.studybattle.view.RegistrationActivity
+import com.mikepenz.materialdrawer.DrawerBuilder
+import com.mikepenz.materialdrawer.model.interfaces.IProfile
+import com.mikepenz.materialdrawer.AccountHeader
+import com.mikepenz.materialdrawer.model.ProfileDrawerItem
+import com.mikepenz.materialdrawer.AccountHeaderBuilder
+import com.mikepenz.materialdrawer.model.DividerDrawerItem
+import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
 
 
-class Main2Activity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class Main2Activity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main2)
-        val toolbar = findViewById(R.id.toolbar) as Toolbar
+        onTabLayout()
+        onNavigationDrower()
+    }
 
-        val drawer = findViewById(R.id.drawer_layout) as DrawerLayout
-
-        val toggle = ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
-        drawer.setDrawerListener(toggle)
-        toggle.syncState()
-
-        val navigationView = findViewById(R.id.nav_view) as NavigationView
-        navigationView.setNavigationItemSelectedListener(this)
-
-        /*val fragment = GroupListFragment().newInstance(0)
-        val translation = supportFragmentManager.beginTransaction()
-        translation.replace(R.id.drawer_list_layout,fragment)
-        translation.commit()*/
-
+    fun onTabLayout(){
         val viewPaper : ViewPager = findViewById(R.id.pager) as ViewPager
         val tabLayout : TabLayout = findViewById(R.id.tabs) as TabLayout
 
@@ -71,40 +71,57 @@ class Main2Activity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
         }
     }
 
-    override fun onBackPressed() {
-        val drawer = findViewById(R.id.drawer_layout) as DrawerLayout
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START)
-        } else {
-            super.onBackPressed()
-        }
+    fun onNavigationDrower(){
+        val toolbar = findViewById(R.id.toolbar) as Toolbar
+
+        val groupID : Int = intent.getIntExtra("groupID",0)
+        var count  = 0
+        val list : MutableList<Person_Group> = mutableListOf(Person_Group(id = 0))
+        count++
+        list.add(Person_Group(id = 1))
+        count++
+        val item1 = PrimaryDrawerItem().withIdentifier(count.toLong()).withName("hona")
+        count++
+        // Create the AccountHeader
+        val headerResult = AccountHeaderBuilder()
+                .withActivity(this)
+                .withHeaderBackground(R.color.md_red_A700)
+                .addProfiles(
+                        ProfileDrawerItem().withName("Mike Penz").withEmail(groupID.toString()).withIcon(resources.getDrawable(R.drawable.icon_gost))
+                )
+                .withOnAccountHeaderListener(AccountHeader.OnAccountHeaderListener { view, profile, currentProfile -> false })
+                .build()
+
+        val result = DrawerBuilder()
+                .withAccountHeader(headerResult)
+                .withActivity(this)
+                .withToolbar(toolbar)
+                .withOnDrawerItemClickListener {
+                    view, position, drawerItem ->
+                    var intent = Intent(this,Main2Activity::class.java)
+                    if(position == list.size + 1){
+                        intent = Intent(this,RegistrationActivity::class.java)
+                        startActivity(intent)
+                    }else{
+                        intent.putExtra("groupID",position)
+                        startActivity(intent)
+                        finish()
+                    }
+                    false
+                }
+                .build()
+
+        for ((name, id) in list) result.addItem(PrimaryDrawerItem().withIdentifier(id.toLong()).withName(name).withIcon(R.drawable.problem_icon))
+        result.addItem(PrimaryDrawerItem().withIdentifier(list.size.toLong() + 1).withName("新しくグループを作る").withIcon(R.drawable.icon))
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        return super.onCreateOptionsMenu(menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        return super.onOptionsItemSelected(item)
-    }
-
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        // Handle navigation view item clicks here.
-        val id = item.itemId
-        val drawer = findViewById(R.id.drawer_layout) as DrawerLayout
-        drawer.closeDrawer(GravityCompat.START)
-        return true
-    }
 
     fun onClickRankingButton(view: View) {
-        Toast.makeText(this, "Ranking...", Toast.LENGTH_SHORT).show()
+        Log.d("tag","rankingButton was Clicked.")
     }
 
     fun onClickItemButton(view: View) {
-        Toast.makeText(this, "Items...", Toast.LENGTH_SHORT).show()
+        Log.d("tag","itemButton was Clicked.")
     }
 
     fun onClickNewProblemButton(view: View) {
@@ -115,6 +132,10 @@ class Main2Activity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
         super.onStop()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d("change","?")
+    }
 }
 
 
