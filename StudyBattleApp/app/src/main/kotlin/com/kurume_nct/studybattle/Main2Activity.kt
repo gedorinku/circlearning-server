@@ -3,6 +3,7 @@ package com.kurume_nct.studybattle
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.provider.ContactsContract
 import android.support.design.widget.NavigationView
 import android.support.design.widget.TabLayout
 import android.support.v4.view.GravityCompat
@@ -24,6 +25,7 @@ import com.kurume_nct.studybattle.adapter.MainPagerAdapter
 import com.kurume_nct.studybattle.`object`.Person_Group
 import com.kurume_nct.studybattle.databinding.GroupListBinding
 import com.kurume_nct.studybattle.view.RegistrationActivity
+import com.mikepenz.google_material_typeface_library.GoogleMaterial
 import com.mikepenz.materialdrawer.DrawerBuilder
 import com.mikepenz.materialdrawer.model.interfaces.IProfile
 import com.mikepenz.materialdrawer.AccountHeader
@@ -80,17 +82,19 @@ class Main2Activity : AppCompatActivity() {
         count++
         list.add(Person_Group(id = 1))
         count++
-        val item1 = PrimaryDrawerItem().withIdentifier(count.toLong()).withName("hona")
-        count++
         // Create the AccountHeader
         val headerResult = AccountHeaderBuilder()
                 .withActivity(this)
                 .withHeaderBackground(R.color.md_red_A700)
                 .addProfiles(
-                        ProfileDrawerItem().withName("Mike Penz").withEmail(groupID.toString()).withIcon(resources.getDrawable(R.drawable.icon_gost))
+                        ProfileDrawerItem().withName("Mike Penz").withEmail(groupID.toString()).withIcon(R.drawable.icon_gost)
+                )
+                .addProfiles(
+                        ProfileDrawerItem().withName("huna").withIcon(R.drawable.icon)
                 )
                 .withOnAccountHeaderListener(AccountHeader.OnAccountHeaderListener { view, profile, currentProfile -> false })
                 .build()
+        //add profileでアカウント切り替えも可能
 
         val result = DrawerBuilder()
                 .withAccountHeader(headerResult)
@@ -111,8 +115,8 @@ class Main2Activity : AppCompatActivity() {
                 }
                 .build()
 
-        for ((name, id) in list) result.addItem(PrimaryDrawerItem().withIdentifier(id.toLong()).withName(name).withIcon(R.drawable.problem_icon))
-        result.addItem(PrimaryDrawerItem().withIdentifier(list.size.toLong() + 1).withName("新しくグループを作る").withIcon(R.drawable.icon))
+        for ((name, id) in list) result.addItem(PrimaryDrawerItem().withIdentifier(id.toLong()).withName(name).withIcon(GoogleMaterial.Icon.gmd_people))
+        result.addItem(PrimaryDrawerItem().withIdentifier(list.size.toLong() + 1).withName("新しくグループを作る").withIcon(GoogleMaterial.Icon.gmd_add))
     }
 
 

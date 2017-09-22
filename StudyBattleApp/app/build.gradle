@@ -57,7 +57,11 @@ dependencies {
     compile 'com.android.support:support-v4:25.3.1'
     compile 'com.jakewharton.threetenabp:threetenabp:1.0.5'
     compile 'com.android.support:recyclerview-v7:25.3.1'
+
     compile 'se.emilsjolander:stickylistheaders:2.6.0'
+    compile 'com.mikepenz:google-material-typeface:1.2.0.1@aar'
+    compile 'com.mikepenz:fontawesome-typeface:4.4.0.1@aar'
+
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.0.0-RC1'
     kapt 'com.android.databinding:compiler:2.3.3'
