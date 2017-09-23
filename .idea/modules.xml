@@ -2,8 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/StudyBattleApp/StudyBattleApp.iml" filepath="$PROJECT_DIR$/.idea/modules/StudyBattleApp/StudyBattleApp.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/study-battle.iml" filepath="$PROJECT_DIR$/.idea/modules/study-battle.iml" />
+      <module fileurl="file://$PROJECT_DIR$/StudyBattleApp/StudyBattleApp.iml" filepath="$PROJECT_DIR$/StudyBattleApp/StudyBattleApp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/StudyBattleApp/app/StudyBattleApp_app.iml" filepath="$PROJECT_DIR$/StudyBattleApp/app/StudyBattleApp_app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/StudyBattleServer/StudyBattleServer.iml" filepath="$PROJECT_DIR$/StudyBattleServer/StudyBattleServer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/study-battle.iml" filepath="$PROJECT_DIR$/study-battle.iml" />
     </modules>
   </component>
 </project>
