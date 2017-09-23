@@ -1,4 +1,4 @@
-package com.example.owner.myapplicationipracticenowin201709;
+package com.kurume_nct.studybattle.view;
 
 import com.kurume_nct.studybattle.R;
 import android.app.Activity;
