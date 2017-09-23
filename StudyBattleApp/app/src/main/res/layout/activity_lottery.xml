@@ -72,9 +72,7 @@
         android:id="@+id/result_card"
         android:layout_width="300sp"
         android:layout_height="300sp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="57dp"
+        android:layout_marginTop="86dp"
         android:adjustViewBounds="false"
         android:background="@drawable/group"
         android:cropToPadding="false"
@@ -82,6 +80,17 @@
         android:scaleX="0.75"
         android:scaleY="0.75"
         app:srcCompat="@drawable/bomb"
-        tools:ignore="ContentDescription" />
+        tools:ignore="ContentDescription"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:id="@+id/result_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/result_card"
+        android:layout_centerHorizontal="true"
+        android:layout_weight="1"
+        tools:ignore="HardcodedText,ObsoleteLayoutParam" />
 
 </RelativeLayout>

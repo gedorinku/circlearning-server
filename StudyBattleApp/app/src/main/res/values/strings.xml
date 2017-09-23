@@ -1,3 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Study Battle</string>
+    <string name="app_name">My Application I practice now in 2017 09</string>
+    <array name="item">
+        <item>@drawable/bomb</item>
+        <item>@drawable/card</item>
+        <item>@drawable/magichand</item>
+        <item>@drawable/shield</item>
+    </array>
+
 </resources>
