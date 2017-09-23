@@ -1,3 +1,34 @@
 <resources>
     <string name="app_name">Study Battle</string>
+    <string name="title_activity_registrarion">Sign in</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password (optional)</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+    <string name="errorLoginStatus">ユーザー名とパスワードを入力してください</string>
+    <string name="hint_input_user_name">ユーザー名（半角英数のみ2~20文字）</string>
+    <string name="hint_input_user_password">パスワード</string>
+    <string name="change_image_button_text">プロフィール画像を\nフォルダから選ぶ</string>
+    <string name="account_registe">アカウント登録</string>
+    <string name="displayNameHint">表示する名前（2~20文字）</string>
+    <string name="usedUserNameAlart">すでに使われているUserNameです.</string>
+    <string name="title_activity_main2">Main2Activity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="fail_image_upload">画像のuploadに失敗しました</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
