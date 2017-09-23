@@ -3,7 +3,6 @@ package com.kurume_nct.studybattle
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.provider.ContactsContract
 import android.support.design.widget.NavigationView
 import android.support.design.widget.TabLayout
 import android.support.v4.view.GravityCompat
@@ -45,6 +44,7 @@ class Main2Activity : AppCompatActivity() {
     }
 
     fun onTabLayout(){
+
         val viewPaper : ViewPager = findViewById(R.id.pager) as ViewPager
         val tabLayout : TabLayout = findViewById(R.id.tabs) as TabLayout
 
@@ -57,7 +57,7 @@ class Main2Activity : AppCompatActivity() {
         viewPaper.offscreenPageLimit = pagerAdapter.count
         tabLayout.setupWithViewPager(viewPaper)
 
-
+        //Create the Tabs
         (0 until tabLayout.tabCount).forEach {
             val tab = tabLayout.getTabAt(it)
             when(it) {
@@ -75,27 +75,34 @@ class Main2Activity : AppCompatActivity() {
 
     fun onNavigationDrower(){
         val toolbar = findViewById(R.id.toolbar) as Toolbar
-
         val groupID : Int = intent.getIntExtra("groupID",0)
-        var count  = 0
         val list : MutableList<Person_Group> = mutableListOf(Person_Group(id = 0))
         list.add(Person_Group(id = list.size))
         // Create the AccountHeader
+        var acountCount : Long = 0
         val headerResult = AccountHeaderBuilder()
                 .withActivity(this)
                 .withHeaderBackground(R.color.md_red_A700)
                 .addProfiles(
-                        ProfileDrawerItem().withName("Mike Penz").withEmail(groupID.toString()).withIcon(R.drawable.icon_gost).withIdentifier(0)
+                        ProfileDrawerItem()
+                                .withName("_hunachi")
+                                .withEmail("GroupID is " + groupID.toString())
+                                .withIcon(R.drawable.icon_gost)
+                                .withIdentifier(acountCount)
                 )
-                .addProfiles(
-                        ProfileDrawerItem().withName("huna").withIcon(R.drawable.icon).withIdentifier(1)
-                )
-                .withOnAccountHeaderListener(AccountHeader.OnAccountHeaderListener { view, profile, currentProfile ->
-                    false
-                })
+                .withOnAccountHeaderListener(AccountHeader.OnAccountHeaderListener { view, profile, currentProfile -> false })
                 .build()
-        //add profileでアカウント切り替えも可能?
+        //Add the Account
+        acountCount++
+        headerResult.addProfiles(
+                ProfileDrawerItem()
+                        .withName("hu_nachi")
+                        .withEmail("GroupID is " + groupID.toString())
+                        .withIcon(R.drawable.icon)
+                        .withIdentifier(acountCount)
+        )
 
+        //Create the List
         val result = DrawerBuilder()
                 .withAccountHeader(headerResult)
                 .withActivity(this)
@@ -114,11 +121,9 @@ class Main2Activity : AppCompatActivity() {
                     false
                 }
                 .build()
-        supportActionBar?.setDisplayHomeAsUpEnabled(false)
-        result.actionBarDrawerToggle.isDrawerIndicatorEnabled = true
-
+        //Create the Item of list
         for ((name, id) in list) result.addItem(PrimaryDrawerItem().withIdentifier(id.toLong()).withName(name).withIcon(GoogleMaterial.Icon.gmd_people))
-        result.addItem(PrimaryDrawerItem().withIdentifier(list.size.toLong() + 1).withName("新しくグループを作る").withIcon(GoogleMaterial.Icon.gmd_add))
+        result.addItem(PrimaryDrawerItem().withIdentifier(list.size.toLong()).withName("新しくグループを作る").withIcon(GoogleMaterial.Icon.gmd_add))
     }
 
 
