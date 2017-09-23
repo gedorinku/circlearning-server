@@ -19,22 +19,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
-            //追加した文
-            <activity
-                android:name=".SubActivity"
-                android:label="@string/app_name">
-            </activity>
-            <activity
-                android:name=".CameraModeActivity"
-                android:label="@string/app_name">
-            </activity>
-            <activity
-                android:name=".LotteryActivity"
-                android:label="@string/app_name">
-            </activity>
-
-            //ここまで
         </activity>
+
+        //追加した文
+        <activity
+            android:name=".CameraModeActivity"
+            android:label="@string/app_name">
+        </activity>
+        <activity
+            android:name=".LotteryActivity"
+            android:label="@string/app_name">
+        </activity>
+
+        //ここまで
     </application>
 
 </manifest>

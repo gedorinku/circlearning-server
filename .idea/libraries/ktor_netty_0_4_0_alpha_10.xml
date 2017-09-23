@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="ktor-netty-0.4.0-alpha-10">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.ktor/ktor-netty/0.4.0-alpha-10/80ce3e56138c4d5854bbdc0fc4e800d302ea4b68/ktor-netty-0.4.0-alpha-10.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.ktor/ktor-netty/0.4.0-alpha-10/24737f0150140d52766eb87809d2c89a28ae2fe3/ktor-netty-0.4.0-alpha-10-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
