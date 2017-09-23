@@ -13,7 +13,6 @@ import org.jetbrains.ktor.locations.Locations
 import org.jetbrains.ktor.locations.location
 import org.jetbrains.ktor.logging.CallLogging
 import org.jetbrains.ktor.routing.Routing
-import org.joda.time.DateTime
 import java.io.File
 import java.security.MessageDigest
 import java.security.SecureRandom
@@ -49,8 +48,28 @@ data class ProblemCreate(
         val text: String = "",
         val imageIds: List<Int> = emptyList(),
         val startsAt: String = "",
-        val durationMillis: Long = 0)
+        val durationMillis: Long = 0
+)
 
+@location("/problem/{id}")
+data class ProblemGet(
+        val authenticationKey: String = "",
+        val id: Int = -1
+)
+
+@location("/solution/create")
+data class SolutionCreate(
+        val authenticationKey: String = "",
+        val text: String = "",
+        val problemId: Int = -1,
+        val imageIds: List<Int> = emptyList()
+)
+
+@location("/solution/{id}")
+data class SolutionGet(
+        val authenticationKey: String = "",
+        val id: Int = -1
+)
 
 private val random = SecureRandom()
 
@@ -73,6 +92,9 @@ fun Application.studyBattleServerApp() {
         uploadImage()
         getImage()
         createProblem()
+        getProblem()
+        createSolution()
+        getSolution()
     }
 }
 
@@ -98,7 +120,8 @@ fun connectDataBase() {
                 Images,
                 Contents,
                 Problems,
-                ContentImageRelations
+                ContentImageRelations,
+                Solutions
         )
     }
 }
