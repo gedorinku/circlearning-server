@@ -51,6 +51,12 @@ data class ProblemCreate(
         val durationMillis: Long = 0
 )
 
+@location("/problem/{id}")
+data class ProblemGet(
+        val authenticationKey: String = "",
+        val id: Int = -1
+)
+
 @location("/solution/create")
 data class SolutionCreate(
         val authenticationKey: String = "",
@@ -86,6 +92,7 @@ fun Application.studyBattleServerApp() {
         uploadImage()
         getImage()
         createProblem()
+        getProblem()
         createSolution()
         getSolution()
     }

@@ -115,10 +115,12 @@ class StudyBattleServerAppTest {
                         .forEach { it.delete() }
             }
             val values = listOf("userName" to userName, "displayName" to displayName, "password" to password)
-            test(handleRequest(HttpMethod.Post, "/register") {
-                addHeader(HttpHeaders.ContentType, "application/x-www-form-urlencoded")
-                body = values.formUrlEncode()
-            })
+            test(
+                    handleRequest(HttpMethod.Post, "/register") {
+                        addHeader(HttpHeaders.ContentType, "application/x-www-form-urlencoded")
+                        body = values.formUrlEncode()
+                    }
+                )
         }
 
         //valid
@@ -173,10 +175,12 @@ class StudyBattleServerAppTest {
             }
 
             val values = listOf("authenticationKey" to authenticationKey, "name" to groupName)
-            test(handleRequest(HttpMethod.Post, "/group/new") {
-                addHeader(HttpHeaders.ContentType, "application/x-www-form-urlencoded")
-                body = values.formUrlEncode()
-            })
+            test(
+                    handleRequest(HttpMethod.Post, "/group/new") {
+                        addHeader(HttpHeaders.ContentType, "application/x-www-form-urlencoded")
+                        body = values.formUrlEncode()
+                    }
+                )
         }
 
         val authKey = login(testUserName, testPassword)!!
@@ -197,11 +201,13 @@ class StudyBattleServerAppTest {
             val values = listOf(
                     "authenticationKey" to authenticationKey,
                     "groupId" to groupId.toString()
-            )
-            test(handleRequest(HttpMethod.Post, "/group/join") {
-                addHeader(HttpHeaders.ContentType, "application/x-www-form-urlencoded")
-                body = values.formUrlEncode()
-            })
+                               )
+            test(
+                    handleRequest(HttpMethod.Post, "/group/join") {
+                        addHeader(HttpHeaders.ContentType, "application/x-www-form-urlencoded")
+                        body = values.formUrlEncode()
+                    }
+                )
         }
 
         val authenticationKey = login(testUserName, testPassword)!!
@@ -231,22 +237,24 @@ class StudyBattleServerAppTest {
     @Test
     fun uploadImageTest() = withTestApplication(Application::studyBattleServerApp) {
         val uploadImage: (String, File, TestApplicationCall.() -> Unit) -> Unit = { authenticationKey, image, test ->
-            test(handleRequest(HttpMethod.Post, "image/upload") {
-                addHeader(HttpHeaders.ContentType, "multipart/form-data")
-                val authPart = PartData.FormItem(
-                        authenticationKey, {},
-                        ValuesMap.build {
-                            append(HttpHeaders.ContentDisposition, "form-data; name=\"authenticationKey\"")
-                        }
+            test(
+                    handleRequest(HttpMethod.Post, "image/upload") {
+                        addHeader(HttpHeaders.ContentType, "multipart/form-data")
+                        val authPart = PartData.FormItem(
+                                authenticationKey, {},
+                                ValuesMap.build {
+                                    append(HttpHeaders.ContentDisposition, "form-data; name=\"authenticationKey\"")
+                                }
+                                                        )
+                        val imagePart = PartData.FileItem(
+                                { image.inputStream() }, {},
+                                ValuesMap.build {
+                                    append(HttpHeaders.ContentDisposition, "form-data; name=\"image\"")
+                                }
+                                                         )
+                        multiPartEntries = listOf(authPart, imagePart)
+                    }
                 )
-                val imagePart = PartData.FileItem(
-                        { image.inputStream() }, {},
-                        ValuesMap.build {
-                            append(HttpHeaders.ContentDisposition, "form-data; name=\"image\"")
-                        }
-                )
-                multiPartEntries = listOf(authPart, imagePart)
-            })
         }
 
         val authenticationKey = login(testUserName, testPassword)!!
@@ -284,71 +292,114 @@ class StudyBattleServerAppTest {
 
     @Test
     fun createProblemAndSolutionTest() = withTestApplication(Application::studyBattleServerApp) {
-        val createProblem: (ProblemCreate, TestApplicationCall.() -> Unit) -> Unit = { (authenticationKey, title, text, imageIds, startsAt, durationMillis), test ->
+        val createProblem: (ProblemCreate, TestApplicationCall.() -> Unit) -> Unit
+                = { (authenticationKey, title, text, imageIds, startsAt, durationMillis), test ->
             val imageIdsEncoded = imageIds
                     .mapIndexed { index, id -> "imageIds" to id.toString() }
             val values = mutableListOf(
                     "authenticationKey" to authenticationKey,
-                    "tile" to title,
+                    "title" to title,
                     "text" to text,
                     "startsAt" to startsAt,
-                    "durationMillis" to durationMillis.toString())
+                    "durationMillis" to durationMillis.toString()
+                                      )
             values.addAll(imageIdsEncoded)
 
-            test(handleRequest(HttpMethod.Post, "/problem/create") {
-                addHeader(HttpHeaders.ContentType, "application/x-www-form-urlencoded")
-                body = values.formUrlEncode()
-            })
+            test(
+                    handleRequest(HttpMethod.Post, "/problem/create") {
+                        addHeader(HttpHeaders.ContentType, "application/x-www-form-urlencoded")
+                        body = values.formUrlEncode()
+                    }
+                )
         }
 
-        val createSolution: (SolutionCreate, TestApplicationCall.() -> Unit) -> Unit = { (authenticationKey, text, problemId, imageIds), test ->
+        val getProblem: (ProblemGet, TestApplicationCall.() -> Unit) -> Unit
+                = { (authenticationKey, id), test ->
+            val values = listOf("authenticationKey" to authenticationKey)
+
+            test(
+                    handleRequest(HttpMethod.Post, "problem/$id") {
+                        addHeader(HttpHeaders.ContentType, "application/x-www-form-urlencoded")
+                        body = values.formUrlEncode()
+                    }
+                )
+        }
+
+        val createSolution: (SolutionCreate, TestApplicationCall.() -> Unit) -> Unit
+                = { (authenticationKey, text, problemId, imageIds), test ->
             val imageIdsEncoded = imageIds
                     .mapIndexed { index, id -> "imageIds" to id.toString() }
             val values = mutableListOf(
                     "authenticationKey" to authenticationKey,
                     "text" to text,
-                    "problemId" to problemId.toString())
+                    "problemId" to problemId.toString()
+                                      )
             values.addAll(imageIdsEncoded)
 
-            test(handleRequest(HttpMethod.Post, "/solution/create") {
-                addHeader(HttpHeaders.ContentType, "application/x-www-form-urlencoded")
-                body = values.formUrlEncode()
-            })
+            test(
+                    handleRequest(HttpMethod.Post, "/solution/create") {
+                        addHeader(HttpHeaders.ContentType, "application/x-www-form-urlencoded")
+                        body = values.formUrlEncode()
+                    }
+                )
         }
 
-        val getSolution: (SolutionGet, TestApplicationCall.() -> Unit) -> Unit = {
-            (authenticationKey, id), test ->
+        val getSolution: (SolutionGet, TestApplicationCall.() -> Unit) -> Unit
+                = { (authenticationKey, id), test ->
             val values = listOf("authenticationKey" to authenticationKey)
 
-            test(handleRequest(HttpMethod.Post, "/solution/$id") {
-                addHeader(HttpHeaders.ContentType, "application/x-www-form-urlencoded")
-                body = values.formUrlEncode()
-            })
+            test(
+                    handleRequest(HttpMethod.Post, "/solution/$id") {
+                        addHeader(HttpHeaders.ContentType, "application/x-www-form-urlencoded")
+                        body = values.formUrlEncode()
+                    }
+                )
         }
 
         val authenticationKey = login(testUserName, testPassword)!!
+        val problemTitle = "hoge"
+        val problemText =
+                "うぇい\n" +
+                        "ほげほげ\n" +
+                        "abc"
+        val startsAt = DateTime.now()
+        val duration = Duration.standardHours(1)
         createProblem(
                 ProblemCreate(
                         authenticationKey,
-                        "hoge",
-                        "うぇい\n" +
-                                "ほげほげ\n" +
-                                "abc",
+                        problemTitle,
+                        problemText,
                         emptyList(),
-                        DateTime.now().toString(),
-                        Duration.standardHours(1).millis)) {
+                        startsAt.toString(),
+                        duration.millis
+                             )
+                     ) {
             assertEquals(HttpStatusCode.OK, response.status())
             val problemId = Gson()
                     .fromJson(
                             response.content.orEmpty(),
                             ProblemCreateResponse::class.java
-                    )
+                             )
                     .id
             assert(0 < problemId)
 
+            getProblem(ProblemGet(authenticationKey, problemId)) {
+                val problem = Gson()
+                        .fromJson(
+                                response.content.orEmpty(),
+                                ProblemGetResponse::class.java
+                                 )
+
+                assertEquals(problemId, problem.id)
+                assertEquals(problemTitle, problem.title)
+                assertEquals(problemText, problem.text)
+                assertEquals(startsAt, DateTime(problem.startsAt))
+                assertEquals(duration, Duration.millis(problem.durationMillis))
+            }
+
             val solutionText =
                     "そい\n" +
-                    "そおお"
+                            "そおお"
 
             createSolution(
                     SolutionCreate(
@@ -356,13 +407,14 @@ class StudyBattleServerAppTest {
                             solutionText,
                             problemId,
                             emptyList()
-                    )) {
+                                  )
+                          ) {
                 assertEquals(HttpStatusCode.OK, response.status())
                 val solutionId = Gson()
                         .fromJson(
                                 response.content.orEmpty(),
                                 SolutionCreateResponse::class.java
-                        )
+                                 )
                         .id
                 assert(0 < solutionId)
                 println(solutionId)
@@ -373,7 +425,7 @@ class StudyBattleServerAppTest {
                             .fromJson(
                                     response.content.orEmpty(),
                                     SolutionGetResponse::class.java
-                            )
+                                     )
                     assertEquals(solutionText, solution.text)
                     assertEquals(problemId, solution.problemId)
                 }
