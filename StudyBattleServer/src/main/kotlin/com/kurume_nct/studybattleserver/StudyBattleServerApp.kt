@@ -171,6 +171,6 @@ fun isValidDisplayName(displayName: String): Boolean = displayNamePattern.matche
 fun getFullUrl(relativePath: String): String = "http://studybattle.dip.jp/$relativePath"
 
 private val userNamePattern = "^[a-zA-Z0-9_]{2,20}".toRegex()
-private val displayNamePattern = "^[0-9a-zA-Zぁ-んァ-ヶ一-龠々ー]{2,20}".toRegex()
+private val displayNamePattern = "^[0-9a-zA-Zぁ-んァ-ヶ一-龠々ー_-]{2,20}".toRegex()
 private val authenticationKeyPattern = "[a-zA-Z0-9_]+".toRegex()
 private val stretchCount = 10000

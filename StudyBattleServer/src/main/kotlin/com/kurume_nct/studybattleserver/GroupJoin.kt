@@ -1,5 +1,6 @@
 package com.kurume_nct.studybattleserver
 
+import com.google.gson.Gson
 import com.kurume_nct.studybattleserver.dao.Belonging
 import com.kurume_nct.studybattleserver.dao.Belongings
 import com.kurume_nct.studybattleserver.dao.Group
@@ -42,5 +43,6 @@ fun Route.joinGroup() = post<GroupJoin> {
         }
     }
 
-    call.respond(HttpStatusCode.OK)
+    call.response.status(HttpStatusCode.OK)
+    call.respond(Gson().toJson(HttpStatusCode.OK))
 }

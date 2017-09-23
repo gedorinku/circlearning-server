@@ -1,5 +1,6 @@
 package com.kurume_nct.studybattleserver
 
+import com.google.gson.Gson
 import com.kurume_nct.studybattleserver.dao.User
 import com.kurume_nct.studybattleserver.dao.Users
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -44,5 +45,6 @@ fun Route.register(random: SecureRandom) = post<Register> {
         }
     }
 
-    call.respond(HttpStatusCode.OK)
+    call.response.status(HttpStatusCode.OK)
+    call.respond(Gson().toJson(HttpStatusCode.OK))
 }
