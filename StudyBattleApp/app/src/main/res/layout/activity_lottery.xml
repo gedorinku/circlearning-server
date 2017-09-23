@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:baselineAligned="false"
+    android:background="@drawable/backgroud"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        tools:ignore="ObsoleteLayoutParam,UselessLeaf,UselessParent">
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:gravity="center_vertical"
+            android:text="アイテム抽選会"
+            android:textSize="30sp"
+            android:drawableLeft="@drawable/presentbox"
+            tools:ignore="HardcodedText,InefficientWeight,ObsoleteLayoutParam,RtlHardcoded" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="☆好きなカードを一枚選んでね☆"
+            android:textSize="20sp"
+            tools:ignore="HardcodedText" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            tools:ignore="InefficientWeight,ObsoleteLayoutParam">
+
+            <ImageView
+                android:id="@+id/card1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/lotterycard"
+                tools:ignore="ContentDescription,NestedWeights" />
+
+            <ImageView
+                android:id="@+id/card2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/lotterycard"
+                tools:ignore="ContentDescription,NestedWeights" />
+
+            <ImageView
+                android:id="@+id/card3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/lotterycard"
+                tools:ignore="ContentDescription,NestedWeights" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/result_card"
+        android:layout_width="300sp"
+        android:layout_height="300sp"
+        android:layout_marginTop="86dp"
+        android:adjustViewBounds="false"
+        android:background="@drawable/group"
+        android:cropToPadding="false"
+        android:scaleType="centerInside"
+        android:scaleX="0.75"
+        android:scaleY="0.75"
+        app:srcCompat="@drawable/bomb"
+        tools:ignore="ContentDescription"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:id="@+id/result_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/result_card"
+        android:layout_centerHorizontal="true"
+        android:layout_weight="1"
+        tools:ignore="HardcodedText,ObsoleteLayoutParam" />
+
+</RelativeLayout>
