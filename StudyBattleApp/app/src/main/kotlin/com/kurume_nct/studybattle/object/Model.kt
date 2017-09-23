@@ -1,4 +1,4 @@
-package com.kurume_nct.studybattle.client
+package com.kurume_nct.studybattle.`object`
 
 import org.threeten.bp.LocalDateTime
 import java.sql.Time
@@ -18,7 +18,7 @@ data class Comment(val id: Int, val content : Int, val replyToId : Int, val crea
     var replyToComment : Comment? = null
 }
 
-data class Problem(val id: Int, val title: String, val contentLd : Int, val createdAt : Time, val startedAt : LocalDateTime, val lifetime: Long){
+data class Problems(val id: Int, val title: String, val contentLd : Int, val createdAt : Time, val startedAt : LocalDateTime, val lifetime: Long){
     var content : Content? = null
 } //lifetime->Long is ok?
 
