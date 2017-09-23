@@ -1,9 +1,7 @@
 package com.kurume_nct.studybattle.client
 
-import android.media.Image
-import android.view.Display
+import com.kurume_nct.studybattle.`object`.*
 import io.reactivex.Observable
-import io.reactivex.Observer
 import io.reactivex.Single
 import okhttp3.RequestBody
 import retrofit2.http.*
@@ -29,7 +27,7 @@ interface Server {
 
     @Multipart
     @POST("hoge/{title}/{contentId}/{lifeTime}")
-    fun setProblem(@Path("title") title : String, @Path("contnetId") content : Int, @Path("lifeTime") lifeTime : Time) : Observable<Problem> //Time->LocalDateTime
+    fun setProblem(@Path("title") title : String, @Path("contnetId") content : Int, @Path("lifeTime") lifeTime : Time) : Observable<Problems> //Time->LocalDateTime
 
     //いらない機能？
     @Multipart
@@ -42,7 +40,7 @@ interface Server {
 
     @Multipart
     @POST("hoge/{id}")
-    fun searchProblem(@Path("id") id: Int) : Observable<Problem>
+    fun searchProblem(@Path("id") id: Int) : Observable<Problems>
 
     @Multipart
     @POST("hoge/{id}")

@@ -4,6 +4,7 @@ import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import com.kurume_nct.studybattle.Main2Activity
 import com.kurume_nct.studybattle.R
 import com.kurume_nct.studybattle.databinding.ActivityRegistrationBinding
 import com.kurume_nct.studybattle.viewModel.RegistrationViewModel
@@ -17,7 +18,6 @@ class RegistrationActivity : AppCompatActivity() , RegistrationViewModel.Callbac
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_registration)
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_registration)
         binding.userEntity = RegistrationViewModel(this, this)
@@ -26,9 +26,13 @@ class RegistrationActivity : AppCompatActivity() , RegistrationViewModel.Callbac
 
     override fun toLoginActivity() {
         startActivity(Intent(this,LoginActivity::class.java))
+        finish()
     }
 
     override fun onLogin() {
+        val intent = Intent(this,Main2Activity::class.java)
+        intent.putExtra("userName","葉月しずく")
+        startActivity(intent)
         finish()
     }
 
