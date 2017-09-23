@@ -23,7 +23,6 @@ import com.kurume_nct.studybattle.adapter.MainPagerAdapter
 import com.kurume_nct.studybattle.`object`.Person_Group
 import com.kurume_nct.studybattle.databinding.AppBarMain2Binding
 import com.kurume_nct.studybattle.databinding.GroupListBinding
-import com.kurume_nct.studybattle.view.CameraModeActivity
 import com.kurume_nct.studybattle.view.RegistrationActivity
 import com.mikepenz.google_material_typeface_library.GoogleMaterial
 import com.mikepenz.materialdrawer.DrawerBuilder
@@ -37,12 +36,10 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
 
 class Main2Activity : AppCompatActivity() {
 
-    private var userName = "Kotlin"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main2)
-        userName = intent.getStringExtra("userName") ?: userName
         onTabLayout()
         onNavigationDrower()
         onToolBar()
@@ -54,12 +51,9 @@ class Main2Activity : AppCompatActivity() {
         fab.setOnClickListener {
             Toast.makeText(this,"問題作成", Toast.LENGTH_SHORT).show()
             Log.d("ho","ho")
-            val intent = Intent(this,CameraModeActivity::class.java)
-            intent.putExtra("userName",userName)
-            startActivity(intent)
         }
         val toolbar = findViewById(R.id.toolbar) as Toolbar
-        toolbar.title = userName
+        toolbar.title = "hunachi"
         toolbar.inflateMenu(R.menu.toolbar_menu)
         toolbar.setOnMenuItemClickListener {
             item ->
@@ -113,7 +107,7 @@ class Main2Activity : AppCompatActivity() {
                 .withHeaderBackground(R.color.md_red_A700)
                 .addProfiles(
                         ProfileDrawerItem()
-                                .withName(userName)
+                                .withName("_hunachi")
                                 .withEmail("GroupID is " + groupID.toString())
                                 .withIcon(R.drawable.icon_gost)
                                 .withIdentifier(acountCount)
@@ -124,7 +118,7 @@ class Main2Activity : AppCompatActivity() {
         acountCount++
         headerResult.addProfiles(
                 ProfileDrawerItem()
-                        .withName("hunachi-bata")
+                        .withName("hu_nachi")
                         .withEmail("GroupID is " + groupID.toString())
                         .withIcon(R.drawable.icon)
                         .withIdentifier(acountCount)
@@ -140,7 +134,6 @@ class Main2Activity : AppCompatActivity() {
                     var intent = Intent(this,Main2Activity::class.java)
                     if(position == list.size + 1){
                         intent.putExtra("groupID",position)
-                        intent.putExtra("userName",userName)
                         startActivity(intent)
                         finish()
                         intent = Intent(this,RegistrationActivity::class.java)
@@ -148,7 +141,6 @@ class Main2Activity : AppCompatActivity() {
                         //Still i have to update Main2Activity
                     }else{
                         intent.putExtra("groupID",position)
-                        intent.putExtra("userName",userName)
                         startActivity(intent)
                         finish()
                     }

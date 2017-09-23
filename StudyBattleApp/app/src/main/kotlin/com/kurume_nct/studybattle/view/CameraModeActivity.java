@@ -31,13 +31,12 @@ public class CameraModeActivity extends Activity {
     private TextView commnent_;
     private ImageView shock;
     private int flag=0;
-    private String userName;
+
 
     @Override
     protected void onCreate(Bundle saveInstanceState) {
         super.onCreate(saveInstanceState);
         setContentView(R.layout.activity_camera_mode);
-        userName = getIntent().getStringExtra("userName");
         // 宣言
         commnent_ = (TextView) findViewById(R.id.comment);
         //commnent_.setText("ギャラリーのpath: " + getGalleryPath());//ギャラリーのpathを取得する
@@ -115,9 +114,7 @@ public class CameraModeActivity extends Activity {
             public void onClick(View view) {
                 if(flag==1) {
                     Intent intent1 = new Intent(getApplication(), LotteryActivity.class);
-                    intent1.putExtra("userName",userName);
                     startActivity(intent1);
-                    finish();
                 }else commnent_.setText("解答を提出してください");
             }
         });
