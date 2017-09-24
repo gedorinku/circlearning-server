@@ -20,10 +20,6 @@ class ProbemMainFragment : Fragment() {
     private lateinit var mListener : Main2Activity
     private lateinit var binding : FragmentProbemMainBinding
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         binding = FragmentProbemMainBinding.inflate(inflater,container,false)
@@ -38,10 +34,6 @@ class ProbemMainFragment : Fragment() {
     override fun onAttach(context: Context?) {
         super.onAttach(context)
         mListener = context as Main2Activity
-    }
-
-    override fun onDetach() {
-        super.onDetach()
     }
 
     companion object {
