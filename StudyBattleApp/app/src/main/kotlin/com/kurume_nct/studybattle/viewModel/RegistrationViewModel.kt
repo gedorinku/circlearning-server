@@ -117,12 +117,11 @@ class RegistrationViewModel(private val context: Context, private val callback: 
                         countSuccess++
                         countDown.countDown()
                     })
-            ServerClient().uploadImage(imageUri
-            )
+            ServerClient().uploadImage(imageUri, context)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({
-                        iconId = it
+                        iconId = it.id
                         countDown.countDown()
                         countSuccess++
                     }, {

@@ -1,6 +1,7 @@
 package com.kurume_nct.studybattle.client
 
 import io.reactivex.Observable
+import okhttp3.MultipartBody
 import retrofit2.http.*
 
 /**
@@ -14,7 +15,7 @@ interface Server {
             @Field("displayName") displayName: String,
             @Field("userName") userName: String,
             @Field("password") password: String
-    ): Observable<String>
+    ): Observable<Unit>
 
     @FormUrlEncoded
     @POST("/login")
@@ -36,4 +37,11 @@ interface Server {
             @Field("authenticationKey") authenticationKey: String,
             @Field("groupId") groupId: Int
     ): Observable<Unit>
+
+    @Multipart
+    @POST("/image/upload")
+    fun uploadImage(
+            @Part() authenticationKey: MultipartBody.Part,
+            @Part() image: MultipartBody.Part
+    ): Observable<Image>
 }

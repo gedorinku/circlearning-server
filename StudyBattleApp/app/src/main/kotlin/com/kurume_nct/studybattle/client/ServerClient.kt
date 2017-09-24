@@ -1,16 +1,16 @@
 package com.kurume_nct.studybattle.client
 
+import android.content.Context
 import android.net.Uri
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.GsonBuilder
 import io.reactivex.Observable
-import okhttp3.MediaType
+import okhttp3.*
+import retrofit2.Converter
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
-import okhttp3.RequestBody
-import okhttp3.ResponseBody
-import retrofit2.Converter
+import java.io.InputStream
 import java.lang.reflect.Type
 
 
@@ -37,7 +37,7 @@ class ServerClient(authenticationKey: String = "") {
         server = retrofit.create(Server::class.java)
     }
 
-    fun register(displayName: String, userName: String, password: String): Observable<String>
+    fun register(displayName: String, userName: String, password: String): Observable<Unit>
             = server.register(displayName, userName, password)
 
     fun login(userName: String, password: String)
@@ -54,8 +54,41 @@ class ServerClient(authenticationKey: String = "") {
 
     fun joinGroup(group: Group) = joinGroup(group.id)
 
-    fun uploadImage(uri: Uri): Observable<Int> {
-        throw NotImplementedError()
+    fun uploadImage(inputStream: InputStream, type: String): Observable<Image> {
+        val bytes = inputStream.use {
+            val buffer = mutableListOf<Byte>()
+            while (true) {
+                val temp = it.read()
+                if (temp == -1) {
+                    break
+                }
+                buffer.add(temp.toByte())
+            }
+            buffer.toByteArray()
+        }
+
+        val authenticationKeyPart = MultipartBody.Part.create(
+                Headers.of(mapOf("Content-Disposition" to "form-data; name=\"authenticationKey\"")),
+                RequestBody.create(
+                        MediaType.parse(type),
+                        authenticationKey
+                )
+        )
+        val fileExtension = type.substring("image/".length)
+        val imagePart = MultipartBody.Part.create(
+                Headers.of(mapOf("Content-Disposition" to "form-data; name=\"image\"; filename=\"hoge.$fileExtension\"")),
+                RequestBody.create(
+                        MediaType.parse(type),
+                        bytes
+                )
+        )
+
+        return server.uploadImage(authenticationKeyPart, imagePart)
+    }
+
+    fun uploadImage(uri: Uri, context: Context): Observable<Image> {
+        val contentResolver = context.contentResolver
+        return uploadImage(contentResolver.openInputStream(uri), contentResolver.getType(uri))
     }
 }
 

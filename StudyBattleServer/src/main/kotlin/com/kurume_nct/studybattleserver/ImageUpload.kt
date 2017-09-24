@@ -17,7 +17,7 @@ import javax.xml.bind.DatatypeConverter
 /**
  * Created by gedorinku on 2017/08/09.
  */
-data class ImageUploadResponse(var imageId: Int = 0, var url: String = "", var fileName: String = "")
+data class ImageUploadResponse(var id: Int = 0, var url: String = "", var fileName: String = "")
 
 fun Route.uploadImage() = post<ImageUpload> {
     var authenticationKey = ""

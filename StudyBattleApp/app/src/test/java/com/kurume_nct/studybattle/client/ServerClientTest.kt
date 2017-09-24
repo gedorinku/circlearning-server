@@ -1,10 +1,13 @@
 package com.kurume_nct.studybattle.client
 
-import io.reactivex.Scheduler
-import io.reactivex.schedulers.Schedulers
+import org.junit.Assert.assertEquals
 import org.junit.BeforeClass
 import org.junit.Test
+import java.io.InputStream
+import java.net.URL
+import java.security.MessageDigest
 import java.security.SecureRandom
+
 
 /**
  * Created by gedorinku on 2017/09/23.
@@ -28,21 +31,36 @@ class ServerClientTest {
                     .blockingSubscribe()
         }
 
-        fun generateTestUserName(): String {
+        private fun generateTestUserName(): String {
             val prefix = "chie_"
             return prefix + printHex(generateRandomBytes(4))
         }
 
-        fun generateTestUserPassword(): String = printHex(generateRandomBytes(16))
+        private fun generateTestUserPassword(): String = printHex(generateRandomBytes(16))
 
-        fun generateRandomBytes(size: Int): ByteArray {
+        private fun generateRandomBytes(size: Int): ByteArray {
             val randomBytes = ByteArray(size)
             random.nextBytes(randomBytes)
             return randomBytes
         }
 
-        fun printHex(bytes: ByteArray): String
+        private fun printHex(bytes: ByteArray): String
                 = bytes.map { String.format("%02x", it) }.joinToString("")
+
+        private fun hashContent(inputStream: InputStream): String {
+            val md5 = MessageDigest.getInstance("MD5")
+            inputStream.use {
+                while (true) {
+                    val temp = it.read()
+                    if (temp == -1) {
+                        break
+                    }
+                    md5.update(temp.toByte())
+                }
+            }
+
+            return printHex(md5.digest())
+        }
     }
 
 
@@ -52,5 +70,26 @@ class ServerClientTest {
         client.createGroup(groupName)
                 .flatMap { client.joinGroup(it.id) }
                 .blockingSubscribe()
+    }
+
+    @Test
+    fun uploadImageTest() {
+        val fileName = "icon.png"
+        val classLoader = javaClass.classLoader
+        val testSubscriber = client
+                .uploadImage(classLoader.getResourceAsStream(fileName), "image/png")
+                .test()
+
+        testSubscriber.awaitTerminalEvent()
+        val url = testSubscriber
+                .assertNoErrors()
+                .assertNoTimeout()
+                .values()[0]
+                .url
+
+        val origin = hashContent(classLoader.getResourceAsStream(fileName))
+        val upload = hashContent(URL(url).openStream())
+        assertEquals(origin, upload)
+
     }
 }

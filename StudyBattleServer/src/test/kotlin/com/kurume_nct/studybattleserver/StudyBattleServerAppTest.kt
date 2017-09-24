@@ -262,7 +262,7 @@ class StudyBattleServerAppTest {
             assertEquals(HttpStatusCode.OK, response.status())
             val id = Gson()
                     .fromJson(response.content.orEmpty(), ImageUploadResponse::class.java)
-                    .imageId
+                    .id
             assert(0 < id)
         }
 
@@ -276,7 +276,7 @@ class StudyBattleServerAppTest {
             assertEquals(HttpStatusCode.OK, response.status())
             val uploadResponse = Gson()
                     .fromJson(response.content.orEmpty(), ImageUploadResponse::class.java)
-            assert(0 < uploadResponse.imageId)
+            assert(0 < uploadResponse.id)
 
             handleRequest(HttpMethod.Get, "image/${uploadResponse.fileName}").apply {
                 val sha256 = MessageDigest.getInstance("SHA-256")
