@@ -3,7 +3,7 @@
     <data>
         <variable
             name="Item"
-            type="com.kurume_nct.studybattle.object.Problem"/>
+            type="com.kurume_nct.studybattle.model.Problem"/>
     </data>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -26,7 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/text_margin"
-            android:text="@{Item.detail}"
+            android:text="@{Item.text}"
             android:textAppearance="?attr/textAppearanceListItem"
             android:textColor="@android:color/darker_gray"
             android:textSize="10sp" />

@@ -9,7 +9,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.kurume_nct.studybattle.`object`.Problem
+import com.kurume_nct.studybattle.model.Problem
 import com.kurume_nct.studybattle.adapter.ProblemListAdapter
 import com.kurume_nct.studybattle.databinding.FragmentProblemListBinding
 import com.kurume_nct.studybattle.view.LoginActivity
@@ -43,7 +43,7 @@ class MainListFragment : Fragment() {
 
         //binding = DataBindingUtil.inflate(inflater, R.layout.fragment_problem_list,container,false)
         binding = FragmentProblemListBinding.inflate(inflater, container, false)
-        problemList = mutableListOf(Problem("hoge", "hoge"))
+        problemList = mutableListOf(Problem(0, "hoge", 0, "hoge"))
         listAdapter = ProblemListAdapter(context, problemList) {
             var intent = Intent(context, LoginActivity::class.java)
             when (tabId) {
@@ -76,16 +76,16 @@ class MainListFragment : Fragment() {
         when(id){
             0->{
                 //call server
-                (0..15).forEach { problemList.add(Problem("0", ":;(∩´﹏`∩);:")) }
+                (0..15).forEach { problemList.add(Problem(0, ":;(∩´﹏`∩);:", 0, "hoge")) }
             }
             1->{
-                problemList.add(Problem("1", ":;(∩´﹏`∩);:"))
+                problemList.add(Problem(1, ":;(∩´﹏`∩);:", 0, "hoge"))
             }
             2->{
-                problemList.add(Problem("2", ":;(∩´﹏`∩);:"))
+                problemList.add(Problem(2, ":;(∩´﹏`∩);:", 0, "hoge"))
             }
             3->{
-                problemList.add(Problem("3", ":;(∩´﹏`∩);:"))
+                problemList.add(Problem(3, ":;(∩´﹏`∩);:", 0, "hoge"))
             }
         }
         binding.list.adapter = listAdapter

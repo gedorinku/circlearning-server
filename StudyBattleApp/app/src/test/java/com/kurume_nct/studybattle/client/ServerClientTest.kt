@@ -1,5 +1,7 @@
 package com.kurume_nct.studybattle.client
 
+import org.joda.time.DateTime
+import org.joda.time.Duration
 import org.junit.Assert.assertEquals
 import org.junit.BeforeClass
 import org.junit.Test
@@ -90,6 +92,28 @@ class ServerClientTest {
         val origin = hashContent(classLoader.getResourceAsStream(fileName))
         val upload = hashContent(URL(url).openStream())
         assertEquals(origin, upload)
+    }
 
+    @Test
+    fun createProblemTest() {
+        val title = "hoge"
+        val text = "うぇい\nそいい\nabc"
+        val startsAt = DateTime.now()
+        val duration = Duration.standardHours(1)
+
+        val testSubscriber = client
+                .createProblem(title, text, emptyList(), startsAt, duration)
+                .test()
+
+        testSubscriber.awaitTerminalEvent()
+        val problem = testSubscriber
+                .assertNoErrors()
+                .assertNoTimeout()
+                .values()[0]
+
+        assertEquals(title, problem.title)
+        assertEquals(text, problem.text)
+        assertEquals(startsAt.millis, problem.startsAtTime.millis)
+        assertEquals(duration, problem.duration)
     }
 }

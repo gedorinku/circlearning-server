@@ -4,8 +4,13 @@ import android.content.Context
 import android.net.Uri
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.GsonBuilder
+import com.kurume_nct.studybattle.model.Group
+import com.kurume_nct.studybattle.model.Image
+import com.kurume_nct.studybattle.model.Problem
 import io.reactivex.Observable
 import okhttp3.*
+import org.joda.time.DateTime
+import org.joda.time.Duration
 import retrofit2.Converter
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -90,6 +95,23 @@ class ServerClient(authenticationKey: String = "") {
         val contentResolver = context.contentResolver
         return uploadImage(contentResolver.openInputStream(uri), contentResolver.getType(uri))
     }
+
+    fun createProblem(
+            title: String, text: String, imageIds: List<Int>, startsAt: DateTime, duration: Duration
+    ): Observable<Problem> = server
+            .createProblem(
+                    authenticationKey,
+                    title,
+                    text,
+                    imageIds.toIntArray(),
+                    startsAt.toString(),
+                    duration.millis
+            )
+            .flatMap {
+                getProblem(it.id)
+            }
+
+    fun getProblem(id: Int): Observable<Problem> = server.getProblem(authenticationKey, id)
 }
 
 private class StringConverterFactory : Converter.Factory() {

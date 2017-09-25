@@ -1,7 +1,9 @@
 package com.kurume_nct.studybattle.client
 
+import com.kurume_nct.studybattle.model.*
 import io.reactivex.Observable
 import okhttp3.MultipartBody
+import okhttp3.ResponseBody
 import retrofit2.http.*
 
 /**
@@ -44,4 +46,22 @@ interface Server {
             @Part() authenticationKey: MultipartBody.Part,
             @Part() image: MultipartBody.Part
     ): Observable<Image>
+
+    @FormUrlEncoded
+    @POST("/problem/create")
+    fun createProblem(
+            @Field("authenticationKey") authenticationKey: String,
+            @Field("title") title: String,
+            @Field("text") text: String,
+            @Field("imageIds[]") imageIds: IntArray,
+            @Field("startsAt") startsAt: String,
+            @Field("durationMillis") durationMillis: Long
+    ): Observable<IDResponse>
+
+    @FormUrlEncoded
+    @POST("/problem/{id}")
+    fun getProblem(
+            @Field("authenticationKey") authenticationKey: String,
+            @Path("id") id: Int
+    ): Observable<Problem>
 }

@@ -1,37 +1,24 @@
 package com.kurume_nct.studybattle
 
-import android.content.Context
 import android.content.Intent
-import android.databinding.DataBindingUtil
 import android.os.Bundle
-import android.support.design.widget.NavigationView
 import android.support.design.widget.TabLayout
-import android.support.v4.view.GravityCompat
 import android.support.v4.view.ViewPager
-import android.support.v4.widget.DrawerLayout
-import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.*
-import android.widget.Button
 
 import android.widget.Toast
-import com.kurume_nct.studybattle.ListFragment.GroupListFragment
 import com.kurume_nct.studybattle.adapter.MainPagerAdapter
-import com.kurume_nct.studybattle.`object`.Person_Group
-import com.kurume_nct.studybattle.databinding.AppBarMain2Binding
-import com.kurume_nct.studybattle.databinding.GroupListBinding
+import com.kurume_nct.studybattle.model.Person_Group
 import com.kurume_nct.studybattle.view.CameraModeActivity
 import com.kurume_nct.studybattle.view.RegistrationActivity
 import com.mikepenz.google_material_typeface_library.GoogleMaterial
 import com.mikepenz.materialdrawer.DrawerBuilder
-import com.mikepenz.materialdrawer.model.interfaces.IProfile
 import com.mikepenz.materialdrawer.AccountHeader
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem
 import com.mikepenz.materialdrawer.AccountHeaderBuilder
-import com.mikepenz.materialdrawer.model.DividerDrawerItem
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
 
 

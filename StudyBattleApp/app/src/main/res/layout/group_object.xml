@@ -3,7 +3,7 @@
     <data>
         <variable
             name="Group"
-            type="com.kurume_nct.studybattle.object.Person_Group"/>
+            type="com.kurume_nct.studybattle.model.Person_Group"/>
     </data>
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"

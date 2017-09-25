@@ -61,6 +61,7 @@ dependencies {
     compile 'se.emilsjolander:stickylistheaders:2.6.0'
     compile 'com.mikepenz:google-material-typeface:1.2.0.1@aar'
     compile 'com.mikepenz:fontawesome-typeface:4.4.0.1@aar'
+    compile 'joda-time:joda-time:2.9.9'
 
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.0.0-RC1'

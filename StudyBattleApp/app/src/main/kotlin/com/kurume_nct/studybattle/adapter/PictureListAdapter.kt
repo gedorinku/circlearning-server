@@ -1,7 +1,6 @@
 package com.kurume_nct.studybattle.adapter
 
 import android.content.Context
-import android.database.DataSetObserver
 import android.databinding.DataBindingUtil
 import android.databinding.ViewDataBinding
 import android.support.v7.widget.RecyclerView
@@ -10,8 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.kurume_nct.studybattle.BR
 import com.kurume_nct.studybattle.R
-import com.kurume_nct.studybattle.`object`.Person_Group
-import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter
+import com.kurume_nct.studybattle.model.Person_Group
 
 /**
  * Created by hanah on 9/22/2017.

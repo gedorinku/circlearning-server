@@ -1,8 +1,6 @@
 package com.kurume_nct.studybattle.ListFragment
 
 import android.content.Context
-import android.databinding.DataBindingUtil
-import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
@@ -10,7 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 
-import com.kurume_nct.studybattle.`object`.Person_Group
+import com.kurume_nct.studybattle.model.Person_Group
 import com.kurume_nct.studybattle.adapter.PictureListAdapter
 import com.kurume_nct.studybattle.databinding.GroupListBinding
 

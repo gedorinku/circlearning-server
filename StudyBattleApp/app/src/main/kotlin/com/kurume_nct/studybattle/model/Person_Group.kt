@@ -1,4 +1,4 @@
-package com.kurume_nct.studybattle.`object`
+package com.kurume_nct.studybattle.model
 
 /**
  * Created by hanah on 9/22/2017.
