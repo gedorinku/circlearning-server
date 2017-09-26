@@ -1,1 +1,1 @@
-include 'StudyBattleApp', 'StudyBattleApp/app', 'StudyBattleServer'
+include 'StudyBattleServer'
