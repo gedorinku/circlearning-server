@@ -7,6 +7,7 @@ import com.google.gson.GsonBuilder
 import com.kurume_nct.studybattle.model.Group
 import com.kurume_nct.studybattle.model.Image
 import com.kurume_nct.studybattle.model.Problem
+import com.kurume_nct.studybattle.model.Solution
 import io.reactivex.Observable
 import okhttp3.*
 import org.joda.time.DateTime
@@ -98,20 +99,34 @@ class ServerClient(authenticationKey: String = "") {
 
     fun createProblem(
             title: String, text: String, imageIds: List<Int>, startsAt: DateTime, duration: Duration
-    ): Observable<Problem> = server
-            .createProblem(
-                    authenticationKey,
-                    title,
-                    text,
-                    imageIds.toIntArray(),
-                    startsAt.toString(),
-                    duration.millis
-            )
-            .flatMap {
-                getProblem(it.id)
-            }
+    ): Observable<Problem> =
+            server
+                    .createProblem(
+                            authenticationKey,
+                            title,
+                            text,
+                            imageIds.toIntArray(),
+                            startsAt.toString(),
+                            duration.millis
+                    )
+                    .flatMap {
+                        getProblem(it.id)
+                    }
 
     fun getProblem(id: Int): Observable<Problem> = server.getProblem(authenticationKey, id)
+
+    fun createSolution(
+            text: String, problem: Problem, imageIds: List<Int>
+    ): Observable<Solution> = createSolution(text, problem.id, imageIds)
+
+    fun createSolution(
+            text: String, problemId: Int, imageIds: List<Int>
+    ): Observable<Solution> =
+            server
+                    .createSolution(authenticationKey, text, problemId, imageIds.toIntArray())
+                    .flatMap {
+                        server.getSolution(authenticationKey, it.id)
+                    }
 }
 
 private class StringConverterFactory : Converter.Factory() {

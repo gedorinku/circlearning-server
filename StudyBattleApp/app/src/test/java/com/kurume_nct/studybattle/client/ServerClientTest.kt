@@ -95,25 +95,45 @@ class ServerClientTest {
     }
 
     @Test
-    fun createProblemTest() {
-        val title = "hoge"
-        val text = "うぇい\nそいい\nabc"
-        val startsAt = DateTime.now()
-        val duration = Duration.standardHours(1)
+    fun createProblemAndSolutionTest() {
+        val problem = {
+            val problemTitle = "hoge"
+            val problemText = "うぇい\nそいい\nabc"
+            val startsAt = DateTime.now() - Duration.standardMinutes(1)
+            val duration = Duration.standardHours(1)
+
+            val testSubscriber = client
+                    .createProblem(problemTitle, problemText, emptyList(), startsAt, duration)
+                    .test()
+
+            testSubscriber.awaitTerminalEvent()
+            val problem = testSubscriber
+                    .assertNoErrors()
+                    .assertNoTimeout()
+                    .values()[0]
+
+            assertEquals(problemTitle, problem.title)
+            assertEquals(problemText, problem.text)
+            assertEquals(startsAt.millis, problem.startsAtTime.millis)
+            assertEquals(duration, problem.duration)
+
+            problem
+        }()
+
+        val solutionText = "英語は世界中の多くの人間によって作られる\n" +
+                "スポーツ研究会だ。"
 
         val testSubscriber = client
-                .createProblem(title, text, emptyList(), startsAt, duration)
+                .createSolution(solutionText, problem, emptyList())
                 .test()
-
         testSubscriber.awaitTerminalEvent()
-        val problem = testSubscriber
+
+        val solution = testSubscriber
                 .assertNoErrors()
                 .assertNoTimeout()
                 .values()[0]
 
-        assertEquals(title, problem.title)
-        assertEquals(text, problem.text)
-        assertEquals(startsAt.millis, problem.startsAtTime.millis)
-        assertEquals(duration, problem.duration)
+        assertEquals(solutionText, solution.text)
+        assertEquals(problem.id, solution.problemId)
     }
 }

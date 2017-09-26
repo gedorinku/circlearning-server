@@ -64,4 +64,20 @@ interface Server {
             @Field("authenticationKey") authenticationKey: String,
             @Path("id") id: Int
     ): Observable<Problem>
+
+    @FormUrlEncoded
+    @POST("/solution/create")
+    fun createSolution(
+            @Field("authenticationKey") authenticationKey: String,
+            @Field("text") text: String,
+            @Field("problemId") problemId: Int,
+            @Field("imageIds[]") imageIds: IntArray
+    ): Observable<IDResponse>
+
+    @FormUrlEncoded
+    @POST("/solution/{id}")
+    fun getSolution(
+            @Field("authenticationKey") authenticationKey: String,
+            @Path("id") id: Int
+    ): Observable<Solution>
 }

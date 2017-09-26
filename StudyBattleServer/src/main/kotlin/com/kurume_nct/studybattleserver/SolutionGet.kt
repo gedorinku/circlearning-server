@@ -12,11 +12,12 @@ import org.jetbrains.ktor.routing.Route
  * Created by gedorinku on 2017/09/22.
  */
 data class SolutionGetResponse(
+        val id: Int,
         val text: String,
         val authorId: Int,
         val problemId: Int,
         val imageCount: Int,
-        val images: List<Int>
+        val imageIds: List<Int>
 )
 
 fun Route.getSolution() = post<SolutionGet> {
@@ -39,6 +40,7 @@ fun Route.getSolution() = post<SolutionGet> {
     }
     val response = transaction {
         SolutionGetResponse(
+                solution.id.value,
                 solution.content.text,
                 solution.author.id.value,
                 solution.problem.id.value,

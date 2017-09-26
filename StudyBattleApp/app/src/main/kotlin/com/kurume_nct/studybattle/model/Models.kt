@@ -35,3 +35,12 @@ data class Problem(
     val startsAtTime: DateTime by lazy { DateTime.parse(rawStartsAt) }
     val duration: Duration by lazy { Duration.millis(durationMillis) }
 }
+
+data class Solution(
+        val id: Int = 0,
+        val text: String = "",
+        val authorId: Int = 0,
+        val problemId: Int = 0,
+        val imageCount: Int = 0,
+        val imageIds: List<Int> = emptyList()
+)
