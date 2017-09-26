@@ -3,7 +3,6 @@ package com.kurume_nct.studybattle.client
 import com.kurume_nct.studybattle.model.*
 import io.reactivex.Observable
 import okhttp3.MultipartBody
-import okhttp3.ResponseBody
 import retrofit2.http.*
 
 /**
