@@ -4,6 +4,8 @@ import org.jetbrains.exposed.dao.EntityID
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.IntIdTable
+import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.transactions.transaction
 
 /**
  * Created by gedorinku on 2017/07/30.
@@ -19,4 +21,31 @@ class Group(id: EntityID<Int>) : IntEntity(id) {
 
     var name by Groups.name
     var owner by User referencedOn Groups.owner
+
+    /**
+     * グループにユーザーを参加させます。すでに参加している場合は何もしません。
+     */
+    fun attachUser(user: User) = transaction {
+        val joined = !Belonging.find {
+            Belongings.user.eq(user.id) and Belongings.group.eq(this@Group.id)
+        }.empty()
+        if (joined) {
+            return@transaction
+        }
+
+        Belonging.new {
+            this.user = user
+            this.group = this@Group
+        }
+    }
+
+    /**
+     * グループにユーザーを参加させます。すでに参加している場合は何もしません。
+     */
+    fun attachUser(userId: Int) {
+        val user = transaction {
+            User.findById(userId)
+        } ?: throw IllegalArgumentException()
+        attachUser(user)
+    }
 }

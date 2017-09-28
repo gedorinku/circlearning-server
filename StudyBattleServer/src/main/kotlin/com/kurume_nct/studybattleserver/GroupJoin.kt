@@ -1,10 +1,7 @@
 package com.kurume_nct.studybattleserver
 
 import com.google.gson.Gson
-import com.kurume_nct.studybattleserver.dao.Belonging
-import com.kurume_nct.studybattleserver.dao.Belongings
 import com.kurume_nct.studybattleserver.dao.Group
-import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.ktor.http.HttpStatusCode
 import org.jetbrains.ktor.locations.post
@@ -29,19 +26,7 @@ fun Route.joinGroup() = post<GroupJoin> {
         return@post
     }
 
-    val belongings = transaction {
-        Belonging.find {
-            Belongings.user.eq(user.id) and Belongings.group.eq(group.id)
-        }.toList()
-    }
-    if (belongings.isEmpty()) {
-        transaction {
-            Belonging.new {
-                this.user = user
-                this.group = group
-            }
-        }
-    }
+    group.attachUser(user)
 
     call.response.status(HttpStatusCode.OK)
     call.respond(Gson().toJson(HttpStatusCode.OK))
