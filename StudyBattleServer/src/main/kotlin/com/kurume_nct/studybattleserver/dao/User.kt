@@ -4,6 +4,7 @@ import org.jetbrains.exposed.dao.EntityID
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.IntIdTable
+import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.transactions.transaction
 
 /**
@@ -37,5 +38,18 @@ class User(id: EntityID<Int>) : IntEntity(id) {
      */
     fun joinGroup(groupId: Int) = transaction {
         joinGroup(Group.findById(groupId) ?: throw IllegalArgumentException())
+    }
+
+    fun countAssignedProblems(group: Group): Int = transaction {
+        Problem.find {
+            Problems.group.eq(group.id) and Problems.assignedUser.eq(this@User.id)
+        }.count()
+    }
+
+    fun countAssignedProblems(groupId: Int): Int {
+        val group = transaction {
+            Group.findById(groupId)
+        } ?: throw IllegalArgumentException()
+        return countAssignedProblems(group)
     }
 }

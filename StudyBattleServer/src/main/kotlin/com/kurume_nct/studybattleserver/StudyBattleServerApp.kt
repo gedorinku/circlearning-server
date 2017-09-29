@@ -61,6 +61,9 @@ data class ProblemGet(
 @location("/problem/assigned")
 data class AssignedProblemsGet(val authenticationKey: String = "", val groupId: Int = 0)
 
+@location("/problem/request_new")
+data class ProblemRequest(val authenticationKey: String, val groupId: Int = 0)
+
 @location("/solution/create")
 data class SolutionCreate(
         val authenticationKey: String = "",
