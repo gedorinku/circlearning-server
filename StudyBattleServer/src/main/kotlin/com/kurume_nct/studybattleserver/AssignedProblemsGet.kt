@@ -3,6 +3,7 @@ package com.kurume_nct.studybattleserver
 import com.google.gson.Gson
 import com.kurume_nct.studybattleserver.dao.Problem
 import com.kurume_nct.studybattleserver.dao.Problems
+import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.ktor.http.HttpStatusCode
 import org.jetbrains.ktor.locations.post
@@ -24,7 +25,7 @@ fun Route.getAssignedProblems() = post<AssignedProblemsGet> {
     val problems = transaction {
         Problem
                 .find {
-                    Problems.assignedUser.eq(user.id)
+                    Problems.assignedUser.eq(user.id) and Problems.group.eq(it.groupId)
                 }
                 .toList()
                 .map {

@@ -2,6 +2,7 @@ package com.kurume_nct.studybattleserver
 
 import com.google.gson.Gson
 import com.kurume_nct.studybattleserver.dao.Content
+import com.kurume_nct.studybattleserver.dao.Group
 import com.kurume_nct.studybattleserver.dao.Image
 import com.kurume_nct.studybattleserver.dao.Problem
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -39,6 +40,14 @@ fun Route.createProblem() = post<ProblemCreate> {
         return@post
     }
 
+    val group = transaction {
+        Group.findById(it.groupId)
+    }
+    if (group == null) {
+        call.respond(HttpStatusCode.BadRequest)
+        return@post
+    }
+
     val content = transaction {
         Content.new {
             text = it.text
@@ -56,6 +65,7 @@ fun Route.createProblem() = post<ProblemCreate> {
             startedAt = parsedStartsAt
             durationMillis = it.durationMillis
             point = 0
+            this.group = group
         }
     }
 

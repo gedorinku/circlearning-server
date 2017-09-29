@@ -48,7 +48,8 @@ data class ProblemCreate(
         val text: String = "",
         val imageIds: List<Int> = emptyList(),
         val startsAt: String = "",
-        val durationMillis: Long = 0
+        val durationMillis: Long = 0,
+        val groupId: Int = 0
 )
 
 @location("/problem/{id}")
@@ -58,7 +59,7 @@ data class ProblemGet(
 )
 
 @location("/problem/assigned")
-data class AssignedProblemsGet(val authenticationKey: String)
+data class AssignedProblemsGet(val authenticationKey: String = "", val groupId: Int = 0)
 
 @location("/solution/create")
 data class SolutionCreate(
