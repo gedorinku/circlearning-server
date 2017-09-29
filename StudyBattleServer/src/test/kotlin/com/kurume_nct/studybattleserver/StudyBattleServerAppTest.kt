@@ -68,10 +68,12 @@ class StudyBattleServerAppTest {
             }
         }
 
-        fun randomPassword(random: SecureRandom): String {
-            val password = ByteArray(32, { 0 })
-            random.nextBytes(password)
-            return DatatypeConverter.printHexBinary(password)
+        fun randomPassword(random: SecureRandom): String = generateRandomString(64, random)
+
+        fun generateRandomString(length: Int, random: SecureRandom): String {
+            val result = ByteArray(length / 2 + 1, { 0 })
+            random.nextBytes(result)
+            return DatatypeConverter.printHexBinary(result).substring(0, length)
         }
     }
 
@@ -293,7 +295,7 @@ class StudyBattleServerAppTest {
     @Test
     fun createProblemAndSolutionTest() = withTestApplication(Application::studyBattleServerApp) {
         val createProblem: (ProblemCreate, TestApplicationCall.() -> Unit) -> Unit
-                = { (authenticationKey, title, text, imageIds, startsAt, durationMillis), test ->
+                = { (authenticationKey, title, text, imageIds, startsAt, durationMillis, groupId), test ->
             val imageIdsEncoded = imageIds
                     .mapIndexed { index, id -> "imageIds" to id.toString() }
             val values = mutableListOf(
@@ -301,7 +303,8 @@ class StudyBattleServerAppTest {
                     "title" to title,
                     "text" to text,
                     "startsAt" to startsAt,
-                    "durationMillis" to durationMillis.toString()
+                    "durationMillis" to durationMillis.toString(),
+                    "groupId" to groupId.toString()
                                       )
             values.addAll(imageIdsEncoded)
 
@@ -357,6 +360,13 @@ class StudyBattleServerAppTest {
         }
 
         val authenticationKey = login(testUserName, testPassword)!!
+        val user = verifyCredentials(authenticationKey)!!
+        val groupId = transaction {
+            Group.new {
+                name = "anko_" + generateRandomString(8, random)
+                owner = user
+            }.id.value
+        }
         val problemTitle = "hoge"
         val problemText =
                 "うぇい\n" +
@@ -371,7 +381,8 @@ class StudyBattleServerAppTest {
                         problemText,
                         emptyList(),
                         startsAt.toString(),
-                        duration.millis
+                        duration.millis,
+                        groupId
                              )
                      ) {
             assertEquals(HttpStatusCode.OK, response.status())
@@ -431,11 +442,6 @@ class StudyBattleServerAppTest {
                 }
             }
         }
-    }
-
-    @Test
-    fun assignProblemTest() {
-
     }
 
     @Test

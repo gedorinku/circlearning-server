@@ -20,10 +20,8 @@ object Problems : IntIdTable() {
     val startedAt = datetime("started_at")
     val durationMillis = long("duration_millis")
     val group = reference("group", Groups)
-    val assignedUser = reference("assigned_user", Users)
+    val assignedUser = reference("assigned_user", Users).nullable()
     val point = integer("point")
-
-
 }
 
 class Problem(id: EntityID<Int>) : IntEntity(id) {
@@ -36,7 +34,7 @@ class Problem(id: EntityID<Int>) : IntEntity(id) {
     var startedAt by Problems.startedAt
     var durationMillis by Problems.durationMillis
     var group by Group referencedOn Problems.group
-    var assignedUser by User referencedOn Problems.assignedUser
+    var assignedUser by User optionalReferencedOn Problems.assignedUser
     var point by Problems.point
 
     var duration: Duration
