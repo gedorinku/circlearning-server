@@ -22,6 +22,8 @@ object Problems : IntIdTable() {
     val group = reference("group", Groups)
     val assignedUser = reference("assigned_user", Users)
     val point = integer("point")
+
+
 }
 
 class Problem(id: EntityID<Int>) : IntEntity(id) {
@@ -44,12 +46,12 @@ class Problem(id: EntityID<Int>) : IntEntity(id) {
         }
 
     fun assignUser(user: User) {
-        val alreadyAssined = transaction {
+        val alreadyAssigned = transaction {
             !AssignHistroy.find {
                 AssignHistories.user.eq(user.id) and AssignHistories.problem.eq(this@Problem.id)
             }.empty()
         }
-        if (alreadyAssined) {
+        if (alreadyAssigned) {
             throw IllegalStateException("すでに割り当てられたことのある問題です。")
         }
 
