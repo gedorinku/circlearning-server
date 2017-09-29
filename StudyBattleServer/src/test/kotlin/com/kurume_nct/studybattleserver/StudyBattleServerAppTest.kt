@@ -434,6 +434,11 @@ class StudyBattleServerAppTest {
     }
 
     @Test
+    fun assignProblemTest() {
+
+    }
+
+    @Test
     fun hashWithSaltTest() {
         val password = "password123"
         val sha256 = MessageDigest.getInstance("SHA-256")

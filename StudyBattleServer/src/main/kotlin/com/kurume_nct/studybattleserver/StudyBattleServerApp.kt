@@ -57,6 +57,9 @@ data class ProblemGet(
         val id: Int = -1
 )
 
+@location("/problem/assigned")
+data class AssignedProblemsGet(val authenticationKey: String)
+
 @location("/solution/create")
 data class SolutionCreate(
         val authenticationKey: String = "",
@@ -121,7 +124,8 @@ fun connectDataBase() {
                 Contents,
                 Problems,
                 ContentImageRelations,
-                Solutions
+                Solutions,
+                AssignHistories
         )
     }
 }

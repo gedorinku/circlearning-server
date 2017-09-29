@@ -4,6 +4,8 @@ import org.jetbrains.exposed.dao.EntityID
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.IntIdTable
+import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.Duration
 
 /**
@@ -17,6 +19,8 @@ object Problems : IntIdTable() {
     val createdAt = datetime("created_at")
     val startedAt = datetime("started_at")
     val durationMillis = long("duration_millis")
+    val group = reference("group", Groups)
+    val assignedUser = reference("assigned_user", Users)
     val point = integer("point")
 }
 
@@ -29,6 +33,8 @@ class Problem(id: EntityID<Int>) : IntEntity(id) {
     var createdAt by Problems.createdAt
     var startedAt by Problems.startedAt
     var durationMillis by Problems.durationMillis
+    var group by Group referencedOn Problems.group
+    var assignedUser by User referencedOn Problems.assignedUser
     var point by Problems.point
 
     var duration: Duration
@@ -36,4 +42,32 @@ class Problem(id: EntityID<Int>) : IntEntity(id) {
         set(value) {
             durationMillis = value.toMillis()
         }
+
+    fun assignUser(user: User) {
+        val alreadyAssined = transaction {
+            !AssignHistroy.find {
+                AssignHistories.user.eq(user.id) and AssignHistories.problem.eq(this@Problem.id)
+            }.empty()
+        }
+        if (alreadyAssined) {
+            throw IllegalStateException("すでに割り当てられたことのある問題です。")
+        }
+
+        transaction {
+            AssignHistroy.new {
+                this.user = user
+                this.problem = this@Problem
+            }
+        }
+
+        assignedUser = user
+    }
+
+    fun assignUser(userId: Int) {
+        val user = transaction {
+            User.findById(userId)
+        } ?: throw IllegalArgumentException()
+
+        assignUser(user)
+    }
 }
