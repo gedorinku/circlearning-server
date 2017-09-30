@@ -6,4 +6,5 @@ cd /home/gedorinku/study-battle-server/StudyBattleServer
 git pull
 nohup ./gradlew run &
 echo "deployed🍣 !"
+exit
 
