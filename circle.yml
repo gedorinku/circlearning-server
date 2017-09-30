@@ -2,11 +2,3 @@ machine:
   pre:
     - cp ~/study-battle-server/StudyBattleServer/database.properties.sample ~/study-battle-server/StudyBattleServer/database.properties
     - cat ~/study-battle-server/db_setup | mysql -u root
-
-
-deployment:
-  production:
-    branch: master
-    commands:
-      - ssh gedorinku@studybattle.dip.jp < script/deploy:
-          timeout: 30
