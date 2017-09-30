@@ -1,5 +1,3 @@
-#!/bin/sh
-
 echo "deploying..."
 cd /home/gedorinku/study-battle-server/StudyBattleServer
 ./gradlew --stop

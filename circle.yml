@@ -8,5 +8,5 @@ deployment:
   production:
     branch: master
     commands:
-      - ssh gedorinku@studybattle.dip.jp /home/gedorinku/study-battle-server/script/deploy.sh:
+      - ssh gedorinku@studybattle.dip.jp < script/deploy:
           timeout: 30
