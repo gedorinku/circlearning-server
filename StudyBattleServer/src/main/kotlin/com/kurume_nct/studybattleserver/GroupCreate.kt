@@ -11,8 +11,6 @@ import org.jetbrains.ktor.routing.Route
 /**
  * Created by gedorinku on 2017/07/30.
  */
-data class GroupCreateResponse(val id: Int)
-
 fun Route.createGroup() = post<GroupCreate> {
     val user = verifyCredentials(it.authenticationKey)
     if (user == null) {
@@ -33,6 +31,10 @@ fun Route.createGroup() = post<GroupCreate> {
         }
     }
 
-    val json = Gson().toJson(GroupCreateResponse(group.id.value))
+    val owner = UserGetResponse.fromUser(user)
+    val response = transaction {
+        GroupGetResponse(group.id.value, group.name, owner)
+    }
+    val json = Gson().toJson(response)
     call.respond(json)
 }

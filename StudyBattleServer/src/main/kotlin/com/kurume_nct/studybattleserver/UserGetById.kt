@@ -11,7 +11,14 @@ import org.jetbrains.ktor.routing.Route
 /**
  * Created by gedorinku on 2017/09/30.
  */
-data class UserGetResponse(val id: Int, val userName: String, val displayName: String)
+data class UserGetResponse(val id: Int, val userName: String, val displayName: String) {
+    companion object {
+
+        fun fromUser(user: User): UserGetResponse = transaction {
+            UserGetResponse(user.id.value, user.userName, user.displayName)
+        }
+    }
+}
 
 fun Route.getUserById() = get<UserGetById> {
     val user = transaction {
@@ -22,9 +29,7 @@ fun Route.getUserById() = get<UserGetById> {
         return@get
     }
 
-    val response = transaction {
-        UserGetResponse(user.id.value, user.userName, user.displayName)
-    }
+    val response = UserGetResponse.fromUser(user)
 
     call.respond(Gson().toJson(response))
 }

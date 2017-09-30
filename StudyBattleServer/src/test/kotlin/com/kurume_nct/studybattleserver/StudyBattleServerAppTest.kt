@@ -205,7 +205,7 @@ class StudyBattleServerAppTest {
             assertEquals(1, count)
 
             val gson = Gson()
-            val groupCreateResponse = gson.fromJson(response.content.orEmpty(), GroupCreateResponse::class.java)
+            val groupCreateResponse = gson.fromJson(response.content.orEmpty(), GroupGetResponse::class.java)
             getGroup(authKey, groupCreateResponse.id) {
                 val group = gson.fromJson(response.content.orEmpty(), GroupGetResponse::class.java)
                 assertEquals(groupName, group.name)
