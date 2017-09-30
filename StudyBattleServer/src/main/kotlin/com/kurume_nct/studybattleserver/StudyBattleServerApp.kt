@@ -29,11 +29,17 @@ data class Login(val userName: String = "", val password: String = "")
 @location("/register")
 data class Register(val displayName: String = "", val userName: String = "", val password: String = "")
 
+@location("/user/by_id/{id}")
+data class UserGetById(val id: Int = 0)
+
 @location("/group/new")
 data class GroupCreate(val authenticationKey: String = "", val name: String = "")
 
 @location("/group/join")
 data class GroupJoin(val authenticationKey: String = "", val groupId: Int = 0)
+
+@location("/group/{id}")
+data class GroupGet(val authenticationKey: String = "", val id: Int = 0)
 
 @location("/image/upload")
 class ImageUpload
@@ -94,12 +100,16 @@ fun Application.studyBattleServerApp() {
     install(Routing) {
         login(random)
         register(random)
+        getUserById()
         createGroup()
         joinGroup()
+        getGroup()
         uploadImage()
         getImage()
         createProblem()
         getProblem()
+        getAssignedProblems()
+        requestProblem()
         createSolution()
         getSolution()
     }
