@@ -55,7 +55,8 @@ data class ProblemCreate(
         val imageIds: List<Int> = emptyList(),
         val startsAt: String = "",
         val durationMillis: Long = 0,
-        val groupId: Int = 0
+        val groupId: Int = 0,
+        val assumedSolution: SolutionCreate = SolutionCreate()
 )
 
 @location("/problem/{id}")
