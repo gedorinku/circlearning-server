@@ -314,23 +314,16 @@ class StudyBattleServerAppTest {
     @Test
     fun createProblemAndSolutionTest() = withTestApplication(Application::studyBattleServerApp) {
         val createProblem: (ProblemCreate, TestApplicationCall.() -> Unit) -> Unit
-                = { (authenticationKey, title, text, imageIds, startsAt, durationMillis, groupId), test ->
-            val imageIdsEncoded = imageIds
-                    .mapIndexed { index, id -> "imageIds" to id.toString() }
-            val values = mutableListOf(
-                    "authenticationKey" to authenticationKey,
-                    "title" to title,
-                    "text" to text,
-                    "startsAt" to startsAt,
-                    "durationMillis" to durationMillis.toString(),
-                    "groupId" to groupId.toString()
-                                      )
-            values.addAll(imageIdsEncoded)
+                = { request, test ->
+            val problem = ProblemCreate(request.authenticationKey, request.title, request.text, request.imageIds, request.startsAt, request.durationMillis, request.groupId, SolutionCreate(text = "想定解だよ"))
+            val json = Gson().toJson(problem)
 
             test(
                     handleRequest(HttpMethod.Post, "/problem/create") {
-                        addHeader(HttpHeaders.ContentType, "application/x-www-form-urlencoded")
-                        body = values.formUrlEncode()
+                        addHeader(HttpHeaders.ContentType, "application/JSON")
+                        addHeader("Data-Type", "JSON")
+                        addHeader("Script-Charset", "utf-8")
+                        body = json
                     }
                 )
         }
@@ -354,8 +347,7 @@ class StudyBattleServerAppTest {
             val values = mutableListOf(
                     "authenticationKey" to authenticationKey,
                     "text" to text,
-                    "problemId" to problemId.toString()
-                                      )
+                    "problemId" to problemId.toString())
             values.addAll(imageIdsEncoded)
 
             test(

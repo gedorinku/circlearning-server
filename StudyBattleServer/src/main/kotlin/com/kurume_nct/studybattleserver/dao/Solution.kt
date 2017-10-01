@@ -45,6 +45,10 @@ fun Solution.Companion.fromRequest(request: SolutionCreate, author: User)
         Problem.findById(request.problemId)
     } ?: return Pair(null, HttpStatusCode.BadRequest)
 
+    if (request.text.isEmpty() && images.isEmpty()) {
+        return Pair(null, HttpStatusCode.BadRequest)
+    }
+
     val content = transaction {
         Content.new {
             text = request.text

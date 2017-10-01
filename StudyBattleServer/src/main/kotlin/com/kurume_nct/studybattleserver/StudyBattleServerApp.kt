@@ -1,5 +1,7 @@
 package com.kurume_nct.studybattleserver
 
+import com.google.gson.FieldNamingPolicy
+import com.google.gson.FieldNamingStrategy
 import com.kurume_nct.studybattleserver.dao.*
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils.create
@@ -93,10 +95,11 @@ fun Application.studyBattleServerApp() {
     install(DefaultHeaders)
     install(Compression)
     install(CallLogging)
-    install(Locations)
     install(GsonSupport) {
         setPrettyPrinting()
+        setFieldNamingPolicy(FieldNamingPolicy.IDENTITY)
     }
+    install(Locations)
 
     install(Routing) {
         login(random)
@@ -140,7 +143,8 @@ fun connectDataBase() {
                 Problems,
                 ContentImageRelations,
                 Solutions,
-                AssignHistories
+                AssignHistories,
+                AssumedSolutionRelations
         )
     }
 }
