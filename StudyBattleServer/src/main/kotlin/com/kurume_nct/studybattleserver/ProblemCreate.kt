@@ -5,7 +5,7 @@ import com.kurume_nct.studybattleserver.dao.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.ktor.http.HttpStatusCode
 import org.jetbrains.ktor.locations.post
-import org.jetbrains.ktor.request.receive
+import org.jetbrains.ktor.request.receiveStream
 import org.jetbrains.ktor.response.respond
 import org.jetbrains.ktor.routing.Route
 import org.joda.time.DateTime
@@ -16,8 +16,14 @@ import org.joda.time.DateTime
 data class ProblemCreateResponse(val id: Int)
 
 fun Route.createProblem() = post<ProblemCreate> {
-    val requestJson = call.request.receiveContent().inputStream().bufferedReader().use {
-        it.readLines().joinToString("")
+    val requestJson = call.receiveStream().use {
+        val buffer = mutableListOf<Byte>()
+        var temp = it.read()
+        while (temp != -1) {
+            buffer.add(temp.toByte())
+            temp = it.read()
+        }
+        String(buffer.toByteArray(), Charsets.UTF_8)
     }
     val gson = Gson()
     val request = gson.fromJson(requestJson, ProblemCreate::class.java)
