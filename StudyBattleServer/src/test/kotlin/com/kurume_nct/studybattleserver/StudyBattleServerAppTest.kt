@@ -167,6 +167,27 @@ class StudyBattleServerAppTest {
     }
 
     @Test
+    fun verifyAuthenticationTest() = withTestApplication(Application::studyBattleServerApp) {
+        val verifyAuthentication: (String, TestApplicationCall.() -> Unit) -> Unit
+                = { authenticationKey, test ->
+            val values = listOf("authenticationKey" to authenticationKey)
+
+            test(handleRequest(HttpMethod.Post, "/verify_authentication") {
+                addHeader(HttpHeaders.ContentType, "application/x-www-form-urlencoded")
+                body = values.formUrlEncode()
+            })
+        }
+
+        val authenticationKey = login(testUserName, testPassword)!!
+        verifyAuthentication(authenticationKey) {
+            assertEquals(HttpStatusCode.OK, response.status())
+            val user = Gson().fromJson(response.content.orEmpty(), UserGetResponse::class.java)
+            assertEquals(testUserName, user.userName)
+            assertEquals(testDisplayName, user.displayName)
+        }
+    }
+
+    @Test
     fun createGroupTest() = withTestApplication(Application::studyBattleServerApp) {
         val createGroup: (String, String, TestApplicationCall.() -> Unit) -> Unit = { authenticationKey, groupName, test ->
             val user = com.kurume_nct.studybattleserver.verifyCredentials(authenticationKey)

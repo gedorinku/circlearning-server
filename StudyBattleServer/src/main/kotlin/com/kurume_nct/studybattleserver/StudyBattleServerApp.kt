@@ -37,6 +37,9 @@ data class Register(val displayName: String = "",
     }
 }
 
+@location("/verify_authentication")
+data class AuthenticationVerify(val authenticationKey: String = "")
+
 @location("/user/by_id/{id}")
 data class UserGetById(val id: Int = 0)
 
@@ -108,6 +111,7 @@ fun Application.studyBattleServerApp() {
     install(Routing) {
         login(random)
         register(random)
+        verifyAuthentication()
         getUserById()
         createGroup()
         joinGroup()
