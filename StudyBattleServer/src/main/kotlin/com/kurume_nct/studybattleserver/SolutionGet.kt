@@ -17,8 +17,9 @@ data class SolutionGetResponse(
         val authorId: Int,
         val problemId: Int,
         val imageCount: Int,
-        val imageIds: List<Int>
-)
+        val imageIds: List<Int>,
+        val judgingState: String
+                              )
 
 fun Route.getSolution() = post<SolutionGet> {
     val user = verifyCredentials(it.authenticationKey)
@@ -45,8 +46,9 @@ fun Route.getSolution() = post<SolutionGet> {
                 solution.author.id.value,
                 solution.problem.id.value,
                 images.size,
-                images
-        )
+                images,
+                solution.judgingState.name
+                           )
     }
     call.respond(Gson().toJson(response))
 }

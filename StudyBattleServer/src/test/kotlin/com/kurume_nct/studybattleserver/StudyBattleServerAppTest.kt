@@ -389,12 +389,22 @@ class StudyBattleServerAppTest {
                 = { (authenticationKey, id), test ->
             val values = listOf("authenticationKey" to authenticationKey)
 
-            test(
-                    handleRequest(HttpMethod.Post, "/solution/$id") {
-                        addHeader(HttpHeaders.ContentType, "application/x-www-form-urlencoded")
-                        body = values.formUrlEncode()
-                    }
-                )
+            test(handleRequest(HttpMethod.Post, "/solution/$id") {
+                addHeader(HttpHeaders.ContentType, "application/x-www-form-urlencoded")
+                body = values.formUrlEncode()
+            })
+        }
+
+        val judgeSolution: (SolutionJudge, TestApplicationCall.() -> Unit) -> Unit
+                = { (authenticationKey, id, isAccepted), test ->
+            val values = listOf("authenticationKey" to authenticationKey,
+                                "id" to id.toString(),
+                                "isAccepted" to isAccepted.toString())
+
+            test(handleRequest(HttpMethod.Post, "/solution/judge") {
+                addHeader(HttpHeaders.ContentType, "application/x-www-form-urlencoded")
+                body = values.formUrlEncode()
+            })
         }
 
         val authenticationKey = login(testUserName, testPassword)!!
@@ -468,6 +478,10 @@ class StudyBattleServerAppTest {
                 assert(0 < solutionId)
                 println(solutionId)
 
+                judgeSolution(SolutionJudge(authenticationKey, solutionId, true)) {
+                    assertEquals(HttpStatusCode.OK, response.status())
+                }
+
                 getSolution(SolutionGet(authenticationKey, solutionId)) {
                     assertEquals(HttpStatusCode.OK, response.status())
                     val solution = Gson()
@@ -477,6 +491,7 @@ class StudyBattleServerAppTest {
                                      )
                     assertEquals(solutionText, solution.text)
                     assertEquals(problemId, solution.problemId)
+                    assertEquals(JudgingState.Accepted.name, solution.judgingState)
                 }
             }
         }

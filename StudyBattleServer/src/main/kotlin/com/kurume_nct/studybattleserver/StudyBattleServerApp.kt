@@ -94,6 +94,11 @@ data class SolutionCreate(val authenticationKey: String = "",
 data class SolutionGet(val authenticationKey: String = "",
                        val id: Int = -1)
 
+@location("/solution/judge")
+data class SolutionJudge(val authenticationKey: String = "",
+                         val id: Int = -1,
+                         val isAccepted: Boolean? = null)
+
 private val random = SecureRandom()
 
 fun Application.studyBattleServerApp() {
@@ -125,6 +130,7 @@ fun Application.studyBattleServerApp() {
         requestProblem()
         createSolution()
         getSolution()
+        judgeSolution()
         attachToGroup()
     }
 }

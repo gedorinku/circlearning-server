@@ -12,12 +12,20 @@ import org.joda.time.DateTime
 /**
  * Created by gedorinku on 2017/09/22.
  */
+enum class JudgingState {
+    Solved,
+    WaitingForJudge,
+    Accepted,
+    WrongAnswer
+}
+
 object Solutions : IntIdTable() {
 
     val author = reference("author", Users)
     val content = reference("content", Contents)
     val problem = reference("problem", Problems)
     val createdAt = datetime("created_at")
+    val judgingState = enumeration("judging_state", JudgingState::class.java).default(JudgingState.Solved)
 }
 
 class Solution(id: EntityID<Int>) : IntEntity(id) {
@@ -27,6 +35,7 @@ class Solution(id: EntityID<Int>) : IntEntity(id) {
     var content by Content referencedOn Solutions.content
     var problem by Problem referencedOn Solutions.problem
     var createdAt by Solutions.createdAt
+    var judgingState by Solutions.judgingState
 }
 
 fun Solution.Companion.fromRequest(request: SolutionCreate, author: User)
