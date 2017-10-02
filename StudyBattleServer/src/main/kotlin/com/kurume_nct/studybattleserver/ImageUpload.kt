@@ -20,21 +20,12 @@ import javax.xml.bind.DatatypeConverter
 data class ImageUploadResponse(var id: Int = 0, var url: String = "", var fileName: String = "")
 
 fun Route.uploadImage() = post<ImageUpload> {
-    var authenticationKey = ""
     var image = emptyList<Byte>()
 
     call.receiveMultipart().parts.forEach {
-        if (it is PartData.FormItem && it.partName == "authenticationKey") {
-            authenticationKey = it.value
-        } else if (it is PartData.FileItem && it.partName == "image") {
+        if (it is PartData.FileItem && it.partName == "image") {
             image = it.streamProvider.invoke().use { it.readBytes() }.toList()
         }
-    }
-
-    val user = verifyCredentials(authenticationKey)
-    if (user == null) {
-        call.respond(HttpStatusCode.Unauthorized)
-        return@post
     }
 
     val fileExtension = getFileExtension(image)

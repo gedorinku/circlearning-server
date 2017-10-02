@@ -1,7 +1,6 @@
 package com.kurume_nct.studybattleserver
 
 import com.google.gson.FieldNamingPolicy
-import com.google.gson.FieldNamingStrategy
 import com.kurume_nct.studybattleserver.dao.*
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils.create
@@ -29,7 +28,14 @@ import javax.xml.bind.DatatypeConverter
 data class Login(val userName: String = "", val password: String = "")
 
 @location("/register")
-data class Register(val displayName: String = "", val userName: String = "", val password: String = "")
+data class Register(val displayName: String = "",
+                    val userName: String = "",
+                    val password: String = "",
+                    val iconImageId: Int = NO_ICON)  {
+    companion object {
+        const val NO_ICON = -1
+    }
+}
 
 @location("/user/by_id/{id}")
 data class UserGetById(val id: Int = 0)
@@ -50,22 +56,18 @@ class ImageUpload
 data class ImageGet(val fileName: String = "")
 
 @location("/problem/create")
-data class ProblemCreate(
-        val authenticationKey: String = "",
-        val title: String = "",
-        val text: String = "",
-        val imageIds: List<Int> = emptyList(),
-        val startsAt: String = "",
-        val durationMillis: Long = 0,
-        val groupId: Int = 0,
-        val assumedSolution: SolutionCreate = SolutionCreate()
-)
+data class ProblemCreate(val authenticationKey: String = "",
+                         val title: String = "",
+                         val text: String = "",
+                         val imageIds: List<Int> = emptyList(),
+                         val startsAt: String = "",
+                         val durationMillis: Long = 0,
+                         val groupId: Int = 0,
+                         val assumedSolution: SolutionCreate = SolutionCreate())
 
 @location("/problem/{id}")
-data class ProblemGet(
-        val authenticationKey: String = "",
-        val id: Int = -1
-)
+data class ProblemGet(val authenticationKey: String = "",
+                      val id: Int = -1)
 
 @location("/problem/assigned")
 data class AssignedProblemsGet(val authenticationKey: String = "", val groupId: Int = 0)
@@ -74,18 +76,14 @@ data class AssignedProblemsGet(val authenticationKey: String = "", val groupId: 
 data class ProblemRequest(val authenticationKey: String, val groupId: Int = 0)
 
 @location("/solution/create")
-data class SolutionCreate(
-        val authenticationKey: String = "",
-        val text: String = "",
-        val problemId: Int = -1,
-        val imageIds: List<Int> = emptyList()
-)
+data class SolutionCreate(val authenticationKey: String = "",
+                          val text: String = "",
+                          val problemId: Int = -1,
+                          val imageIds: List<Int> = emptyList())
 
 @location("/solution/{id}")
-data class SolutionGet(
-        val authenticationKey: String = "",
-        val id: Int = -1
-)
+data class SolutionGet(val authenticationKey: String = "",
+                       val id: Int = -1)
 
 private val random = SecureRandom()
 
@@ -130,7 +128,7 @@ fun connectDataBase() {
             driver = properties.getProperty("driver"),
             user = properties.getProperty("user"),
             password = properties.getProperty("password")
-    )
+                    )
 
     transaction {
         create(
@@ -145,7 +143,7 @@ fun connectDataBase() {
                 Solutions,
                 AssignHistories,
                 AssumedSolutionRelations
-        )
+              )
     }
 }
 

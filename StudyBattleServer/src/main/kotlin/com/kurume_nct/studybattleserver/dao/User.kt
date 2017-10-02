@@ -16,6 +16,7 @@ object Users : IntIdTable() {
     val displayName = varchar("display_name", 20)
     val hashSalt = varchar("hash_salt", 127)
     val passwordHash = varchar("password_hash", 127)
+    val icon = reference("icon", Images).nullable()
 }
 
 class User(id: EntityID<Int>) : IntEntity(id) {
@@ -25,6 +26,7 @@ class User(id: EntityID<Int>) : IntEntity(id) {
     var displayName by Users.displayName
     var hashSalt by Users.hashSalt
     var passwordHash by Users.passwordHash
+    var icon by Image optionalReferencedOn Users.icon
 
     /**
      * グループに参加します。すでに参加している場合は何もしません。

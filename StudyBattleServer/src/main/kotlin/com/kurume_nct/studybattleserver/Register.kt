@@ -1,6 +1,7 @@
 package com.kurume_nct.studybattleserver
 
 import com.google.gson.Gson
+import com.kurume_nct.studybattleserver.dao.Image
 import com.kurume_nct.studybattleserver.dao.User
 import com.kurume_nct.studybattleserver.dao.Users
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -31,6 +32,15 @@ fun Route.register(random: SecureRandom) = post<Register> {
     }) {
         val description = "ユーザー名はすでに使用されています。"
         call.respond(HttpStatusCode(HttpStatusCode.BadRequest.value, description))
+        return@post
+    }
+
+    val icon = transaction {
+        Image.findById(it.iconImageId)
+    }
+
+    if (icon == null && it.iconImageId != Register.NO_ICON) {
+        call.respond(HttpStatusCode.BadRequest)
         return@post
     }
 
