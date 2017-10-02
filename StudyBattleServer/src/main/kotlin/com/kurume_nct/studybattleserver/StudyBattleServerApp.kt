@@ -58,6 +58,9 @@ class ImageUpload
 @location("/image/{fileName}")
 data class ImageGet(val fileName: String = "")
 
+@location("/image_by_id/{id}")
+data class ImageGetById(val id: Int = 0)
+
 @location("/problem/create")
 data class ProblemCreate(val authenticationKey: String = "",
                          val title: String = "",
@@ -111,6 +114,7 @@ fun Application.studyBattleServerApp() {
         getGroup()
         uploadImage()
         getImage()
+        getImageById()
         createProblem()
         getProblem()
         getAssignedProblems()

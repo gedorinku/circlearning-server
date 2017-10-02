@@ -304,6 +304,12 @@ class StudyBattleServerAppTest {
                 val hash = DatatypeConverter.printHexBinary(sha256.digest(response.byteContent))
                 assertEquals(originHash, hash)
             }
+
+            handleRequest(HttpMethod.Get, "image_by_id/${uploadResponse.id}").apply {
+                val image = Gson().fromJson(response.content.orEmpty(), ImageUploadResponse::class.java)
+                assertEquals(uploadResponse.url, image.url)
+                assertEquals(uploadResponse.fileName, image.fileName)
+            }
         }
 
         uploadImage(authenticationKey, File("assets/worry.pdf")) {
