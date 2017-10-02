@@ -46,6 +46,9 @@ data class GroupCreate(val authenticationKey: String = "", val name: String = ""
 @location("/group/join")
 data class GroupJoin(val authenticationKey: String = "", val groupId: Int = 0)
 
+@location("/group/attach")
+data class GroupAttach(val authenticationKey: String = "", val groupId: Int = 0, val userId: Int = 0)
+
 @location("/group/{id}")
 data class GroupGet(val authenticationKey: String = "", val id: Int = 0)
 
@@ -114,6 +117,7 @@ fun Application.studyBattleServerApp() {
         requestProblem()
         createSolution()
         getSolution()
+        attachToGroup()
     }
 }
 
