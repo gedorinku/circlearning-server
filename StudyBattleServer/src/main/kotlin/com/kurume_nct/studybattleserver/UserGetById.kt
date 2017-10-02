@@ -11,11 +11,16 @@ import org.jetbrains.ktor.routing.Route
 /**
  * Created by gedorinku on 2017/09/30.
  */
-data class UserGetResponse(val id: Int, val userName: String, val displayName: String) {
+data class UserGetResponse(val id: Int, val userName: String, val displayName: String, val icon: ImageUploadResponse?) {
     companion object {
 
         fun fromUser(user: User): UserGetResponse = transaction {
-            UserGetResponse(user.id.value, user.userName, user.displayName)
+            val icon = user.icon
+            val imageResponse = when(icon) {
+                null -> null
+                else -> ImageUploadResponse.fromImage(icon)
+            }
+            UserGetResponse(user.id.value, user.userName, user.displayName, imageResponse)
         }
     }
 }

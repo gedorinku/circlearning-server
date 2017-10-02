@@ -33,7 +33,7 @@ fun Route.getGroup() = post<GroupGet> {
         GroupGetResponse(
                 group.id.value,
                 group.name,
-                UserGetResponse(owner.id.value, owner.userName, owner.displayName))
+                UserGetResponse.fromUser(owner))
     }
 
     call.respond(Gson().toJson(response))

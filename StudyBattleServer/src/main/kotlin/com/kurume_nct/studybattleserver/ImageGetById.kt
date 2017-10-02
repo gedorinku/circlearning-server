@@ -20,8 +20,6 @@ fun Route.getImageById() = get<ImageGetById> {
         return@get
     }
 
-    val response = transaction {
-        ImageUploadResponse(image.id.value, getFullUrl("image/${image.fileName}"), image.fileName)
-    }
+    val response = ImageUploadResponse.fromImage(image)
     call.respond(Gson().toJson(response))
 }

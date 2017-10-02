@@ -17,25 +17,33 @@ import javax.xml.bind.DatatypeConverter
 /**
  * Created by gedorinku on 2017/08/09.
  */
-data class ImageUploadResponse(var id: Int = 0, var url: String = "", var fileName: String = "")
+data class ImageUploadResponse(var id: Int = 0, var url: String = "", var fileName: String = "") {
+
+    companion object {
+
+        fun fromImage(image: Image): ImageUploadResponse = transaction {
+            ImageUploadResponse(image.id.value, getFullUrl("image/${image.fileName}"), image.fileName)
+        }
+    }
+}
 
 fun Route.uploadImage() = post<ImageUpload> {
-    var image = emptyList<Byte>()
+    var imageBinary = emptyList<Byte>()
 
     call.receiveMultipart().parts.forEach {
         if (it is PartData.FileItem && it.partName == "image") {
-            image = it.streamProvider.invoke().use { it.readBytes() }.toList()
+            imageBinary = it.streamProvider.invoke().use { it.readBytes() }.toList()
         }
     }
 
-    val fileExtension = getFileExtension(image)
+    val fileExtension = getFileExtension(imageBinary)
     if (fileExtension.isEmpty()) {
         call.respond(HttpStatusCode.BadRequest)
         return@post
     }
 
     val sha256 = MessageDigest.getInstance("SHA-256")
-    sha256.update(image.toByteArray())
+    sha256.update(imageBinary.toByteArray())
     sha256.update(
             ByteBuffer.allocate(java.lang.Long.BYTES).apply {
                 putLong(System.currentTimeMillis())
@@ -50,16 +58,16 @@ fun Route.uploadImage() = post<ImageUpload> {
 
     File(baseDir + fileName).outputStream().use {
         stream ->
-        stream.write(image.toByteArray())
+        stream.write(imageBinary.toByteArray())
     }
 
-    val id = transaction {
+    val image = transaction {
         Image.new {
             this.fileName = fileName
-        }.id
+        }
     }
 
-    call.respond(Gson().toJson(ImageUploadResponse(id.value, getFullUrl("image/$fileName"), fileName)))
+    call.respond(Gson().toJson(ImageUploadResponse.fromImage(image)))
 }
 
 /***

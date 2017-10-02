@@ -52,6 +52,7 @@ fun Route.register(random: SecureRandom) = post<Register> {
             displayName = it.displayName
             hashSalt = salt
             passwordHash = hashWithSalt(it.password, salt)
+            this.icon = icon
         }
     }
 
