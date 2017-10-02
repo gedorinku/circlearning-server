@@ -102,6 +102,9 @@ data class SolutionJudge(val authenticationKey: String = "",
 @location("/my_solution/judged/")
 class JudgedMySolutionsGet
 
+@location("/my_solution/unjudged")
+class UnjudgedMySolutionsGet
+
 private val random = SecureRandom()
 
 fun Application.studyBattleServerApp() {
@@ -134,6 +137,7 @@ fun Application.studyBattleServerApp() {
         createSolution()
         getSolution()
         getJudgedMySolutions()
+        getUnjudgedMySolutions()
         judgeSolution()
         attachToGroup()
     }
