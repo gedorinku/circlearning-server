@@ -30,6 +30,7 @@ fun Route.createGroup() = post<GroupCreate> {
             owner = user
         }
     }
+    group.attachUser(user)
 
     val owner = UserGetResponse.fromUser(user)
     val response = transaction {
