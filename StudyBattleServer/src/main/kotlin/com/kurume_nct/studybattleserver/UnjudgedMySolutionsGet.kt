@@ -34,6 +34,5 @@ fun Route.getUnjudgedMySolutions() = get<UnjudgedMySolutionsGet> {
                 .map { SolutionGetResponse.fromSolution(it) }
     }
 
-    val response = JudgedMySolutionsGetResponse(solutions)
-    call.respond(Gson().toJson(response))
+    call.respond(Gson().toJson(solutions))
 }

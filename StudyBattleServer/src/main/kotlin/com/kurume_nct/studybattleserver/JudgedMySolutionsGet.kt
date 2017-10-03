@@ -15,8 +15,6 @@ import org.jetbrains.ktor.routing.Route
 /**
  * Created by gedorinku on 2017/10/03.
  */
-data class JudgedMySolutionsGetResponse(val solutions: List<SolutionGetResponse>)
-
 fun Route.getJudgedMySolutions() = get<JudgedMySolutionsGet> {
     val authenticationKey = call.request.queryParameters["authenticationKey"].orEmpty()
     val user = verifyCredentials(authenticationKey)
@@ -36,6 +34,5 @@ fun Route.getJudgedMySolutions() = get<JudgedMySolutionsGet> {
                 .map { SolutionGetResponse.fromSolution(it) }
     }
 
-    val response = JudgedMySolutionsGetResponse(solutions)
-    call.respond(Gson().toJson(response))
+    call.respond(Gson().toJson(solutions))
 }
