@@ -13,8 +13,6 @@ import org.jetbrains.ktor.routing.Route
 /**
  * Created by gedorinku on 2017/09/29.
  */
-data class AssignedProblemsGetResponse(val problems: List<ProblemGetResponse>)
-
 fun Route.getAssignedProblems() = post<AssignedProblemsGet> {
     val user = verifyCredentials(it.authenticationKey)
     if (user == null) {
@@ -42,6 +40,5 @@ fun Route.getAssignedProblems() = post<AssignedProblemsGet> {
                 }
     }
 
-    val response = AssignedProblemsGetResponse(problems)
-    call.respond(Gson().toJson(response))
+    call.respond(Gson().toJson(problems))
 }
