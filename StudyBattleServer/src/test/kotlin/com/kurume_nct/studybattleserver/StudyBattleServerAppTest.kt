@@ -1,11 +1,13 @@
 package com.kurume_nct.studybattleserver
 
 import com.google.gson.Gson
+import com.google.gson.JsonArray
 import com.kurume_nct.studybattleserver.dao.*
 import org.jetbrains.exposed.dao.EntityID
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.ktor.application.Application
+import org.jetbrains.ktor.html.insert
 import org.jetbrains.ktor.http.HttpHeaders
 import org.jetbrains.ktor.http.HttpMethod
 import org.jetbrains.ktor.http.HttpStatusCode
@@ -252,6 +254,11 @@ class StudyBattleServerAppTest {
                 )
         }
 
+        val getJoinedGroups: (String, TestApplicationCall.() -> Unit) -> Unit
+                = { authenticationKey, test ->
+            test(handleRequest(HttpMethod.Get, "/group/joined?authenticationKey=$authenticationKey"))
+        }
+
         val authenticationKey = login(testUserName, testPassword)!!
         val user = verifyCredentials(authenticationKey)!!
         val random = Random()
@@ -273,6 +280,15 @@ class StudyBattleServerAppTest {
             }
 
             assertEquals(1, result)
+        }
+
+        getJoinedGroups(authenticationKey) {
+            assertEquals(HttpStatusCode.OK, response.status())
+            val gson = Gson()
+            val groups = gson
+                    .fromJson(response.content.orEmpty(), JsonArray::class.java)
+                    .map { gson.fromJson(it, GroupGetResponse::class.java) }
+            assert(groups.any { it.name == groupName })
         }
     }
 

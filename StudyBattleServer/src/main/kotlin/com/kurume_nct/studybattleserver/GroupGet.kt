@@ -11,7 +11,16 @@ import org.jetbrains.ktor.routing.Route
 /**
  * Created by gedorinku on 2017/09/30.
  */
-data class GroupGetResponse(val id: Int, val name: String, val owner: UserGetResponse)
+data class GroupGetResponse(val id: Int, val name: String, val owner: UserGetResponse) {
+
+    companion object {
+
+        fun fromGroup(group: Group) = transaction {
+            val owner = UserGetResponse.fromUser(group.owner)
+            GroupGetResponse(group.id.value, group.name, owner)
+        }
+    }
+}
 
 fun Route.getGroup() = post<GroupGet> {
     val user = verifyCredentials(it.authenticationKey)
@@ -28,13 +37,7 @@ fun Route.getGroup() = post<GroupGet> {
         return@post
     }
 
-    val response = transaction {
-        val owner = group.owner
-        GroupGetResponse(
-                group.id.value,
-                group.name,
-                UserGetResponse.fromUser(owner))
-    }
+    val response = GroupGetResponse.fromGroup(group)
 
     call.respond(Gson().toJson(response))
 }

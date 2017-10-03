@@ -55,6 +55,9 @@ data class GroupAttach(val authenticationKey: String = "", val groupId: Int = 0,
 @location("/group/{id}")
 data class GroupGet(val authenticationKey: String = "", val id: Int = 0)
 
+@location("/group/joined")
+class JoinedGroupsGet
+
 @location("/image/upload")
 class ImageUpload
 
@@ -127,6 +130,7 @@ fun Application.studyBattleServerApp() {
         createGroup()
         joinGroup()
         getGroup()
+        getJoinedGroups()
         uploadImage()
         getImage()
         getImageById()
