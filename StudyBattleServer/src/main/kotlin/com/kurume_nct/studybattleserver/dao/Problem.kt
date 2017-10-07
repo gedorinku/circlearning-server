@@ -1,16 +1,25 @@
 package com.kurume_nct.studybattleserver.dao
 
+import com.kurume_nct.studybattleserver.verifyCredentials
 import org.jetbrains.exposed.dao.EntityID
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.IntIdTable
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.ktor.http.HttpStatusCode
+import org.jetbrains.ktor.response.respond
 import java.time.Duration
 
 /**
  * Created by gedorinku on 2017/08/10.
  */
+enum class ProblemState {
+    Opening,
+    Judging,
+    Judged
+}
+
 object Problems : IntIdTable() {
 
     val title = varchar("title", 255)
@@ -22,6 +31,27 @@ object Problems : IntIdTable() {
     val group = reference("group", Groups)
     val assignedUser = reference("assigned_user", Users).nullable()
     val point = integer("point")
+    val state = enumeration("status", ProblemState::class.java)
+
+    fun getUserProblems(authenticationKey: String, groupId: Int, state: ProblemState)
+            : Pair<List<Problem>?, HttpStatusCode> {
+        val user = verifyCredentials(authenticationKey) ?: return Pair(null, HttpStatusCode.Unauthorized)
+
+        val group = transaction {
+            Group.findById(groupId)
+        }
+        if (group == null) {
+            val statusCode = HttpStatusCode(404, "Group not found.")
+            return Pair(null, statusCode)
+        }
+
+        val problems = transaction {
+            Problem.find { Problems.state.eq(ProblemState.Judging) }
+                    .toList()
+        }
+
+        return Pair(problems, HttpStatusCode.OK)
+    }
 }
 
 class Problem(id: EntityID<Int>) : IntEntity(id) {
@@ -36,6 +66,7 @@ class Problem(id: EntityID<Int>) : IntEntity(id) {
     var group by Group referencedOn Problems.group
     var assignedUser by User optionalReferencedOn Problems.assignedUser
     var point by Problems.point
+    var state by Problems.state
 
     var duration: Duration
         get() = Duration.ofMillis(durationMillis)

@@ -84,6 +84,30 @@ data class ProblemGet(val authenticationKey: String = "",
 @location("/problem/assigned")
 data class AssignedProblemsGet(val authenticationKey: String = "", val groupId: Int = 0)
 
+/**
+ * GET
+ * authenticationKey
+ * groupId
+ */
+@location("/problem/judged")
+class MyJudgedProblemsGet
+
+/**
+ * GET
+ * authenticationKey
+ * groupId
+ */
+@location("/problem/judging")
+class MyJudgingProblemsGet
+
+/**
+ * GET
+ * authenticationKey
+ * groupId
+ */
+@location("/problem/collecting")
+class MyCollectiongProblemsGet
+
 @location("/problem/request_new")
 data class ProblemRequest(val authenticationKey: String, val groupId: Int = 0)
 
@@ -136,6 +160,9 @@ fun Application.studyBattleServerApp() {
         getImageById()
         createProblem()
         getProblem()
+        getMyJudgedProblems()
+        getMyJudgingProblems()
+        getMyCollectiongProblems()
         getAssignedProblems()
         requestProblem()
         createSolution()

@@ -82,6 +82,7 @@ fun Route.createProblem() = post<ProblemCreate> {
             durationMillis = request.durationMillis
             point = 0
             this.group = group
+            state = ProblemState.Opening
         }
     }
 
