@@ -10,7 +10,7 @@ import org.jetbrains.ktor.routing.Route
 /**
  * Created by gedorinku on 2017/10/07.
  */
-fun Route.getMyCollectiongProblems() = get<MyCollectiongProblemsGet> {
+fun Route.getMyCollectingProblems() = get<MyCollectingProblemsGet> {
     val queryParameters = call.request.queryParameters
     val authenticationKey = queryParameters["authenticationKey"].orEmpty()
     val groupId = queryParameters["groupId"].orEmpty().toIntOrNull() ?: 0

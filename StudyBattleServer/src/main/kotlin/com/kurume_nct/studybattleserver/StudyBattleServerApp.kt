@@ -106,7 +106,7 @@ class MyJudgingProblemsGet
  * groupId
  */
 @location("/problem/collecting")
-class MyCollectiongProblemsGet
+class MyCollectingProblemsGet
 
 @location("/problem/request_new")
 data class ProblemRequest(val authenticationKey: String, val groupId: Int = 0)
@@ -162,7 +162,7 @@ fun Application.studyBattleServerApp() {
         getProblem()
         getMyJudgedProblems()
         getMyJudgingProblems()
-        getMyCollectiongProblems()
+        getMyCollectingProblems()
         getAssignedProblems()
         requestProblem()
         createSolution()
