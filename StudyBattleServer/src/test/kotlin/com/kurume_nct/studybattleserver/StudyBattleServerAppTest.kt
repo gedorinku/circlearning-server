@@ -194,10 +194,6 @@ class StudyBattleServerAppTest {
         val createGroup: (String, String, TestApplicationCall.() -> Unit) -> Unit = { authenticationKey, groupName, test ->
             val user = com.kurume_nct.studybattleserver.verifyCredentials(authenticationKey)
                     ?: throw IllegalStateException("Unauthorized")
-            transaction {
-                Group.find { Groups.owner.eq(user.id) and Groups.name.eq(groupName) }
-                        .forEach { it.delete() }
-            }
 
             val values = listOf("authenticationKey" to authenticationKey, "name" to groupName)
             test(
@@ -218,7 +214,7 @@ class StudyBattleServerAppTest {
         }
 
         val authKey = login(testUserName, testPassword)!!
-        val groupName = "piyopiuo"
+        val groupName = "piyopiuo${generateRandomString(8, random)}"
         createGroup(authKey, groupName) {
             assertEquals(HttpStatusCode.OK, response.status())
             val user = verifyCredentials(authKey)!!
