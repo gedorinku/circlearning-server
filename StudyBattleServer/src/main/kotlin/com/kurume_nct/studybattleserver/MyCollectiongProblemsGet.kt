@@ -14,12 +14,12 @@ fun Route.getMyCollectingProblems() = get<MyCollectingProblemsGet> {
     val queryParameters = call.request.queryParameters
     val authenticationKey = queryParameters["authenticationKey"].orEmpty()
     val groupId = queryParameters["groupId"].orEmpty().toIntOrNull() ?: 0
-    val problems = Problems.getUserProblems(authenticationKey, groupId, ProblemState.Opening)
+    val result = Problems.getUserProblems(authenticationKey, groupId, ProblemState.Opening)
 
-    if (problems.first == null) {
-        call.respond(problems.second)
+    if (result.first == null) {
+        call.respond(result.second)
         return@get
     }
 
-    call.respond(Gson().toJson(problems))
+    call.respond(Gson().toJson(result.first))
 }

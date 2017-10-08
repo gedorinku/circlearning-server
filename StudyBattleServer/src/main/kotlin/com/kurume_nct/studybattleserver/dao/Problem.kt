@@ -8,7 +8,6 @@ import org.jetbrains.exposed.dao.IntIdTable
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.ktor.http.HttpStatusCode
-import org.jetbrains.ktor.response.respond
 import java.time.Duration
 
 /**
@@ -46,7 +45,7 @@ object Problems : IntIdTable() {
         }
 
         val problems = transaction {
-            Problem.find { Problems.state.eq(ProblemState.Judging) }
+            Problem.find { Problems.state.eq(state) and Problems.owner.eq(user.id) }
                     .toList()
         }
 
