@@ -43,6 +43,13 @@ data class AuthenticationVerify(val authenticationKey: String = "")
 @location("/user/by_id/{id}")
 data class UserGetById(val id: Int = 0)
 
+/**
+ * GET
+ * query: String
+ */
+@location("/user/search")
+class UsersSearch
+
 @location("/group/new")
 data class GroupCreate(val authenticationKey: String = "", val name: String = "")
 
@@ -150,6 +157,7 @@ fun Application.studyBattleServerApp() {
         login(random)
         register(random)
         verifyAuthentication()
+        searchUsers()
         getUserById()
         createGroup()
         joinGroup()
