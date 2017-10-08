@@ -15,11 +15,13 @@ fun Route.getMyJudgingProblems() = get<MyJudgingProblemsGet> {
     val authenticationKey = queryParameters["authenticationKey"].orEmpty()
     val groupId = queryParameters["groupId"].orEmpty().toIntOrNull() ?: 0
     val result = Problems.getUserProblems(authenticationKey, groupId, ProblemState.Judging)
+    val problems = result.first
 
-    if (result.first == null) {
+    if (problems == null) {
         call.respond(result.second)
         return@get
     }
 
-    call.respond(Gson().toJson(result.first))
+    val response = problems.map { ProblemGetResponse.fromProblem(it) }
+    call.respond(Gson().toJson(response))
 }

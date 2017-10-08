@@ -22,7 +22,41 @@ data class ProblemGetResponse(
         val startsAt: String,
         val durationMillis: Long,
         val point: Int
-)
+                             ) {
+
+    companion object {
+
+        fun fromProblem(problem: Problem): ProblemGetResponse = transaction {
+            val content = transaction { problem.content }
+            val started = transaction { problem.startedAt <= DateTime.now() }
+
+            val imageIds = if (started) {
+                content
+                        .fetchRelatedImages()
+                        .map { it.id.value }
+            } else {
+                emptyList()
+            }
+            val text = if (started) {
+                content.text
+            } else {
+                ""
+            }
+
+            ProblemGetResponse(
+                    problem.id.value,
+                    problem.title,
+                    problem.owner.id.value,
+                    text,
+                    imageIds,
+                    problem.createdAt.toString(),
+                    problem.startedAt.toString(),
+                    problem.durationMillis,
+                    problem.point
+                              )
+        }
+    }
+}
 
 fun Route.getProblem() = post<ProblemGet> {
     val user = verifyCredentials(it.authenticationKey)
@@ -39,36 +73,5 @@ fun Route.getProblem() = post<ProblemGet> {
         return@post
     }
 
-    val content = transaction { problem.content }
-    val started = transaction { problem.startedAt <= DateTime.now() }
-
-    val imageIds = if (started) {
-        transaction {
-            content
-                    .fetchRelatedImages()
-                    .map { it.id.value }
-        }
-    } else {
-        emptyList()
-    }
-    val text = if (started) {
-        content.text
-    } else {
-        ""
-    }
-
-    val response = transaction {
-        ProblemGetResponse(
-                problem.id.value,
-                problem.title,
-                problem.owner.id.value,
-                text,
-                imageIds,
-                problem.createdAt.toString(),
-                problem.startedAt.toString(),
-                problem.durationMillis,
-                problem.point
-        )
-    }
-    call.respond(Gson().toJson(response))
+    call.respond(Gson().toJson(ProblemGetResponse.fromProblem(problem)))
 }
