@@ -7,7 +7,6 @@ import org.jetbrains.exposed.dao.EntityID
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.ktor.application.Application
-import org.jetbrains.ktor.html.insert
 import org.jetbrains.ktor.http.HttpHeaders
 import org.jetbrains.ktor.http.HttpMethod
 import org.jetbrains.ktor.http.HttpStatusCode
@@ -250,6 +249,10 @@ class StudyBattleServerAppTest {
                 )
         }
 
+        val leaveGroup: (String, Int, TestApplicationCall.() -> Unit) -> Unit = { authenticationKey, groupId, test ->
+            test(handleRequest(HttpMethod.Get, "/group/leave?authenticationKey=$authenticationKey&groupId=$groupId"))
+        }
+
         val getJoinedGroups: (String, TestApplicationCall.() -> Unit) -> Unit
                 = { authenticationKey, test ->
             test(handleRequest(HttpMethod.Get, "/group/joined?authenticationKey=$authenticationKey"))
@@ -278,13 +281,27 @@ class StudyBattleServerAppTest {
             assertEquals(1, result)
         }
 
+        val gson = Gson()
         getJoinedGroups(authenticationKey) {
             assertEquals(HttpStatusCode.OK, response.status())
-            val gson = Gson()
             val groups = gson
                     .fromJson(response.content.orEmpty(), JsonArray::class.java)
                     .map { gson.fromJson(it, GroupGetResponse::class.java) }
             assert(groups.any { it.name == groupName })
+
+            groups.map {
+                leaveGroup(authenticationKey, it.id) {
+                    assertEquals(HttpStatusCode.OK, response.status())
+                }
+            }
+        }
+
+        getJoinedGroups(authenticationKey) {
+            assertEquals(HttpStatusCode.OK, response.status())
+            val groups = gson
+                    .fromJson(response.content.orEmpty(), JsonArray::class.java)
+                    .map { gson.fromJson(it, GroupGetResponse::class.java) }
+            assert(groups.isEmpty())
         }
     }
 

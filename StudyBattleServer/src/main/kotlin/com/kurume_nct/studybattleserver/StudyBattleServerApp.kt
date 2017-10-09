@@ -56,6 +56,9 @@ data class GroupCreate(val authenticationKey: String = "", val name: String = ""
 @location("/group/join")
 data class GroupJoin(val authenticationKey: String = "", val groupId: Int = 0)
 
+@location("/group/leave")
+class GroupLeave
+
 @location("/group/attach")
 data class GroupAttach(val authenticationKey: String = "", val groupId: Int = 0, val userId: Int = 0)
 
@@ -161,6 +164,7 @@ fun Application.studyBattleServerApp() {
         getUserById()
         createGroup()
         joinGroup()
+        leaveGroup()
         getGroup()
         getJoinedGroups()
         uploadImage()
