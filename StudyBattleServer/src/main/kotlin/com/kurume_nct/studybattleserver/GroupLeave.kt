@@ -1,5 +1,6 @@
 package com.kurume_nct.studybattleserver
 
+import com.google.gson.Gson
 import com.kurume_nct.studybattleserver.dao.Belonging
 import com.kurume_nct.studybattleserver.dao.Belongings
 import com.kurume_nct.studybattleserver.dao.Group
@@ -38,5 +39,5 @@ fun Route.leaveGroup() = get<GroupLeave> {
                 .map { it.delete() }
     }
 
-    call.respond(HttpStatusCode.OK)
+    call.respond(Gson().toJson(HttpStatusCode.OK))
 }
