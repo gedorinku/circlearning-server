@@ -84,21 +84,24 @@ class Problem(id: EntityID<Int>) : IntEntity(id) {
             durationPerUserMillis = value.toMillis()
         }
 
-    fun assignUser(user: User) {
-        val alreadyAssigned = transaction {
-            !AssignHistroy.find {
-                AssignHistories.user.eq(user.id) and AssignHistories.problem.eq(this@Problem.id)
-            }.empty()
-        }
+    fun assignUser(user: User) = transaction {
+        val alreadyAssigned =
+                !AssignHistroy.find {
+                    AssignHistories.user.eq(user.id) and AssignHistories.problem.eq(this@Problem.id)
+                }.empty()
         if (alreadyAssigned) {
             throw IllegalStateException("すでに割り当てられたことのある問題です。")
         }
 
-        transaction {
-            AssignHistroy.new {
-                this.user = user
-                this.problem = this@Problem
-            }
+        AssignHistroy.new {
+            this.user = user
+            this.problem = this@Problem
+        }
+
+        ProblemAssignment.new {
+            problem = this@Problem
+            assignedAt = DateTime.now()
+            closeAt = assignedAt + durationPerUserMillis
         }
 
         assignedUser = user

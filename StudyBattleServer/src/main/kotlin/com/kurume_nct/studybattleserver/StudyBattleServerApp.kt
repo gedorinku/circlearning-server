@@ -211,7 +211,8 @@ fun connectDataBase() {
                 ContentImageRelations,
                 Solutions,
                 AssignHistories,
-                AssumedSolutionRelations
+                AssumedSolutionRelations,
+                ProblemAssignments
               )
     }
 }

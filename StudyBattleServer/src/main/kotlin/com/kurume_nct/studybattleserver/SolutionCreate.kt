@@ -1,8 +1,11 @@
 package com.kurume_nct.studybattleserver
 
 import com.google.gson.Gson
+import com.kurume_nct.studybattleserver.dao.ProblemAssignment
+import com.kurume_nct.studybattleserver.dao.ProblemAssignments
 import com.kurume_nct.studybattleserver.dao.Solution
 import com.kurume_nct.studybattleserver.dao.fromRequest
+import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.ktor.http.HttpStatusCode
 import org.jetbrains.ktor.locations.post
 import org.jetbrains.ktor.response.respond
@@ -27,9 +30,16 @@ fun Route.createSolution() = post<SolutionCreate> {
     }
 
     val solution = result.first
-    if (result.first == null) {
+    if (solution == null) {
         call.respond(HttpStatusCode.InternalServerError)
         return@post
+    }
+
+    transaction {
+        val problem = solution.problem
+        problem.assignedUser = null
+        ProblemAssignment.find { ProblemAssignments.problem.eq(problem.id) }
+                .map { it.delete() }
     }
 
     call.respond(Gson().toJson(SolutionCreateResponse(solution!!.id.value)))
