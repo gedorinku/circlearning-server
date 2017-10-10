@@ -48,4 +48,15 @@ class Group(id: EntityID<Int>) : IntEntity(id) {
         } ?: throw IllegalArgumentException()
         attachUser(user)
     }
+
+    fun fetchUsers(): List<User> = transaction {
+        Belonging.find { Belongings.group.eq(this@Group.id) }
+                .map { it.user }
+                .toList()
+    }
+
+    fun countOfUsers(): Int = transaction {
+        Belonging.find { Belongings.group.eq(this@Group.id) }
+                .count()
+    }
 }

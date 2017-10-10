@@ -8,6 +8,7 @@ import org.jetbrains.exposed.dao.IntIdTable
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.ktor.http.HttpStatusCode
+import org.joda.time.DateTime
 import java.time.Duration
 
 /**
@@ -29,8 +30,10 @@ object Problems : IntIdTable() {
     val durationMillis = long("duration_millis")
     val group = reference("group", Groups)
     val assignedUser = reference("assigned_user", Users).nullable()
+    val assignedAt = datetime("assigned_at").default(DateTime(0))
     val point = integer("point")
     val state = enumeration("status", ProblemState::class.java)
+    val durationPerUserMillis = long("duration_per_uer_millis")
 
     fun getUserProblems(authenticationKey: String, groupId: Int, state: ProblemState)
             : Pair<List<Problem>?, HttpStatusCode> {
@@ -64,13 +67,21 @@ class Problem(id: EntityID<Int>) : IntEntity(id) {
     var durationMillis by Problems.durationMillis
     var group by Group referencedOn Problems.group
     var assignedUser by User optionalReferencedOn Problems.assignedUser
+    var assignedAt by Problems.assignedAt
     var point by Problems.point
     var state by Problems.state
+    var durationPerUserMillis by Problems.durationPerUserMillis
 
     var duration: Duration
         get() = Duration.ofMillis(durationMillis)
         set(value) {
             durationMillis = value.toMillis()
+        }
+
+    var durationPerUser: Duration
+        get() = Duration.ofMillis(durationPerUserMillis)
+        set(value) {
+            durationPerUserMillis = value.toMillis()
         }
 
     fun assignUser(user: User) {
