@@ -55,6 +55,7 @@ fun Route.requestProblem() = post<ProblemRequest> {
         availableProblems[random.nextInt(availableProblems.size)]
                 .run {
                     transaction {
+                        assignUser(user)
                         ProblemGetResponse(
                                 id.value,
                                 title,

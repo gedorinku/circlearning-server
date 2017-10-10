@@ -119,7 +119,7 @@ class MyJudgingProblemsGet
 class MyCollectingProblemsGet
 
 @location("/problem/request_new")
-data class ProblemRequest(val authenticationKey: String, val groupId: Int = 0)
+data class ProblemRequest(val authenticationKey: String = "", val groupId: Int = 0)
 
 @location("/solution/create")
 data class SolutionCreate(val authenticationKey: String = "",
