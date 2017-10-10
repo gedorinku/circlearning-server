@@ -42,5 +42,5 @@ fun Route.createSolution() = post<SolutionCreate> {
                 .map { it.delete() }
     }
 
-    call.respond(Gson().toJson(SolutionCreateResponse(solution!!.id.value)))
+    call.respond(Gson().toJson(SolutionCreateResponse(solution.id.value)))
 }
