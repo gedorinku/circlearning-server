@@ -215,6 +215,8 @@ fun connectDataBase() {
                 ProblemAssignments
               )
     }
+
+    ProblemAssignmentObserver.startAsync()
 }
 
 fun hashWithSalt(password: String, salt: String): String {
