@@ -187,6 +187,15 @@ data class AssignedProblemsGet(val authenticationKey: String = "", val groupId: 
     }
 }
 
+
+/**
+ * GET
+ * authenticationKey
+ * problemId
+ */
+@location("/problem/pass")
+class ProblemPass
+
 /**
  * GET
  * authenticationKey
@@ -324,6 +333,7 @@ fun Application.studyBattleServerApp() {
         getMyCollectingProblems()
         getAssignedProblems()
         requestProblem()
+        passProblem()
         createSolution()
         getSolution()
         getJudgedMySolutions()
