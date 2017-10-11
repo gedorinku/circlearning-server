@@ -2,9 +2,9 @@ package com.kurume_nct.studybattleserver
 
 import com.kurume_nct.studybattleserver.dao.ProblemAssignment
 import com.kurume_nct.studybattleserver.dao.ProblemAssignments
-import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.delay
+import kotlinx.coroutines.experimental.newSingleThreadContext
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.joda.time.DateTime
 import java.time.Duration
@@ -18,7 +18,7 @@ object ProblemAssignmentObserver {
     private val problemCloseQueue = PriorityQueue<AssignmentCache>()
     private var sinceId = 0
 
-    fun startAsync() = async(CommonPool) {
+    fun startAsync() = async(newSingleThreadContext("${javaClass.simpleName}Thread")) {
         var lastFetchedAt = DateTime(0L)
         val fetchInterval = Duration.ofSeconds(60).toMillis()
 
@@ -30,7 +30,7 @@ object ProblemAssignmentObserver {
             }
             closeProblemsIfOutOfDuration()
 
-            delay(1, TimeUnit.SECONDS)
+            delay(2, TimeUnit.SECONDS)
         }
     }
 
