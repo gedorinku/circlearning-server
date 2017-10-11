@@ -45,6 +45,7 @@ object ProblemAssignmentObserver {
 
             val assignment = ProblemAssignment.findById(first.id) ?: continue
             assignment.problem.assignedUser = null
+            assignment.problem.flush()
             assignment.delete()
         }
     }

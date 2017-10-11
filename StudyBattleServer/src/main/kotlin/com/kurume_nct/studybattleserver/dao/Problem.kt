@@ -93,6 +93,8 @@ class Problem(id: EntityID<Int>) : IntEntity(id) {
             throw IllegalStateException("すでに割り当てられたことのある問題です。")
         }
 
+        val now = DateTime.now()
+
         AssignHistroy.new {
             this.user = user
             this.problem = this@Problem
@@ -100,11 +102,13 @@ class Problem(id: EntityID<Int>) : IntEntity(id) {
 
         ProblemAssignment.new {
             problem = this@Problem
-            assignedAt = DateTime.now()
+            assignedAt = now
             closeAt = assignedAt + durationPerUserMillis
         }
 
         assignedUser = user
+        assignedAt = now
+        this@Problem.flush()
     }
 
     fun assignUser(userId: Int) {
