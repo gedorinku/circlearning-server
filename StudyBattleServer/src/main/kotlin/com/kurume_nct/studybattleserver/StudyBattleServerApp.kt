@@ -7,12 +7,12 @@ import org.jetbrains.exposed.sql.SchemaUtils.create
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.ktor.application.Application
 import org.jetbrains.ktor.application.install
+import org.jetbrains.ktor.features.CallLogging
 import org.jetbrains.ktor.features.Compression
 import org.jetbrains.ktor.features.DefaultHeaders
 import org.jetbrains.ktor.gson.GsonSupport
 import org.jetbrains.ktor.locations.Locations
 import org.jetbrains.ktor.locations.location
-import org.jetbrains.ktor.logging.CallLogging
 import org.jetbrains.ktor.routing.Routing
 import java.io.File
 import java.security.MessageDigest
@@ -184,6 +184,8 @@ fun Application.studyBattleServerApp() {
         judgeSolution()
         attachToGroup()
     }
+
+    ProblemAssignmentObserver.startAsync()
 }
 
 fun connectDataBase() {
@@ -215,8 +217,6 @@ fun connectDataBase() {
                 ProblemAssignments
               )
     }
-
-    ProblemAssignmentObserver.startAsync()
 }
 
 fun hashWithSalt(password: String, salt: String): String {
