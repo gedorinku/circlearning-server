@@ -8,6 +8,7 @@ import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.ktor.http.HttpStatusCode
 import org.jetbrains.ktor.locations.post
+import org.jetbrains.ktor.request.receive
 import org.jetbrains.ktor.response.respond
 import org.jetbrains.ktor.routing.Route
 import org.joda.time.DateTime
@@ -21,15 +22,20 @@ data class ProblemRequestResponse(
         val message: String,
         val problem: ProblemGetResponse?)
 
-fun Route.requestProblem() = post<ProblemRequest> {
-    val user = verifyCredentials(it.authenticationKey)
+fun Route.requestProblem() = post<ProblemRequest> { _ ->
+    val problemRequest = ProblemRequest.create(call.receive())
+    if (problemRequest == null) {
+        call.respond(HttpStatusCode.BadRequest)
+        return@post
+    }
+    val user = verifyCredentials(problemRequest.authenticationKey)
     if (user == null) {
         call.respond(HttpStatusCode.Unauthorized)
         return@post
     }
 
     val group = transaction {
-        Group.findById(it.groupId)
+        Group.findById(problemRequest.groupId)
     }
     if (group == null) {
         call.respond(HttpStatusCode.BadRequest)

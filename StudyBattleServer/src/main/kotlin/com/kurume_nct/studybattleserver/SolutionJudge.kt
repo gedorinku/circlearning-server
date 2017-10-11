@@ -8,21 +8,27 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
 import org.jetbrains.ktor.http.HttpStatusCode
 import org.jetbrains.ktor.locations.post
+import org.jetbrains.ktor.request.receive
 import org.jetbrains.ktor.response.respond
 import org.jetbrains.ktor.routing.Route
 
 /**
  * Created by gedorinku on 2017/10/03.
  */
-fun Route.judgeSolution() = post<SolutionJudge> {
-    val user = verifyCredentials(it.authenticationKey)
+fun Route.judgeSolution() = post<SolutionJudge> { _ ->
+    val solutionJudge = SolutionJudge.create(call.receive())
+    if (solutionJudge == null) {
+        call.respond(HttpStatusCode.BadRequest)
+        return@post
+    }
+    val user = verifyCredentials(solutionJudge.authenticationKey)
     if (user == null) {
         call.respond(HttpStatusCode.Unauthorized)
         return@post
     }
 
     val solution = transaction {
-        Solution.findById(it.id)
+        Solution.findById(solutionJudge.id)
     }
     if (solution == null) {
         call.respond(HttpStatusCode.NotFound)
@@ -46,12 +52,12 @@ fun Route.judgeSolution() = post<SolutionJudge> {
         return@post
     }
 
-    if (it.isAccepted == null) {
+    if (solutionJudge.isAccepted == null) {
         call.respond(HttpStatusCode.BadRequest)
         return@post
     }
 
-    val judge = if (it.isAccepted) {
+    val judge = if (solutionJudge.isAccepted) {
         JudgingState.Accepted
     } else {
         JudgingState.WrongAnswer

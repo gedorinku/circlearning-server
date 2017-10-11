@@ -14,6 +14,7 @@ import org.jetbrains.ktor.gson.GsonSupport
 import org.jetbrains.ktor.locations.Locations
 import org.jetbrains.ktor.locations.location
 import org.jetbrains.ktor.routing.Routing
+import org.jetbrains.ktor.util.ValuesMap
 import java.io.File
 import java.security.MessageDigest
 import java.security.SecureRandom
@@ -25,20 +26,53 @@ import javax.xml.bind.DatatypeConverter
  */
 
 @location("/login")
-data class Login(val userName: String = "", val password: String = "")
+data class Login(val userName: String = "", val password: String = "") {
+
+    companion object {
+
+        fun create(values: ValuesMap): Login? {
+            val userName = values["userName"] ?: return null
+            val password = values["password"] ?: return null
+            return Login(userName, password)
+        }
+    }
+}
 
 @location("/register")
 data class Register(val displayName: String = "",
                     val userName: String = "",
                     val password: String = "",
-                    val iconImageId: Int = NO_ICON)  {
+                    val iconImageId: Int = NO_ICON) {
     companion object {
         const val NO_ICON = -1
+
+        fun create(values: ValuesMap): Register? {
+            val displayName = values["displayName"] ?: return null
+            val userName = values["userName"] ?: return null
+            val password = values["password"] ?: return null
+            val iconImageId = values["iconImageId"].let {
+                if (it == null) {
+                    NO_ICON
+                } else {
+                    it.toIntOrNull() ?: return null
+                }
+            }
+            return Register(displayName, userName, password, iconImageId)
+        }
     }
 }
 
 @location("/verify_authentication")
-data class AuthenticationVerify(val authenticationKey: String = "")
+data class AuthenticationVerify(val authenticationKey: String = "") {
+
+    companion object {
+
+        fun create(values: ValuesMap): AuthenticationVerify? {
+            val authenticationKey = values["authenticationKey"] ?: return null
+            return AuthenticationVerify(authenticationKey)
+        }
+    }
+}
 
 @location("/user/by_id/{id}")
 data class UserGetById(val id: Int = 0)
@@ -51,19 +85,59 @@ data class UserGetById(val id: Int = 0)
 class UsersSearch
 
 @location("/group/new")
-data class GroupCreate(val authenticationKey: String = "", val name: String = "")
+data class GroupCreate(val authenticationKey: String = "", val name: String = "") {
+
+    companion object {
+
+        fun create(values: ValuesMap): GroupCreate? {
+            val authenticationKey = values["authenticationKey"] ?: return null
+            val name = values["name"] ?: return null
+            return GroupCreate(authenticationKey, name)
+        }
+    }
+}
 
 @location("/group/join")
-data class GroupJoin(val authenticationKey: String = "", val groupId: Int = 0)
+data class GroupJoin(val authenticationKey: String = "", val groupId: Int = 0) {
+
+    companion object {
+
+        fun create(values: ValuesMap): GroupJoin? {
+            val authenticationKey = values["authenticationKey"] ?: return null
+            val groupId = values["groupId"]?.toIntOrNull() ?: return null
+            return GroupJoin(authenticationKey, groupId)
+        }
+    }
+}
 
 @location("/group/leave")
 class GroupLeave
 
 @location("/group/attach")
-data class GroupAttach(val authenticationKey: String = "", val groupId: Int = 0, val userId: Int = 0)
+data class GroupAttach(val authenticationKey: String = "", val groupId: Int = 0, val userId: Int = 0) {
+
+    companion object {
+
+        fun create(values: ValuesMap): GroupAttach? {
+            val authenticationKey = values["authenticationKey"] ?: return null
+            val groupId = values["groupId"]?.toIntOrNull() ?: return null
+            val userId = values["userId"]?.toIntOrNull() ?: return null
+            return GroupAttach(authenticationKey, groupId, userId)
+        }
+    }
+}
 
 @location("/group/{id}")
-data class GroupGet(val authenticationKey: String = "", val id: Int = 0)
+data class GroupGet(val authenticationKey: String = "", val id: Int = 0) {
+
+    companion object {
+
+        fun create(values: ValuesMap, id: Int): GroupGet? {
+            val authenticationKey = values["authenticationKey"] ?: return null
+            return GroupGet(authenticationKey, id)
+        }
+    }
+}
 
 @location("/group/joined")
 class JoinedGroupsGet
@@ -89,10 +163,29 @@ data class ProblemCreate(val authenticationKey: String = "",
 
 @location("/problem/{id}")
 data class ProblemGet(val authenticationKey: String = "",
-                      val id: Int = -1)
+                      val id: Int = -1) {
+
+    companion object {
+
+        fun create(values: ValuesMap, id: Int): ProblemGet? {
+            val authenticationKey = values["authenticationKey"] ?: return null
+            return ProblemGet(authenticationKey, id)
+        }
+    }
+}
 
 @location("/problem/assigned")
-data class AssignedProblemsGet(val authenticationKey: String = "", val groupId: Int = 0)
+data class AssignedProblemsGet(val authenticationKey: String = "", val groupId: Int = 0) {
+
+    companion object {
+
+        fun create(values: ValuesMap): AssignedProblemsGet? {
+            val authenticationKey = values["authenticationKey"] ?: return null
+            val groupId = values["groupId"]?.toIntOrNull() ?: return null
+            return AssignedProblemsGet(authenticationKey, groupId)
+        }
+    }
+}
 
 /**
  * GET
@@ -119,22 +212,76 @@ class MyJudgingProblemsGet
 class MyCollectingProblemsGet
 
 @location("/problem/request_new")
-data class ProblemRequest(val authenticationKey: String = "", val groupId: Int = 0)
+data class ProblemRequest(val authenticationKey: String = "", val groupId: Int = 0) {
+
+    companion object {
+
+        fun create(values: ValuesMap): ProblemRequest? {
+            val authenticationKey = values["authenticationKey"] ?: return null
+            val groupId = values["groupId"]?.toIntOrNull() ?: return null
+            return ProblemRequest(authenticationKey, groupId)
+        }
+    }
+}
 
 @location("/solution/create")
 data class SolutionCreate(val authenticationKey: String = "",
                           val text: String = "",
                           val problemId: Int = -1,
-                          val imageIds: List<Int> = emptyList())
+                          val imageIds: List<Int> = emptyList()) {
+
+    companion object {
+
+        fun create(values: ValuesMap): SolutionCreate? {
+            val authenticationKey = values["authenticationKey"] ?: return null
+            val text = values["text"] ?: return null
+            val problemId = values["problemId"]?.toIntOrNull() ?: return null
+            val imageIds = mutableListOf<Int?>()
+
+            values.forEach { s, list ->
+                if (s == "imageIds") {
+                    imageIds.addAll(list.map {
+                        it.toIntOrNull()
+                    })
+                }
+            }
+            imageIds.forEach {
+                it ?: return null
+            }
+
+            return SolutionCreate(authenticationKey, text, problemId, imageIds.filterNotNull())
+        }
+    }
+}
 
 @location("/solution/{id}")
 data class SolutionGet(val authenticationKey: String = "",
-                       val id: Int = -1)
+                       val id: Int = -1) {
+
+    companion object {
+
+        fun create(values: ValuesMap, id: Int): SolutionGet? {
+            val authenticationKey = values["authenticationKey"] ?: return null
+            return SolutionGet(authenticationKey, id)
+        }
+    }
+}
 
 @location("/solution/judge")
 data class SolutionJudge(val authenticationKey: String = "",
                          val id: Int = -1,
-                         val isAccepted: Boolean? = null)
+                         val isAccepted: Boolean? = null) {
+
+    companion object {
+
+        fun create(values: ValuesMap): SolutionJudge? {
+            val authenticationKey = values["authenticationKey"] ?: return null
+            val id = values["id"]?.toIntOrNull() ?: return null
+            val isAccepted = values["isAccepted"]?.toBoolean() ?: return null
+            return SolutionJudge(authenticationKey, id, isAccepted)
+        }
+    }
+}
 
 @location("/my_solution/judged")
 class JudgedMySolutionsGet

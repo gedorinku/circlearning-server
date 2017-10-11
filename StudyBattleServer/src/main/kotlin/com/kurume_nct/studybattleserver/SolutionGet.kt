@@ -5,6 +5,7 @@ import com.kurume_nct.studybattleserver.dao.Solution
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.ktor.http.HttpStatusCode
 import org.jetbrains.ktor.locations.post
+import org.jetbrains.ktor.request.receive
 import org.jetbrains.ktor.response.respond
 import org.jetbrains.ktor.routing.Route
 
@@ -40,14 +41,19 @@ data class SolutionGetResponse(val id: Int,
 }
 
 fun Route.getSolution() = post<SolutionGet> {
-    val user = verifyCredentials(it.authenticationKey)
+    val solutionGet = SolutionGet.create(call.receive(), it.id)
+    if (solutionGet == null) {
+        call.respond(HttpStatusCode.BadRequest)
+        return@post
+    }
+    val user = verifyCredentials(solutionGet.authenticationKey)
     if (user == null) {
         call.respond(HttpStatusCode.Unauthorized)
         return@post
     }
 
     val solution = transaction {
-        Solution.findById(it.id)
+        Solution.findById(solutionGet.id)
     }
     if (solution == null) {
         call.respond(HttpStatusCode.NotFound)

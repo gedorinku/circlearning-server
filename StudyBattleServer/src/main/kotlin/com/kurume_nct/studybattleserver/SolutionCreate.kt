@@ -8,6 +8,7 @@ import com.kurume_nct.studybattleserver.dao.fromRequest
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.ktor.http.HttpStatusCode
 import org.jetbrains.ktor.locations.post
+import org.jetbrains.ktor.request.receive
 import org.jetbrains.ktor.response.respond
 import org.jetbrains.ktor.routing.Route
 
@@ -16,14 +17,19 @@ import org.jetbrains.ktor.routing.Route
  */
 data class SolutionCreateResponse(val id: Int)
 
-fun Route.createSolution() = post<SolutionCreate> {
-    val user = verifyCredentials(it.authenticationKey)
+fun Route.createSolution() = post<SolutionCreate> { _ ->
+    val solutionCreate = SolutionCreate.create(call.receive())
+    if (solutionCreate == null) {
+        call.respond(HttpStatusCode.BadRequest)
+        return@post
+    }
+    val user = verifyCredentials(solutionCreate.authenticationKey)
     if (user == null) {
         call.respond(HttpStatusCode.Unauthorized)
         return@post
     }
 
-    val result = Solution.fromRequest(it, user)
+    val result = Solution.fromRequest(solutionCreate, user)
     if (result.second != HttpStatusCode.OK) {
         call.respond(result.second)
         return@post

@@ -5,20 +5,26 @@ import com.kurume_nct.studybattleserver.dao.Group
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.ktor.http.HttpStatusCode
 import org.jetbrains.ktor.locations.post
+import org.jetbrains.ktor.request.receive
 import org.jetbrains.ktor.response.respond
 import org.jetbrains.ktor.routing.Route
 
 /**
  * Created by gedorinku on 2017/07/30.
  */
-fun Route.createGroup() = post<GroupCreate> {
-    val user = verifyCredentials(it.authenticationKey)
+fun Route.createGroup() = post<GroupCreate> { _ ->
+    val groupCreate = GroupCreate.create(call.receive())
+    if (groupCreate == null) {
+        call.respond(HttpStatusCode.BadRequest)
+        return@post
+    }
+    val user = verifyCredentials(groupCreate.authenticationKey)
     if (user == null) {
         call.respond(HttpStatusCode.Unauthorized)
         return@post
     }
 
-    if (!isValidDisplayName(it.name)) {
+    if (!isValidDisplayName(groupCreate.name)) {
         val description = "グループ名は2文字以上20文字以下である必要があります。"
         call.respond(HttpStatusCode(HttpStatusCode.BadRequest.value, description))
         return@post
@@ -26,7 +32,7 @@ fun Route.createGroup() = post<GroupCreate> {
 
     val group = transaction {
         Group.new {
-            name = it.name
+            name = groupCreate.name
             owner = user
         }
     }

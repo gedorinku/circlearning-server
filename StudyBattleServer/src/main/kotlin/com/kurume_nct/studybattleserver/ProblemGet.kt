@@ -5,6 +5,7 @@ import com.kurume_nct.studybattleserver.dao.Problem
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.ktor.http.HttpStatusCode
 import org.jetbrains.ktor.locations.post
+import org.jetbrains.ktor.request.receive
 import org.jetbrains.ktor.response.respond
 import org.jetbrains.ktor.routing.Route
 import org.joda.time.DateTime
@@ -59,14 +60,19 @@ data class ProblemGetResponse(
 }
 
 fun Route.getProblem() = post<ProblemGet> {
-    val user = verifyCredentials(it.authenticationKey)
+    val problemGet = ProblemGet.create(call.receive(), it.id)
+    if (problemGet == null) {
+        call.respond(HttpStatusCode.BadRequest)
+        return@post
+    }
+    val user = verifyCredentials(problemGet.authenticationKey)
     if (user == null) {
         call.respond(HttpStatusCode.Unauthorized)
         return@post
     }
 
     val problem = transaction {
-        Problem.findById(it.id)
+        Problem.findById(problemGet.id)
     }
     if (problem == null) {
         call.respond(HttpStatusCode.NotFound)

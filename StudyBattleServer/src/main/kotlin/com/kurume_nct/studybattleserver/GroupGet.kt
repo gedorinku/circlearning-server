@@ -5,6 +5,7 @@ import com.kurume_nct.studybattleserver.dao.Group
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.ktor.http.HttpStatusCode
 import org.jetbrains.ktor.locations.post
+import org.jetbrains.ktor.request.receive
 import org.jetbrains.ktor.response.respond
 import org.jetbrains.ktor.routing.Route
 
@@ -23,14 +24,19 @@ data class GroupGetResponse(val id: Int, val name: String, val owner: UserGetRes
 }
 
 fun Route.getGroup() = post<GroupGet> {
-    val user = verifyCredentials(it.authenticationKey)
+    val groupGet = GroupGet.create(call.receive(), it.id)
+    if (groupGet == null) {
+        call.respond(HttpStatusCode.BadRequest)
+        return@post
+    }
+    val user = verifyCredentials(groupGet.authenticationKey)
     if (user == null) {
         call.respond(HttpStatusCode.Unauthorized)
         return@post
     }
 
     val group = transaction {
-        Group.findById(it.id)
+        Group.findById(groupGet.id)
     }
     if (group == null) {
         call.respond(HttpStatusCode.NotFound)
