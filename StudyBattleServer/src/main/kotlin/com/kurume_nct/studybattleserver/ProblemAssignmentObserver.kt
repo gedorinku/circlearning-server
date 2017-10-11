@@ -7,6 +7,7 @@ import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.delay
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.joda.time.DateTime
+import java.time.Duration
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -18,11 +19,18 @@ object ProblemAssignmentObserver {
     private var sinceId = 0
 
     fun startAsync() = async(CommonPool) {
+        var lastFetchedAt = DateTime(0L)
+        val fetchInterval = Duration.ofSeconds(60).toMillis()
+
         while (true) {
-            fetchAssignments()
+            val now = DateTime.now()
+            if (fetchInterval < now.millis - lastFetchedAt.millis) {
+                lastFetchedAt = now
+                fetchAssignments()
+            }
             closeProblemsIfOutOfDuration()
 
-            delay(3, TimeUnit.SECONDS)
+            delay(1, TimeUnit.SECONDS)
         }
     }
 
