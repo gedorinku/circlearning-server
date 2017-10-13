@@ -2,6 +2,8 @@ package com.kurume_nct.studybattleserver
 
 import com.google.gson.FieldNamingPolicy
 import com.kurume_nct.studybattleserver.dao.*
+import com.kurume_nct.studybattleserver.item.Bomb
+import com.kurume_nct.studybattleserver.item.ItemRegistry
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils.create
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -303,6 +305,8 @@ private val random = SecureRandom()
 fun Application.studyBattleServerApp() {
     connectDataBase()
 
+    registerItems()
+
     install(DefaultHeaders)
     install(Compression)
     install(CallLogging)
@@ -371,9 +375,14 @@ fun connectDataBase() {
                 Solutions,
                 AssignHistories,
                 AssumedSolutionRelations,
-                ProblemAssignments
+                ProblemAssignments,
+                ItemStacks
               )
     }
+}
+
+fun registerItems() {
+    ItemRegistry.register(Bomb)
 }
 
 fun hashWithSalt(password: String, salt: String): String {
