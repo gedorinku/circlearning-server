@@ -48,7 +48,12 @@ object Problems : IntIdTable() {
         }
 
         val problems = transaction {
-            Problem.find { Problems.state.eq(state) and Problems.owner.eq(user.id) }
+            Problem
+                    .find {
+                        Problems.state.eq(state) and
+                                Problems.owner.eq(user.id) and
+                                Problems.group.eq(group.id)
+                    }
                     .toList()
         }
 

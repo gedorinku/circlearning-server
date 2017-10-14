@@ -41,7 +41,7 @@ fun Route.attachToGroup() = post<GroupAttach> { _ ->
         return@post
     }
 
-    group.attachUser(user)
+    group.attachUser(target)
 
     call.respond(Gson().toJson(HttpStatusCode.OK))
 }
