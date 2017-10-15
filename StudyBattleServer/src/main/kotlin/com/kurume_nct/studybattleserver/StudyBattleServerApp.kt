@@ -2,8 +2,7 @@ package com.kurume_nct.studybattleserver
 
 import com.google.gson.FieldNamingPolicy
 import com.kurume_nct.studybattleserver.dao.*
-import com.kurume_nct.studybattleserver.item.Bomb
-import com.kurume_nct.studybattleserver.item.ItemRegistry
+import com.kurume_nct.studybattleserver.item.*
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils.create
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -201,6 +200,14 @@ class ProblemPass
 /**
  * GET
  * authenticationKey
+ * problemId
+ */
+@location("/problem/open")
+class ProblemOpen
+
+/**
+ * GET
+ * authenticationKey
  * groupId
  */
 @location("/problem/judged")
@@ -346,6 +353,8 @@ fun Application.studyBattleServerApp() {
         attachToGroup()
     }
 
+
+    val hoge = Item.OpenAction.DEFENDED.toString()
     ProblemAssignmentObserver.startAsync()
 }
 
@@ -381,8 +390,10 @@ fun connectDataBase() {
     }
 }
 
-fun registerItems() {
-    ItemRegistry.register(Bomb)
+fun registerItems() = ItemRegistry.apply {
+    register(Air)
+    register(Bomb)
+    register(Shield)
 }
 
 fun hashWithSalt(password: String, salt: String): String {

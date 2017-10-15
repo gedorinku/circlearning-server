@@ -12,15 +12,20 @@ import org.jetbrains.exposed.sql.transactions.transaction
  */
 object Bomb : Item() {
 
-    override fun onOpenProblem(itemStack: ItemStack, problem: Problem, user: User): Unit
+    override fun onOpenProblem(problem: Problem, user: User): OpenAction
             = transaction {
         ItemStack
                 .find {
-                    ItemStacks.user.eq(user.id) and ItemStacks.itemId.eq(this@Bomb.id)
+                    ItemStacks.user.eq(user.id) and ItemStacks.itemId.eq(Shield.id)
                 }
                 .firstOrNull()
                 ?.let {
-                    TODO("盾")
-                }
+                    val defended = Shield.onExplode(it, problem, user)
+                    if (defended) {
+                        OpenAction.DEFENDED
+                    } else {
+                        OpenAction.EXPLODED
+                    }
+                } ?: OpenAction.EXPLODED
     }
 }

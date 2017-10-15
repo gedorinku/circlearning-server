@@ -12,7 +12,7 @@ abstract class Item {
     var id: Int = -1
         private set
 
-    open fun onOpenProblem(itemStack: ItemStack, problem: Problem, user: User) = Unit
+    open fun onOpenProblem(problem: Problem, user: User): OpenAction = OpenAction.NONE
 
     open fun onExplode(itemStack: ItemStack, problem: Problem, user: User): Boolean = false
 
@@ -23,5 +23,12 @@ abstract class Item {
             throw IllegalStateException("already registered")
         }
         this.id = id
+    }
+
+    enum class OpenAction {
+
+        NONE,
+        EXPLODED,
+        DEFENDED
     }
 }
