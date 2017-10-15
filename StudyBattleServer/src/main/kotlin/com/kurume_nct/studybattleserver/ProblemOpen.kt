@@ -60,6 +60,11 @@ fun Route.openProblem() = get<ProblemOpen> {
         Item.OpenAction.NONE
     }
 
+    transaction {
+        problem.attachedItemId = Air.id
+        problem.flush()
+    }
+
     val response = Gson().toJson(ProblemOpenResponse(action))
     call.respond(response)
 }
