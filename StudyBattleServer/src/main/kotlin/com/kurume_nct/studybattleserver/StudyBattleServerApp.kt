@@ -341,6 +341,7 @@ fun Application.studyBattleServerApp() {
         getImageById()
         createProblem()
         getProblem()
+        openProblem()
         getMyJudgedProblems()
         getMyJudgingProblems()
         getMyCollectingProblems()
