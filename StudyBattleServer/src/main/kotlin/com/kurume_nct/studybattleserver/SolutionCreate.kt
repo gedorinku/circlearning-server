@@ -15,7 +15,7 @@ import org.jetbrains.ktor.routing.Route
 /**
  * Created by gedorinku on 2017/09/22.
  */
-data class SolutionCreateResponse(val id: Int)
+data class SolutionCreateResponse(val id: Int, val receivedItemId: Int)
 
 fun Route.createSolution() = post<SolutionCreate> { _ ->
     val solutionCreate = SolutionCreate.create(call.receive())
@@ -41,14 +41,17 @@ fun Route.createSolution() = post<SolutionCreate> { _ ->
         return@post
     }
 
-    transaction {
+    val receivedItem = transaction {
         val problem = solution.problem
         problem.assignedUser = null
         problem.attachedItemId = solutionCreate.attachedItemId
         problem.flush()
         ProblemAssignment.find { ProblemAssignments.problem.eq(problem.id) }
                 .map { it.delete() }
+        val receivedItem = Lottery.getRandomItem()
+        user.giveItem(receivedItem, 1)
+        receivedItem
     }
 
-    call.respond(Gson().toJson(SolutionCreateResponse(solution.id.value)))
+    call.respond(Gson().toJson(SolutionCreateResponse(solution.id.value, receivedItem.id)))
 }

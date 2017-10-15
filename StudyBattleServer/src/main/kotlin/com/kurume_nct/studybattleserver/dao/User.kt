@@ -1,5 +1,6 @@
 package com.kurume_nct.studybattleserver.dao
 
+import com.kurume_nct.studybattleserver.item.Item
 import org.jetbrains.exposed.dao.EntityID
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
@@ -53,5 +54,24 @@ class User(id: EntityID<Int>) : IntEntity(id) {
             Group.findById(groupId)
         } ?: throw IllegalArgumentException()
         return countAssignedProblems(group)
+    }
+
+    fun giveItem(item: Item, count: Int) {
+        if (count <= 0) {
+            throw IllegalArgumentException("0より大きい数である必要があります。")
+        }
+
+        transaction {
+            val itemStack = ItemStack
+                    .find { ItemStacks.user.eq(this@User.id) and ItemStacks.itemId.eq(item.id) }
+                    .firstOrNull()
+                    ?: ItemStack
+                    .new {
+                        itemId = item.id
+                        this.count = 0
+                    }
+            itemStack.count += count
+            itemStack.flush()
+        }
     }
 }
