@@ -1,6 +1,7 @@
 package com.kurume_nct.studybattleserver
 
 import com.google.gson.Gson
+import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.ktor.http.HttpStatusCode
 import org.jetbrains.ktor.locations.get
 import org.jetbrains.ktor.response.respond
@@ -9,6 +10,8 @@ import org.jetbrains.ktor.routing.Route
 /**
  * Created by gedorinku on 2017/10/15.
  */
+data class ItemStackResponse(val id: Int, val count: Int)
+
 fun Route.getMyItems() = get<MyItemsGet> {
     val queryParameters = call.request.queryParameters
     val authenticationKey = queryParameters["authenticationKey"].orEmpty()
@@ -25,11 +28,15 @@ fun Route.getMyItems() = get<MyItemsGet> {
         call.respond(result.second)
         return@get
     }
-    if (result.first == null) {
+
+    val itemStacks = result.first
+    if (itemStacks == null) {
         call.respond(HttpStatusCode.InternalServerError)
         return@get
     }
 
-    val response = Gson().toJson(result.first)
+    val response = transaction {
+        Gson().toJson(itemStacks.map { ItemStackResponse(it.itemId, it.count) })
+    }
     call.respond(response)
 }
