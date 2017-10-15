@@ -8,7 +8,6 @@ import com.kurume_nct.studybattleserver.dao.User
  * Created by gedorinku on 2017/10/12.
  */
 abstract class Item {
-
     var id: Int = -1
         private set
 

@@ -44,6 +44,8 @@ fun Route.createSolution() = post<SolutionCreate> { _ ->
     transaction {
         val problem = solution.problem
         problem.assignedUser = null
+        problem.attachedItemId = solutionCreate.attachedItemId
+        problem.flush()
         ProblemAssignment.find { ProblemAssignments.problem.eq(problem.id) }
                 .map { it.delete() }
     }

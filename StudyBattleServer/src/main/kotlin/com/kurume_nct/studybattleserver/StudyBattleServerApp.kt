@@ -246,7 +246,8 @@ data class ProblemRequest(val authenticationKey: String = "", val groupId: Int =
 data class SolutionCreate(val authenticationKey: String = "",
                           val text: String = "",
                           val problemId: Int = -1,
-                          val imageIds: List<Int> = emptyList()) {
+                          val imageIds: List<Int> = emptyList(),
+                          val attachedItemId: Int = 0) {
 
     companion object {
 
@@ -255,6 +256,7 @@ data class SolutionCreate(val authenticationKey: String = "",
             val text = values["text"] ?: return null
             val problemId = values["problemId"]?.toIntOrNull() ?: return null
             val imageIds = mutableListOf<Int?>()
+            val attachedItemId = values["attachedItemId"]?.toIntOrNull() ?: return null
 
             values.forEach { s, list ->
                 if (s == "imageIds") {
@@ -267,7 +269,7 @@ data class SolutionCreate(val authenticationKey: String = "",
                 it ?: return null
             }
 
-            return SolutionCreate(authenticationKey, text, problemId, imageIds.filterNotNull())
+            return SolutionCreate(authenticationKey, text, problemId, imageIds.filterNotNull(), attachedItemId)
         }
     }
 }
@@ -353,8 +355,6 @@ fun Application.studyBattleServerApp() {
         attachToGroup()
     }
 
-
-    val hoge = Item.OpenAction.DEFENDED.toString()
     ProblemAssignmentObserver.startAsync()
 }
 
