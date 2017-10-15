@@ -49,7 +49,7 @@ fun Route.createSolution() = post<SolutionCreate> { _ ->
         ProblemAssignment.find { ProblemAssignments.problem.eq(problem.id) }
                 .map { it.delete() }
         val receivedItem = Lottery.getRandomItem()
-        user.giveItem(receivedItem, 1)
+        user.giveItem(receivedItem, 1, problem.group)
         receivedItem
     }
 

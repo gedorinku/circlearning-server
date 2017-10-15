@@ -14,6 +14,7 @@ object ItemStacks : IntIdTable() {
     val itemId = integer("item_id")
     val count = integer("count")
     val user = reference("user", Users)
+    val group = reference("group", Groups)
 }
 
 class ItemStack(id: EntityID<Int>) : IntEntity(id) {
@@ -22,6 +23,7 @@ class ItemStack(id: EntityID<Int>) : IntEntity(id) {
     var itemId by ItemStacks.itemId
     var count by ItemStacks.count
     var user by User referencedOn ItemStacks.user
+    var group by Group referencedOn ItemStacks.group
 
     fun discard() {
         if (count <= 0) {

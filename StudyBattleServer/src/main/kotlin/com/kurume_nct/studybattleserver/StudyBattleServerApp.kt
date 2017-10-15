@@ -309,6 +309,9 @@ class JudgedMySolutionsGet
 @location("/my_solution/unjudged")
 class UnjudgedMySolutionsGet
 
+@location("/my_items")
+class MyItemsGet
+
 private val random = SecureRandom()
 
 fun Application.studyBattleServerApp() {
@@ -354,6 +357,7 @@ fun Application.studyBattleServerApp() {
         getUnjudgedMySolutions()
         judgeSolution()
         attachToGroup()
+        getMyItems()
     }
 
     ProblemAssignmentObserver.startAsync()
