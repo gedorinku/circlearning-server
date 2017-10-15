@@ -39,9 +39,7 @@ fun Route.createGroup() = post<GroupCreate> { _ ->
     group.attachUser(user)
 
     val owner = UserGetResponse.fromUser(user)
-    val response = transaction {
-        GroupGetResponse(group.id.value, group.name, owner)
-    }
+    val response = GroupGetResponse.fromGroup(group)
     val json = Gson().toJson(response)
     call.respond(json)
 }

@@ -1,6 +1,8 @@
 package com.kurume_nct.studybattleserver
 
 import com.google.gson.Gson
+import com.kurume_nct.studybattleserver.dao.Belonging
+import com.kurume_nct.studybattleserver.dao.Belongings
 import com.kurume_nct.studybattleserver.dao.Group
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.ktor.http.HttpStatusCode
@@ -12,13 +14,16 @@ import org.jetbrains.ktor.routing.Route
 /**
  * Created by gedorinku on 2017/09/30.
  */
-data class GroupGetResponse(val id: Int, val name: String, val owner: UserGetResponse) {
+data class GroupGetResponse(val id: Int, val name: String, val owner: UserGetResponse, val members: List<UserGetResponse>) {
 
     companion object {
 
         fun fromGroup(group: Group) = transaction {
             val owner = UserGetResponse.fromUser(group.owner)
-            GroupGetResponse(group.id.value, group.name, owner)
+            val members = Belonging
+                    .find { Belongings.group.eq(group.id) }
+                    .map { UserGetResponse.fromUser(it.user) }
+            GroupGetResponse(group.id.value, group.name, owner, members)
         }
     }
 }
