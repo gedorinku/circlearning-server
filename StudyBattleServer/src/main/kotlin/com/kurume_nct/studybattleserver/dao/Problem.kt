@@ -123,4 +123,10 @@ class Problem(id: EntityID<Int>) : IntEntity(id) {
 
         assignUser(user)
     }
+
+    fun fetchSubmittedSolutions(): List<Solution> = transaction {
+        Solution
+                .find { Solutions.problem.eq(this@Problem.id) and Solutions.author.neq(this@Problem.owner.id)}
+                .toList()
+    }
 }
