@@ -397,13 +397,14 @@ class StudyBattleServerAppTest {
         }
 
         val createSolution: (SolutionCreate, TestApplicationCall.() -> Unit) -> Unit
-                = { (authenticationKey, text, problemId, imageIds), test ->
+                = { (authenticationKey, text, problemId, imageIds, attachedItemId), test ->
             val imageIdsEncoded = imageIds
                     .mapIndexed { index, id -> "imageIds" to id.toString() }
             val values = mutableListOf(
                     "authenticationKey" to authenticationKey,
                     "text" to text,
-                    "problemId" to problemId.toString())
+                    "problemId" to problemId.toString(),
+                    "attachedItemId" to attachedItemId.toString())
             values.addAll(imageIdsEncoded)
 
             test(

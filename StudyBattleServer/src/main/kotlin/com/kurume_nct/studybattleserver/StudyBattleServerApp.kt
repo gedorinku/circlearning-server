@@ -2,6 +2,7 @@ package com.kurume_nct.studybattleserver
 
 import com.google.gson.FieldNamingPolicy
 import com.kurume_nct.studybattleserver.dao.*
+import com.kurume_nct.studybattleserver.item.*
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils.create
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -199,6 +200,14 @@ class ProblemPass
 /**
  * GET
  * authenticationKey
+ * problemId
+ */
+@location("/problem/open")
+class ProblemOpen
+
+/**
+ * GET
+ * authenticationKey
  * groupId
  */
 @location("/problem/judged")
@@ -237,7 +246,8 @@ data class ProblemRequest(val authenticationKey: String = "", val groupId: Int =
 data class SolutionCreate(val authenticationKey: String = "",
                           val text: String = "",
                           val problemId: Int = -1,
-                          val imageIds: List<Int> = emptyList()) {
+                          val imageIds: List<Int> = emptyList(),
+                          val attachedItemId: Int = 0) {
 
     companion object {
 
@@ -246,6 +256,7 @@ data class SolutionCreate(val authenticationKey: String = "",
             val text = values["text"] ?: return null
             val problemId = values["problemId"]?.toIntOrNull() ?: return null
             val imageIds = mutableListOf<Int?>()
+            val attachedItemId = values["attachedItemId"]?.toIntOrNull() ?: return null
 
             values.forEach { s, list ->
                 if (s == "imageIds") {
@@ -258,7 +269,7 @@ data class SolutionCreate(val authenticationKey: String = "",
                 it ?: return null
             }
 
-            return SolutionCreate(authenticationKey, text, problemId, imageIds.filterNotNull())
+            return SolutionCreate(authenticationKey, text, problemId, imageIds.filterNotNull(), attachedItemId)
         }
     }
 }
@@ -298,10 +309,15 @@ class JudgedMySolutionsGet
 @location("/my_solution/unjudged")
 class UnjudgedMySolutionsGet
 
+@location("/my_items")
+class MyItemsGet
+
 private val random = SecureRandom()
 
 fun Application.studyBattleServerApp() {
     connectDataBase()
+
+    registerItems()
 
     install(DefaultHeaders)
     install(Compression)
@@ -328,6 +344,7 @@ fun Application.studyBattleServerApp() {
         getImageById()
         createProblem()
         getProblem()
+        openProblem()
         getMyJudgedProblems()
         getMyJudgingProblems()
         getMyCollectingProblems()
@@ -340,6 +357,7 @@ fun Application.studyBattleServerApp() {
         getUnjudgedMySolutions()
         judgeSolution()
         attachToGroup()
+        getMyItems()
     }
 
     ProblemAssignmentObserver.startAsync()
@@ -371,9 +389,16 @@ fun connectDataBase() {
                 Solutions,
                 AssignHistories,
                 AssumedSolutionRelations,
-                ProblemAssignments
+                ProblemAssignments,
+                ItemStacks
               )
     }
+}
+
+fun registerItems() = ItemRegistry.apply {
+    register(Air)
+    register(Bomb)
+    register(Shield)
 }
 
 fun hashWithSalt(password: String, salt: String): String {

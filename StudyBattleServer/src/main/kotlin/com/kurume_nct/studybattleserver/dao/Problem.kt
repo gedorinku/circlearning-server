@@ -1,5 +1,6 @@
 package com.kurume_nct.studybattleserver.dao
 
+import com.kurume_nct.studybattleserver.item.Air
 import com.kurume_nct.studybattleserver.verifyCredentials
 import org.jetbrains.exposed.dao.EntityID
 import org.jetbrains.exposed.dao.IntEntity
@@ -34,6 +35,7 @@ object Problems : IntIdTable() {
     val point = integer("point")
     val state = enumeration("status", ProblemState::class.java)
     val durationPerUserMillis = long("duration_per_uer_millis")
+    val attachedItemId = integer("attached_item_id").default(Air.id)
 
     fun getUserProblems(authenticationKey: String, groupId: Int, state: ProblemState)
             : Pair<List<Problem>?, HttpStatusCode> {
@@ -76,6 +78,7 @@ class Problem(id: EntityID<Int>) : IntEntity(id) {
     var point by Problems.point
     var state by Problems.state
     var durationPerUserMillis by Problems.durationPerUserMillis
+    var attachedItemId by Problems.attachedItemId
 
     var duration: Duration
         get() = Duration.ofMillis(durationMillis)
