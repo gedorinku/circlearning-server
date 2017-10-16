@@ -11,11 +11,11 @@ import java.util.*
  */
 object ProblemAssignmentObserver : Daemon {
 
-    private val problemCloseQueue = PriorityQueue<AssignmentCache>()
+    private val problemWithdrawQueue = PriorityQueue<AssignmentCache>()
     private var sinceId = 0
 
     override fun onFastUpdate() {
-        closeProblemsIfOutOfDuration()
+        withdrawProblemsIfOutOfDuration()
     }
 
     override fun onSlowUpdate() {
@@ -27,17 +27,17 @@ object ProblemAssignmentObserver : Daemon {
                 .find { ProblemAssignments.id.greater(sinceId) }
                 .map { AssignmentCache.fromDao(it) }
         sinceId = assignments.last().id
-        problemCloseQueue.addAll(assignments)
+        problemWithdrawQueue.addAll(assignments)
     }
 
-    private fun closeProblemsIfOutOfDuration() = transaction {
+    private fun withdrawProblemsIfOutOfDuration() = transaction {
         val now = DateTime.now()
-        while (problemCloseQueue.isNotEmpty()) {
-            val first = problemCloseQueue.peek()
-            if (now < first.closeAt) {
+        while (problemWithdrawQueue.isNotEmpty()) {
+            val first = problemWithdrawQueue.peek()
+            if (now < first.withdrawAt) {
                 break
             }
-            problemCloseQueue.poll()
+            problemWithdrawQueue.poll()
 
             val assignment = ProblemAssignment.findById(first.id) ?: continue
             assignment.problem.assignedUser = null
@@ -47,7 +47,7 @@ object ProblemAssignmentObserver : Daemon {
     }
 
 
-    private data class AssignmentCache(val id: Int, val closeAt: DateTime) : Comparable<AssignmentCache> {
+    private data class AssignmentCache(val id: Int, val withdrawAt: DateTime) : Comparable<AssignmentCache> {
 
         companion object {
 
@@ -56,17 +56,6 @@ object ProblemAssignmentObserver : Daemon {
             }
         }
 
-        override fun compareTo(other: AssignmentCache): Int {
-            val millis = closeAt.millis
-            val otherMillis = other.closeAt.millis
-
-            if (millis == otherMillis) {
-                return 0
-            }
-            if (millis < otherMillis) {
-                return -1
-            }
-            return 1
-        }
+        override fun compareTo(other: AssignmentCache): Int = withdrawAt.compareTo(other.withdrawAt)
     }
 }
