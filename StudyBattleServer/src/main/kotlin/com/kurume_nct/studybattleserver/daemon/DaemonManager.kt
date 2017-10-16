@@ -1,4 +1,4 @@
-package com.kurume_nct.studybattleserver.deamon
+package com.kurume_nct.studybattleserver.daemon
 
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.delay

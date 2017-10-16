@@ -2,8 +2,8 @@ package com.kurume_nct.studybattleserver
 
 import com.google.gson.FieldNamingPolicy
 import com.kurume_nct.studybattleserver.dao.*
-import com.kurume_nct.studybattleserver.deamon.DaemonManager
-import com.kurume_nct.studybattleserver.deamon.ProblemAssignmentObserver
+import com.kurume_nct.studybattleserver.daemon.DaemonManager
+import com.kurume_nct.studybattleserver.daemon.ProblemAssignmentObserver
 import com.kurume_nct.studybattleserver.item.Air
 import com.kurume_nct.studybattleserver.item.Bomb
 import com.kurume_nct.studybattleserver.item.ItemRegistry

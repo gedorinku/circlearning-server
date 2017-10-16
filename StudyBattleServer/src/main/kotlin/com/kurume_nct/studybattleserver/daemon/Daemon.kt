@@ -1,4 +1,4 @@
-package com.kurume_nct.studybattleserver.deamon
+package com.kurume_nct.studybattleserver.daemon
 
 /**
  * Created by gedorinku on 2017/10/16.
