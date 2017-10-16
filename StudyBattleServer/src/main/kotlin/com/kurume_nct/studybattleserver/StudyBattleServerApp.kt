@@ -2,8 +2,12 @@ package com.kurume_nct.studybattleserver
 
 import com.google.gson.FieldNamingPolicy
 import com.kurume_nct.studybattleserver.dao.*
+import com.kurume_nct.studybattleserver.deamon.DaemonManager
 import com.kurume_nct.studybattleserver.deamon.ProblemAssignmentObserver
-import com.kurume_nct.studybattleserver.item.*
+import com.kurume_nct.studybattleserver.item.Air
+import com.kurume_nct.studybattleserver.item.Bomb
+import com.kurume_nct.studybattleserver.item.ItemRegistry
+import com.kurume_nct.studybattleserver.item.Shield
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils.create
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -361,7 +365,7 @@ fun Application.studyBattleServerApp() {
         getMyItems()
     }
 
-    ProblemAssignmentObserver.startAsync()
+    startDaemons()
 }
 
 fun connectDataBase() {
@@ -402,6 +406,10 @@ fun registerItems() = ItemRegistry.apply {
     register(Bomb)
     register(Shield)
 }
+
+fun startDaemons() = DaemonManager.apply {
+    register(ProblemAssignmentObserver)
+}.startAsync()
 
 fun hashWithSalt(password: String, salt: String): String {
     val sha256 = MessageDigest.getInstance("SHA-256")

@@ -2,36 +2,24 @@ package com.kurume_nct.studybattleserver.deamon
 
 import com.kurume_nct.studybattleserver.dao.ProblemAssignment
 import com.kurume_nct.studybattleserver.dao.ProblemAssignments
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.delay
-import kotlinx.coroutines.experimental.newSingleThreadContext
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.joda.time.DateTime
-import java.time.Duration
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 /**
  * Created by gedorinku on 2017/10/10.
  */
-object ProblemAssignmentObserver {
+object ProblemAssignmentObserver : Daemon {
+
     private val problemCloseQueue = PriorityQueue<AssignmentCache>()
     private var sinceId = 0
 
-    fun startAsync() = async(newSingleThreadContext("${javaClass.simpleName}Thread")) {
-        var lastFetchedAt = DateTime(0L)
-        val fetchInterval = Duration.ofSeconds(60).toMillis()
+    override fun onFastUpdate() {
+        closeProblemsIfOutOfDuration()
+    }
 
-        while (true) {
-            val now = DateTime.now()
-            if (fetchInterval < now.millis - lastFetchedAt.millis) {
-                lastFetchedAt = now
-                fetchAssignments()
-            }
-            closeProblemsIfOutOfDuration()
-
-            delay(2, TimeUnit.SECONDS)
-        }
+    override fun onSlowUpdate() {
+        fetchAssignments()
     }
 
     private fun fetchAssignments() = transaction {
