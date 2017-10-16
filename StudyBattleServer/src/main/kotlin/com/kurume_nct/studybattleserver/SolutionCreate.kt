@@ -1,10 +1,7 @@
 package com.kurume_nct.studybattleserver
 
 import com.google.gson.Gson
-import com.kurume_nct.studybattleserver.dao.ProblemAssignment
-import com.kurume_nct.studybattleserver.dao.ProblemAssignments
-import com.kurume_nct.studybattleserver.dao.Solution
-import com.kurume_nct.studybattleserver.dao.fromRequest
+import com.kurume_nct.studybattleserver.dao.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.ktor.http.HttpStatusCode
 import org.jetbrains.ktor.locations.post
@@ -50,8 +47,20 @@ fun Route.createSolution() = post<SolutionCreate> { _ ->
                 .map { it.delete() }
         val receivedItem = Lottery.getRandomItem()
         user.giveItem(receivedItem, 1, problem.group)
+
+        closeProblemIfAllUsersSubmitted(problem, problem.group)
+
         receivedItem
     }
 
     call.respond(Gson().toJson(SolutionCreateResponse(solution.id.value, receivedItem.id)))
+}
+
+private fun closeProblemIfAllUsersSubmitted(problem: Problem, group: Group) = transaction {
+    if (group.fetchUsers().size != problem.fetchSubmittedSolutions().size) {
+        return@transaction
+    }
+
+    problem.state = ProblemState.Judging
+    problem.flush()
 }
