@@ -62,16 +62,7 @@ fun Route.requestProblem() = post<ProblemRequest> { _ ->
                 .run {
                     transaction {
                         assignUser(user)
-                        ProblemGetResponse(
-                                id.value,
-                                title,
-                                owner.id.value,
-                                content.text,
-                                content.fetchRelatedImages().map { it.id.value },
-                                createdAt.toString(),
-                                startedAt.toString(),
-                                durationMillis,
-                                point)
+                        ProblemGetResponse.fromProblem(this@run)
                     }
                 }
     } else {

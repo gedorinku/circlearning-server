@@ -33,16 +33,7 @@ fun Route.getAssignedProblems() = post<AssignedProblemsGet> { _ ->
                 }
                 .toList()
                 .map {
-                    ProblemGetResponse(
-                            it.id.value,
-                            it.title,
-                            it.owner.id.value,
-                            it.content.text,
-                            it.content.fetchRelatedImages().map { it.id.value },
-                            it.createdAt.toString(),
-                            it.startedAt.toString(),
-                            it.durationMillis,
-                            it.point)
+                    ProblemGetResponse.fromProblem(it)
                 }
     }
 

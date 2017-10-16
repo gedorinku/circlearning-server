@@ -22,7 +22,8 @@ data class ProblemGetResponse(
         val createdAt: String,
         val startsAt: String,
         val durationMillis: Long,
-        val point: Int
+        val point: Int,
+        val solutions: List<SolutionGetResponse>
                              ) {
 
     companion object {
@@ -43,6 +44,9 @@ data class ProblemGetResponse(
             } else {
                 ""
             }
+            val solutions = problem
+                    .fetchSubmittedSolutions()
+                    .map { SolutionGetResponse.fromSolution(it) }
 
             ProblemGetResponse(
                     problem.id.value,
@@ -53,8 +57,8 @@ data class ProblemGetResponse(
                     problem.createdAt.toString(),
                     problem.startedAt.toString(),
                     problem.durationMillis,
-                    problem.point
-                              )
+                    problem.point,
+                    solutions)
         }
     }
 }
