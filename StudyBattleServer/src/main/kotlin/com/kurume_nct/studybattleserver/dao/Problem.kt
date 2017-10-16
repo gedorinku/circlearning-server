@@ -94,7 +94,7 @@ class Problem(id: EntityID<Int>) : IntEntity(id) {
 
     fun assignUser(user: User) = transaction {
         val alreadyAssigned =
-                !AssignHistroy.find {
+                !AssignHistory.find {
                     AssignHistories.user.eq(user.id) and AssignHistories.problem.eq(this@Problem.id)
                 }.empty()
         if (alreadyAssigned) {
@@ -103,7 +103,7 @@ class Problem(id: EntityID<Int>) : IntEntity(id) {
 
         val now = DateTime.now()
 
-        AssignHistroy.new {
+        AssignHistory.new {
             this.user = user
             this.problem = this@Problem
         }
@@ -131,5 +131,13 @@ class Problem(id: EntityID<Int>) : IntEntity(id) {
         Solution
                 .find { Solutions.problem.eq(this@Problem.id) and Solutions.author.neq(this@Problem.owner.id)}
                 .toList()
+    }
+
+    fun fetchAssignedUsers(): List<User> = transaction {
+        AssignHistory
+                .find { AssignHistories.problem.eq(this@Problem.id) }
+                .toList()
+                .distinctBy { it.user.id }
+                .map { it.user }
     }
 }

@@ -390,7 +390,8 @@ fun connectDataBase() {
                 AssignHistories,
                 AssumedSolutionRelations,
                 ProblemAssignments,
-                ItemStacks
+                ItemStacks,
+                ScoreHistories
               )
     }
 }

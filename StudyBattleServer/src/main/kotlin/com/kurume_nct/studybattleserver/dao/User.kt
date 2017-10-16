@@ -93,4 +93,17 @@ class User(id: EntityID<Int>) : IntEntity(id) {
                 .toList()
         return@transaction Pair(itemStacks, HttpStatusCode.OK)
     }
+
+    fun addScore(score: Int) = transaction {
+        ScoreHistory.new {
+            this.user = this@User
+            this.score = score
+        }
+    }
+
+    fun getSumOfScore() = transaction {
+        ScoreHistory
+                .find { ScoreHistories.user.eq(this@User.id) }
+                .sumBy { it.score }
+    }
 }

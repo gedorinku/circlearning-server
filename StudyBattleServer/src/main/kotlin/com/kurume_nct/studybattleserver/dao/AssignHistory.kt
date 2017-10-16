@@ -14,8 +14,8 @@ object AssignHistories : IntIdTable() {
     val problem = reference("problem", Problems)
 }
 
-class AssignHistroy(id: EntityID<Int>) : IntEntity(id) {
-    companion object : IntEntityClass<AssignHistroy>(AssignHistories)
+class AssignHistory(id: EntityID<Int>) : IntEntity(id) {
+    companion object : IntEntityClass<AssignHistory>(AssignHistories)
 
     var user by User referencedOn AssignHistories.user
     var problem by Problem referencedOn AssignHistories.problem
