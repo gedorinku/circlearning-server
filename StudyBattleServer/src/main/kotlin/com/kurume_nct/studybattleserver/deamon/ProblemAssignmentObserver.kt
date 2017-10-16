@@ -1,4 +1,4 @@
-package com.kurume_nct.studybattleserver
+package com.kurume_nct.studybattleserver.deamon
 
 import com.kurume_nct.studybattleserver.dao.ProblemAssignment
 import com.kurume_nct.studybattleserver.dao.ProblemAssignments

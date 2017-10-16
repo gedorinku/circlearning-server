@@ -2,6 +2,7 @@ package com.kurume_nct.studybattleserver
 
 import com.google.gson.FieldNamingPolicy
 import com.kurume_nct.studybattleserver.dao.*
+import com.kurume_nct.studybattleserver.deamon.ProblemAssignmentObserver
 import com.kurume_nct.studybattleserver.item.*
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils.create
