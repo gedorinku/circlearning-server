@@ -25,7 +25,7 @@ object ProblemAssignmentObserver : Daemon {
     private fun fetchAssignments() = transaction {
         val assignments = ProblemAssignment
                 .find { ProblemAssignments.id.greater(sinceId) }
-                .map { AssignmentCache.fromDao(it) }
+                .map { it.toCache() }
         sinceId = assignments.last().id
         problemWithdrawQueue.addAll(assignments)
     }
@@ -49,13 +49,10 @@ object ProblemAssignmentObserver : Daemon {
 
     private data class AssignmentCache(val id: Int, val withdrawAt: DateTime) : Comparable<AssignmentCache> {
 
-        companion object {
-
-            fun fromDao(dao: ProblemAssignment): AssignmentCache = transaction {
-                AssignmentCache(dao.id.value, dao.closeAt)
-            }
-        }
-
         override fun compareTo(other: AssignmentCache): Int = withdrawAt.compareTo(other.withdrawAt)
+    }
+
+    private fun ProblemAssignment.toCache() = transaction {
+        AssignmentCache(id.value, closeAt)
     }
 }
