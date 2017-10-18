@@ -17,7 +17,8 @@ object Grader {
         val assignedUsers = problem.fetchAssignedUsers()
 
         if (assignedUsers.isEmpty()) {
-            throw IllegalStateException("any users did not submitted")
+            //誰も提出してない問題何もしなくていいことに気がついた(あほ)
+            return@transaction
         }
 
         val correctCount = solutions.count { it.judgingState == JudgingState.Accepted }
