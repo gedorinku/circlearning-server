@@ -4,6 +4,7 @@ import com.google.gson.FieldNamingPolicy
 import com.kurume_nct.studybattleserver.dao.*
 import com.kurume_nct.studybattleserver.daemon.DaemonManager
 import com.kurume_nct.studybattleserver.daemon.ProblemAssignmentObserver
+import com.kurume_nct.studybattleserver.daemon.ProblemDurationObserver
 import com.kurume_nct.studybattleserver.item.Air
 import com.kurume_nct.studybattleserver.item.Bomb
 import com.kurume_nct.studybattleserver.item.ItemRegistry
@@ -409,6 +410,7 @@ fun registerItems() = ItemRegistry.apply {
 
 fun startDaemons() = DaemonManager.apply {
     register(ProblemAssignmentObserver)
+    register(ProblemDurationObserver)
 }.startAsync()
 
 fun hashWithSalt(password: String, salt: String): String {
