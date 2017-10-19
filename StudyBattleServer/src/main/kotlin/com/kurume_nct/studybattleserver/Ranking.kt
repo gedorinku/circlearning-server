@@ -16,8 +16,9 @@ import org.joda.time.Duration
 /**
  * Created by gedorinku on 2017/10/19.
  */
-data class RankingResponse(val myScore: Int,
+data class RankingResponse(val myWeekScore: Int,
                            val myLastWeekScore: Int,
+                           val myTotalScore: Int,
                            val ranking: List<Pair<UserGetResponse, Int>>)
 
 fun Route.getRanking() = get<Ranking> {
@@ -47,9 +48,10 @@ fun Route.getRanking() = get<Ranking> {
 
     val response = transaction {
         val ranking = getRankingResponse(group, since)
-        val myScore = user.getSumOfScore(group, since..now)
+        val myWeekScore = user.getSumOfScore(group, since..now)
         val myLastWeekScore = user.getSumOfScore(group, since.minusDays(7)..since)
-        RankingResponse(myScore, myLastWeekScore, ranking)
+        val myTotalScore = user.getSumOfScore(group)
+        RankingResponse(myWeekScore, myLastWeekScore, myTotalScore, ranking)
     }
     val json = Gson().toJson(response)
     call.respond(json)
