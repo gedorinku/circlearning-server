@@ -40,6 +40,9 @@ object ProblemDurationObserver : Daemon {
 
             problemCloseQueue.poll()
             val problem = Problem.findById(first.id) ?: continue
+            if (problem.state != ProblemState.Opening) {
+                continue
+            }
             problem.state = ProblemState.Judging
             problem.assignedUser = null
             ProblemAssignment
