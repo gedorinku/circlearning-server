@@ -318,6 +318,14 @@ class UnjudgedMySolutionsGet
 @location("/my_items")
 class MyItemsGet
 
+/**
+ * GET
+ * authenticationKey
+ * groupId
+ */
+@location("/ranking")
+class Ranking
+
 private val random = SecureRandom()
 
 fun Application.studyBattleServerApp() {
@@ -364,6 +372,7 @@ fun Application.studyBattleServerApp() {
         judgeSolution()
         attachToGroup()
         getMyItems()
+        getRanking()
     }
 
     startDaemons()

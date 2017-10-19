@@ -12,6 +12,8 @@ object ScoreHistories : IntIdTable() {
 
     val score = integer("score")
     val user = reference("user", Users)
+    val group = reference("group", Groups)
+    val createdAt = datetime("created_at")
 }
 
 class ScoreHistory(id: EntityID<Int>) : IntEntity(id) {
@@ -19,4 +21,6 @@ class ScoreHistory(id: EntityID<Int>) : IntEntity(id) {
 
     var score by ScoreHistories.score
     var user by User referencedOn ScoreHistories.user
+    var group by Group referencedOn ScoreHistories.group
+    var createdAt by ScoreHistories.createdAt
 }

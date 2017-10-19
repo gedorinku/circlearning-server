@@ -8,6 +8,7 @@ import org.jetbrains.exposed.dao.IntIdTable
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.ktor.http.HttpStatusCode
+import org.joda.time.DateTime
 
 /**
  * Created by gedorinku on 2017/07/23.
@@ -101,9 +102,21 @@ class User(id: EntityID<Int>) : IntEntity(id) {
         }
     }
 
-    fun getSumOfScore() = transaction {
+    fun getSumOfScore(group: Group) = transaction {
         ScoreHistory
-                .find { ScoreHistories.user.eq(this@User.id) }
+                .find {
+                    ScoreHistories.user.eq(this@User.id) and
+                            ScoreHistories.group.eq(group.id)
+                }
+                .sumBy { it.score }
+    }
+
+    fun getSumOfScore(group: Group, range: ClosedRange<DateTime>) = transaction {
+        ScoreHistory
+                .find {
+                    ScoreHistories.createdAt.between(range.start, range.endInclusive) and
+                            ScoreHistories.group.eq(group.id)
+                }
                 .sumBy { it.score }
     }
 }
