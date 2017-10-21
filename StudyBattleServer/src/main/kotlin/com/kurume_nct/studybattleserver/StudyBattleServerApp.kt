@@ -413,6 +413,7 @@ fun registerItems() = ItemRegistry.apply {
     register(Bomb)
     register(Shield)
     register(DoubleScoreCard)
+    register(MagicHand)
 }
 
 fun startDaemons() = DaemonManager.apply {
