@@ -2,6 +2,7 @@ package com.kurume_nct.studybattleserver.item
 
 import com.kurume_nct.studybattleserver.dao.ItemStack
 import com.kurume_nct.studybattleserver.dao.Problem
+import com.kurume_nct.studybattleserver.dao.Solution
 import com.kurume_nct.studybattleserver.dao.User
 
 /**
@@ -15,7 +16,7 @@ abstract class Item {
 
     open fun onExplode(itemStack: ItemStack, problem: Problem, user: User): Boolean = false
 
-    open fun onScore(itemStack: ItemStack, user: User, score: Double): Double = score
+    open fun onScore(solution: Solution, score: Int): Int = score
 
     fun onRegisteredItem(id: Int) {
         if (this.id != -1) {
