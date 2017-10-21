@@ -1,6 +1,7 @@
 package com.kurume_nct.studybattleserver.score
 
 import com.kurume_nct.studybattleserver.dao.*
+import com.kurume_nct.studybattleserver.item.ItemRegistry
 import org.jetbrains.exposed.sql.transactions.transaction
 
 /**
@@ -23,16 +24,20 @@ object Grader {
 
         val correctCount = solutions.count { it.judgingState == JudgingState.Accepted }
         val correctRate = correctCount / assignedUsers.size.toDouble()
-        val score = getScore(correctRate)
-        val firstAcceptScore = getFirstAcceptScore(score)
+        val defaultScore = getScore(correctRate)
+        val firstAcceptScore = getFirstAcceptScore(defaultScore)
 
         getFirstAcceptedUser(solutions)?.addScore(firstAcceptScore)
 
         problem.owner.addScore(firstAcceptScore)
 
+        val registeredItems = ItemRegistry.registeredItems
+
         solutions
                 .filter { it.judgingState == JudgingState.Accepted }
                 .forEach {
+                    val item = registeredItems[it.attachedItemId]
+                    val score = item?.onScore(it, defaultScore) ?: defaultScore
                     it.author.addScore(score)
                 }
     }

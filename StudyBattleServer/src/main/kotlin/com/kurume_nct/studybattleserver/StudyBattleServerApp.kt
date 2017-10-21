@@ -5,10 +5,7 @@ import com.kurume_nct.studybattleserver.dao.*
 import com.kurume_nct.studybattleserver.daemon.DaemonManager
 import com.kurume_nct.studybattleserver.daemon.ProblemAssignmentObserver
 import com.kurume_nct.studybattleserver.daemon.ProblemDurationObserver
-import com.kurume_nct.studybattleserver.item.Air
-import com.kurume_nct.studybattleserver.item.Bomb
-import com.kurume_nct.studybattleserver.item.ItemRegistry
-import com.kurume_nct.studybattleserver.item.Shield
+import com.kurume_nct.studybattleserver.item.*
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils.create
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -415,6 +412,8 @@ fun registerItems() = ItemRegistry.apply {
     register(Air)
     register(Bomb)
     register(Shield)
+    register(DoubleScoreCard)
+    register(MagicHand)
 }
 
 fun startDaemons() = DaemonManager.apply {
