@@ -36,6 +36,13 @@ class Solution(id: EntityID<Int>) : IntEntity(id) {
     var problem by Problem referencedOn Solutions.problem
     var createdAt by Solutions.createdAt
     var judgingState by Solutions.judgingState
+
+    val isJudged
+        get() = transaction {
+            author.id == problem.owner.id ||
+                    judgingState == JudgingState.Accepted ||
+                    judgingState == JudgingState.WrongAnswer
+        }
 }
 
 fun Solution.Companion.fromRequest(request: SolutionCreate, author: User)

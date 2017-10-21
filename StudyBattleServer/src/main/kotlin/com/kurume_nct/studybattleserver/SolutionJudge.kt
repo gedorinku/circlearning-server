@@ -2,8 +2,10 @@ package com.kurume_nct.studybattleserver
 
 import com.google.gson.Gson
 import com.kurume_nct.studybattleserver.dao.JudgingState
+import com.kurume_nct.studybattleserver.dao.Problem
 import com.kurume_nct.studybattleserver.dao.Solution
 import com.kurume_nct.studybattleserver.dao.Solutions
+import com.kurume_nct.studybattleserver.score.Grader
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
 import org.jetbrains.ktor.http.HttpStatusCode
@@ -67,7 +69,15 @@ fun Route.judgeSolution() = post<SolutionJudge> { _ ->
         Solutions.update({ Solutions.id.eq(solution.id) }) {
             it[Solutions.judgingState] = judge
         }
+
+        scoreIfAllSolutionsJudged(solution.problem)
     }
 
     call.respond(Gson().toJson(HttpStatusCode.OK))
+}
+
+private fun scoreIfAllSolutionsJudged(problem: Problem) = transaction {
+    if (problem.fetchSubmittedSolutions().all { it.isJudged }) {
+        Grader.scoreSolutions(problem)
+    }
 }

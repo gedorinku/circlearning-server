@@ -2,7 +2,13 @@ package com.kurume_nct.studybattleserver
 
 import com.google.gson.FieldNamingPolicy
 import com.kurume_nct.studybattleserver.dao.*
-import com.kurume_nct.studybattleserver.item.*
+import com.kurume_nct.studybattleserver.daemon.DaemonManager
+import com.kurume_nct.studybattleserver.daemon.ProblemAssignmentObserver
+import com.kurume_nct.studybattleserver.daemon.ProblemDurationObserver
+import com.kurume_nct.studybattleserver.item.Air
+import com.kurume_nct.studybattleserver.item.Bomb
+import com.kurume_nct.studybattleserver.item.ItemRegistry
+import com.kurume_nct.studybattleserver.item.Shield
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils.create
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -312,6 +318,14 @@ class UnjudgedMySolutionsGet
 @location("/my_items")
 class MyItemsGet
 
+/**
+ * GET
+ * authenticationKey
+ * groupId
+ */
+@location("/ranking")
+class Ranking
+
 private val random = SecureRandom()
 
 fun Application.studyBattleServerApp() {
@@ -358,9 +372,10 @@ fun Application.studyBattleServerApp() {
         judgeSolution()
         attachToGroup()
         getMyItems()
+        getRanking()
     }
 
-    ProblemAssignmentObserver.startAsync()
+    startDaemons()
 }
 
 fun connectDataBase() {
@@ -390,7 +405,8 @@ fun connectDataBase() {
                 AssignHistories,
                 AssumedSolutionRelations,
                 ProblemAssignments,
-                ItemStacks
+                ItemStacks,
+                ScoreHistories
               )
     }
 }
@@ -400,6 +416,11 @@ fun registerItems() = ItemRegistry.apply {
     register(Bomb)
     register(Shield)
 }
+
+fun startDaemons() = DaemonManager.apply {
+    register(ProblemAssignmentObserver)
+    register(ProblemDurationObserver)
+}.startAsync()
 
 fun hashWithSalt(password: String, salt: String): String {
     val sha256 = MessageDigest.getInstance("SHA-256")

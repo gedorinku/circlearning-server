@@ -12,7 +12,7 @@ object ProblemAssignments : IntIdTable() {
 
     val problem = reference("problem", Problems)
     val assignedAt = datetime("assigned_at")
-    val closeAt = datetime("close_at")
+    val withdrawAt = datetime("withdraw_at")
 }
 
 class ProblemAssignment(id: EntityID<Int>) : IntEntity(id) {
@@ -20,5 +20,5 @@ class ProblemAssignment(id: EntityID<Int>) : IntEntity(id) {
 
     var problem by Problem referencedOn ProblemAssignments.problem
     var assignedAt by ProblemAssignments.assignedAt
-    var closeAt by ProblemAssignments.closeAt
+    var closeAt by ProblemAssignments.withdrawAt
 }
