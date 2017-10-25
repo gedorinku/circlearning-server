@@ -23,7 +23,11 @@ data class ProblemGetResponse(
         val startsAt: String,
         val durationMillis: Long,
         val point: Int,
-        val solutions: List<SolutionGetResponse>
+        val solutions: List<SolutionGetResponse>,
+        val assignedUser: UserGetResponse?,
+        val assignedAt: String,
+        val durationPerUserMillis: Long,
+        val state: String
                              ) {
 
     companion object {
@@ -48,6 +52,13 @@ data class ProblemGetResponse(
                     .fetchSubmittedSolutions()
                     .map { SolutionGetResponse.fromSolution(it) }
 
+            val assignedUser = problem.assignedUser
+            val user = if (assignedUser == null) {
+                null
+            } else {
+                UserGetResponse.fromUser(assignedUser)
+            }
+
             ProblemGetResponse(
                     problem.id.value,
                     problem.title,
@@ -58,7 +69,11 @@ data class ProblemGetResponse(
                     problem.startedAt.toString(),
                     problem.durationMillis,
                     problem.point,
-                    solutions)
+                    solutions,
+                    user,
+                    problem.assignedAt.toString(),
+                    problem.durationPerUserMillis,
+                    problem.state.toString())
         }
     }
 }
