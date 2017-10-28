@@ -16,6 +16,7 @@ import org.jetbrains.ktor.routing.Route
 data class CommentGetResponse(val id: Int,
                               val text: String,
                               val authorId: Int,
+                              val replyTo: Int,
                               val imageIds: List<Int>,
                               val createdAt: String) {
 
@@ -29,6 +30,7 @@ data class CommentGetResponse(val id: Int,
             CommentGetResponse(comment.id.value,
                                comment.body.text,
                                comment.author.id.value,
+                               comment.replyTo?.id?.value ?: 0,
                                images,
                                comment.createdAt.toString())
         }
