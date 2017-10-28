@@ -1,10 +1,10 @@
 package com.kurume_nct.studybattleserver
 
 import com.google.gson.FieldNamingPolicy
-import com.kurume_nct.studybattleserver.dao.*
 import com.kurume_nct.studybattleserver.daemon.DaemonManager
 import com.kurume_nct.studybattleserver.daemon.ProblemAssignmentObserver
 import com.kurume_nct.studybattleserver.daemon.ProblemDurationObserver
+import com.kurume_nct.studybattleserver.dao.*
 import com.kurume_nct.studybattleserver.item.*
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils.create
@@ -323,6 +323,38 @@ class MyItemsGet
 @location("/ranking")
 class Ranking
 
+@location("comment/create")
+data class CommentCreate(val authenticationKey: String = "",
+                         val solutionId: Int = 0,
+                         val text: String = "",
+                         val imageIds: List<Int> = emptyList(),
+                         val replyTo: Int = 0) {
+
+    companion object {
+
+        fun create(values: ValuesMap): CommentCreate? {
+            val authenticationKey = values["authenticationKey"] ?: return null
+            val text = values["text"] ?: return null
+            val solutionId = values["solutionId"]?.toIntOrNull() ?: return null
+            val imageIds = mutableListOf<Int?>()
+            val replyTo = values["replyTo"]?.toIntOrNull() ?: 0
+
+            values.forEach { s, list ->
+                if (s == "imageIds") {
+                    imageIds.addAll(list.map {
+                        it.toIntOrNull()
+                    })
+                }
+            }
+            imageIds.forEach {
+                it ?: return null
+            }
+
+            return CommentCreate(authenticationKey, solutionId, text, imageIds.filterNotNull(), replyTo)
+        }
+    }
+}
+
 private val random = SecureRandom()
 
 fun Application.studyBattleServerApp() {
@@ -370,6 +402,7 @@ fun Application.studyBattleServerApp() {
         attachToGroup()
         getMyItems()
         getRanking()
+        createComment()
     }
 
     startDaemons()
@@ -403,7 +436,8 @@ fun connectDataBase() {
                 AssumedSolutionRelations,
                 ProblemAssignments,
                 ItemStacks,
-                ScoreHistories
+                ScoreHistories,
+                Comments
               )
     }
 }
