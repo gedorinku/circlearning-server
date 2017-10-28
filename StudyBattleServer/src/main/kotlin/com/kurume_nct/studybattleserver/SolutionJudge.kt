@@ -1,11 +1,7 @@
 package com.kurume_nct.studybattleserver
 
 import com.google.gson.Gson
-import com.kurume_nct.studybattleserver.dao.JudgingState
-import com.kurume_nct.studybattleserver.dao.Problem
-import com.kurume_nct.studybattleserver.dao.Solution
-import com.kurume_nct.studybattleserver.dao.Solutions
-import com.kurume_nct.studybattleserver.score.Grader
+import com.kurume_nct.studybattleserver.dao.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
 import org.jetbrains.ktor.http.HttpStatusCode
@@ -37,8 +33,12 @@ fun Route.judgeSolution() = post<SolutionJudge> { _ ->
         return@post
     }
 
+    val problem = transaction {
+        solution.problem
+    }
+
     val problemOwnerId = transaction {
-        solution.problem.owner.id.value
+        problem.owner.id.value
     }
 
     val userId = transaction {
@@ -49,13 +49,13 @@ fun Route.judgeSolution() = post<SolutionJudge> { _ ->
         return@post
     }
 
-    if (solution.judgingState == JudgingState.Accepted || solution.judgingState == JudgingState.WrongAnswer) {
-        call.respond(HttpStatusCode(400, "already judged"))
+    if (solutionJudge.isAccepted == null) {
+        call.respond(HttpStatusCode.BadRequest)
         return@post
     }
 
-    if (solutionJudge.isAccepted == null) {
-        call.respond(HttpStatusCode.BadRequest)
+    if (problem.state != ProblemState.Judging && problem.state != ProblemState.ChallengePhase) {
+        call.respond(HttpStatusCode(HttpStatusCode.BadRequest.value, "out of duration"))
         return@post
     }
 
@@ -70,14 +70,14 @@ fun Route.judgeSolution() = post<SolutionJudge> { _ ->
             it[Solutions.judgingState] = judge
         }
 
-        scoreIfAllSolutionsJudged(solution.problem)
+        switchChallengePhaseIfAllSolutionsJudged(solution.problem)
     }
 
     call.respond(Gson().toJson(HttpStatusCode.OK))
 }
 
-private fun scoreIfAllSolutionsJudged(problem: Problem) = transaction {
-    if (problem.fetchSubmittedSolutions().all { it.isJudged }) {
-        Grader.scoreSolutions(problem)
+private fun switchChallengePhaseIfAllSolutionsJudged(problem: Problem) = transaction {
+    if (problem.state == ProblemState.Judging && problem.fetchSubmittedSolutions().all { it.isJudged }) {
+        problem.switchChallengePhase()
     }
 }

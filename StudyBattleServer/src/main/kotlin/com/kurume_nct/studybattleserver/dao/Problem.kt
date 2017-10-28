@@ -10,7 +10,7 @@ import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.ktor.http.HttpStatusCode
 import org.joda.time.DateTime
-import java.time.Duration
+import org.joda.time.Duration
 
 /**
  * Created by gedorinku on 2017/08/10.
@@ -18,6 +18,7 @@ import java.time.Duration
 enum class ProblemState {
     Opening,
     Judging,
+    ChallengePhase,
     Judged
 }
 
@@ -36,6 +37,12 @@ object Problems : IntIdTable() {
     val state = enumeration("status", ProblemState::class.java)
     val durationPerUserMillis = long("duration_per_uer_millis")
     val attachedItemId = integer("attached_item_id").default(Air.id)
+    val challengePhaseStartsAt = datetime("challenge_phase_starts_at").default(DateTime(0))
+
+    /**
+     * 正誤判定に文句を言うフェーズの期間です。
+     */
+    val challengePahseDuration = Duration.standardDays(1L)
 
     fun getUserProblems(authenticationKey: String, groupId: Int, state: ProblemState)
             : Pair<List<Problem>?, HttpStatusCode> {
@@ -79,17 +86,18 @@ class Problem(id: EntityID<Int>) : IntEntity(id) {
     var state by Problems.state
     var durationPerUserMillis by Problems.durationPerUserMillis
     var attachedItemId by Problems.attachedItemId
+    var challengePhaseStartsAt by Problems.challengePhaseStartsAt
 
     var duration: Duration
-        get() = Duration.ofMillis(durationMillis)
+        get() = Duration.millis(durationMillis)
         set(value) {
-            durationMillis = value.toMillis()
+            durationMillis = value.millis
         }
 
     var durationPerUser: Duration
-        get() = Duration.ofMillis(durationPerUserMillis)
+        get() = Duration.millis(durationPerUserMillis)
         set(value) {
-            durationPerUserMillis = value.toMillis()
+            durationPerUserMillis = value.millis
         }
 
     fun assignUser(user: User) = transaction {
@@ -139,5 +147,10 @@ class Problem(id: EntityID<Int>) : IntEntity(id) {
                 .toList()
                 .distinctBy { it.user.id }
                 .map { it.user }
+    }
+
+    fun switchChallengePhase() = transaction {
+        challengePhaseStartsAt = DateTime.now()
+        state = ProblemState.ChallengePhase
     }
 }

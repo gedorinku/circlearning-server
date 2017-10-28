@@ -1,6 +1,7 @@
 package com.kurume_nct.studybattleserver
 
 import com.google.gson.FieldNamingPolicy
+import com.kurume_nct.studybattleserver.daemon.ChallengePhaseObsever
 import com.kurume_nct.studybattleserver.daemon.DaemonManager
 import com.kurume_nct.studybattleserver.daemon.ProblemAssignmentObserver
 import com.kurume_nct.studybattleserver.daemon.ProblemDurationObserver
@@ -453,6 +454,7 @@ fun registerItems() = ItemRegistry.apply {
 fun startDaemons() = DaemonManager.apply {
     register(ProblemAssignmentObserver)
     register(ProblemDurationObserver)
+    register(ChallengePhaseObsever)
 }.startAsync()
 
 fun hashWithSalt(password: String, salt: String): String {
