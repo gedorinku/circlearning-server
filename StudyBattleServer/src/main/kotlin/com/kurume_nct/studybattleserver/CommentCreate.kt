@@ -1,10 +1,7 @@
 package com.kurume_nct.studybattleserver
 
 import com.google.gson.Gson
-import com.kurume_nct.studybattleserver.dao.Comment
-import com.kurume_nct.studybattleserver.dao.Content
-import com.kurume_nct.studybattleserver.dao.Image
-import com.kurume_nct.studybattleserver.dao.User
+import com.kurume_nct.studybattleserver.dao.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.ktor.http.HttpStatusCode
 import org.jetbrains.ktor.locations.post
@@ -54,6 +51,14 @@ fun Route.createComment() = post<CommentCreate> { _ ->
         null
     }
 
+    val solution = transaction {
+        Solution.findById(request.solutionId)
+    }
+    if (solution == null) {
+        call.respond(HttpStatusCode(404, "solution not found"))
+        return@post
+    }
+
     val content = transaction {
         Content.new {
             text = request.text
@@ -67,6 +72,7 @@ fun Route.createComment() = post<CommentCreate> { _ ->
             this.replyTo = replyTo
             this.body = content
             this.createdAt = DateTime.now()
+            this.solution = solution
         }.id.value
     }
 
