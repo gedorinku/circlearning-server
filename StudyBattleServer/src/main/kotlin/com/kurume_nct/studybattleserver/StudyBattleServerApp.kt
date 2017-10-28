@@ -323,7 +323,7 @@ class MyItemsGet
 @location("/ranking")
 class Ranking
 
-@location("comment/create")
+@location("/comment/create")
 data class CommentCreate(val authenticationKey: String = "",
                          val solutionId: Int = 0,
                          val text: String = "",
