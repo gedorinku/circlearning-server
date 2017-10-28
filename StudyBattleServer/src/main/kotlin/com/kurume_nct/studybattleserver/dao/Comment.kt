@@ -7,6 +7,7 @@ import org.jetbrains.exposed.dao.*
  */
 object Comments : IntIdTable() {
 
+    val author = reference("author", Users)
     val replyTo = reference("reply_to", Users).nullable()
     val createdAt = datetime("created_at")
     val body = reference("body", Contents)
@@ -16,6 +17,7 @@ object Comments : IntIdTable() {
 class Comment(id: EntityID<Int>) : IntEntity(id) {
     companion object : IntEntityClass<Comment>(Comments)
 
+    var author by User referencedOn Comments.author
     var replyTo by User optionalReferencedOn Comments.replyTo
     var createdAt by Comments.createdAt
     var body by Content referencedOn Comments.body

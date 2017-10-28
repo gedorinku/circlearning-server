@@ -46,6 +46,11 @@ class Solution(id: EntityID<Int>) : IntEntity(id) {
                     judgingState == JudgingState.Accepted ||
                     judgingState == JudgingState.WrongAnswer
         }
+
+    fun fetchComments() = transaction {
+        Comment.find { Comments.solution.eq(this@Solution.id) }
+                .toList()
+    }
 }
 
 fun Solution.Companion.fromRequest(request: SolutionCreate, author: User)

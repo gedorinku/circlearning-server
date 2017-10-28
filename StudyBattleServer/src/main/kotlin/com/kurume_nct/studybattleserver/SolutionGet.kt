@@ -1,6 +1,7 @@
 package com.kurume_nct.studybattleserver
 
 import com.google.gson.Gson
+import com.kurume_nct.studybattleserver.dao.Comment
 import com.kurume_nct.studybattleserver.dao.Solution
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.ktor.http.HttpStatusCode
@@ -12,13 +13,36 @@ import org.jetbrains.ktor.routing.Route
 /**
  * Created by gedorinku on 2017/09/22.
  */
+data class CommentGetResponse(val id: Int,
+                              val text: String,
+                              val authorId: Int,
+                              val imageIds: List<Int>,
+                              val createdAt: String) {
+
+    companion object {
+
+        fun fromComment(comment: Comment): CommentGetResponse = transaction {
+            val images = comment
+                    .body
+                    .fetchRelatedImages()
+                    .map { it.id.value }
+            CommentGetResponse(comment.id.value,
+                               comment.body.text,
+                               comment.author.id.value,
+                               images,
+                               comment.createdAt.toString())
+        }
+    }
+}
+
 data class SolutionGetResponse(val id: Int,
                                val text: String,
                                val authorId: Int,
                                val problemId: Int,
                                val imageCount: Int,
                                val imageIds: List<Int>,
-                               val judgingState: String) {
+                               val judgingState: String,
+                               val comments: List<CommentGetResponse>) {
 
     companion object {
 
@@ -26,6 +50,9 @@ data class SolutionGetResponse(val id: Int,
             val images = transaction {
                 solution.content.fetchRelatedImages().map { it.id.value }
             }
+            val comments = solution
+                    .fetchComments()
+                    .map { CommentGetResponse.fromComment(it) }
 
             return transaction {
                 SolutionGetResponse(solution.id.value,
@@ -34,7 +61,8 @@ data class SolutionGetResponse(val id: Int,
                                     solution.problem.id.value,
                                     images.size,
                                     images,
-                                    solution.judgingState.name)
+                                    solution.judgingState.name,
+                                    comments)
             }
         }
     }

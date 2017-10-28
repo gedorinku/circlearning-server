@@ -69,6 +69,7 @@ fun Route.createComment() = post<CommentCreate> { _ ->
 
     val commentId = transaction {
         Comment.new {
+            this.author = user
             this.replyTo = replyTo
             this.body = content
             this.createdAt = DateTime.now()
