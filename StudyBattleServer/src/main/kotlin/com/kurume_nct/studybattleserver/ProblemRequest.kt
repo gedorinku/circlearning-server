@@ -46,7 +46,8 @@ fun Route.requestProblem() = post<ProblemRequest> { _ ->
         Problem.find {
             Problems.group.eq(group.id) and
                     Problems.assignedUser.isNull() and
-                    Problems.startedAt.lessEq(DateTime.now())
+                    Problems.startedAt.lessEq(DateTime.now()) and
+                    Problems.owner.neq(user.id)
         }.toList()
     }
     val count = user.countAssignedProblems(group)
