@@ -1,6 +1,8 @@
 package com.kurume_nct.studybattleserver
 
 import com.google.gson.Gson
+import com.kurume_nct.studybattleserver.dao.AssumedSolutionRelation
+import com.kurume_nct.studybattleserver.dao.AssumedSolutionRelations
 import com.kurume_nct.studybattleserver.dao.Problem
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.ktor.http.HttpStatusCode
@@ -27,7 +29,8 @@ data class ProblemGetResponse(
         val assignedUser: UserGetResponse?,
         val assignedAt: String,
         val durationPerUserMillis: Long,
-        val state: String
+        val state: String,
+        val assumedSolution: SolutionGetResponse
                              ) {
 
     companion object {
@@ -58,6 +61,10 @@ data class ProblemGetResponse(
             } else {
                 UserGetResponse.fromUser(assignedUser)
             }
+            val assumedSolution = AssumedSolutionRelation
+                    .find { AssumedSolutionRelations.problem.eq(problem.id) }
+                    .firstOrNull()!!
+                    .assumedSolution
 
             ProblemGetResponse(
                     problem.id.value,
@@ -73,7 +80,8 @@ data class ProblemGetResponse(
                     user,
                     problem.assignedAt.toString(),
                     problem.durationPerUserMillis,
-                    problem.state.toString())
+                    problem.state.toString(),
+                    SolutionGetResponse.fromSolution(assumedSolution))
         }
     }
 }
