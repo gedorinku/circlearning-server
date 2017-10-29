@@ -18,10 +18,10 @@ object ProblemDurationObserver : Daemon {
     }
 
     override fun onSlowUpdate() {
-        fetchAssignProblems()
+        fetchProblems()
     }
 
-    private fun fetchAssignProblems() = transaction {
+    private fun fetchProblems() = transaction {
         val problems = Problem
                 .find { Problems.id.greater(sinceId) }
                 .map { it.toCache() }
