@@ -26,7 +26,7 @@ object ProblemAssignmentObserver : Daemon {
         val assignments = ProblemAssignment
                 .find { ProblemAssignments.id.greater(sinceId) }
                 .map { it.toCache() }
-        sinceId = assignments.last().id
+        sinceId = assignments.lastOrNull()?.id ?: sinceId
         problemWithdrawQueue.addAll(assignments)
     }
 
