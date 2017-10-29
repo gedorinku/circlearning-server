@@ -236,6 +236,9 @@ class MyJudgingProblemsGet
 @location("/problem/challenge")
 class ChallengePhaseProblemsGet
 
+@location("/problem/judged")
+class JudgedProblemsGet
+
 /**
  * GET
  * authenticationKey
@@ -413,6 +416,7 @@ fun Application.studyBattleServerApp() {
         getMyCollectingProblems()
         getMyChallengePhaseProblems()
         getChallengePhaseProblems()
+        getJudgedProblems()
         getAssignedProblems()
         requestProblem()
         passProblem()
