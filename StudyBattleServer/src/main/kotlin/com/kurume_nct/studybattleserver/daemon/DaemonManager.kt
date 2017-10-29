@@ -25,6 +25,7 @@ object DaemonManager {
             val now = DateTime.now().millis
 
             if (slowUpdateInterval.millis <= now - lastSlowUpdate) {
+                println("${DateTime.now()}:${javaClass.simpleName}:on slow update...")
                 daemons.forEach {
                     it.onSlowUpdate()
                 }
