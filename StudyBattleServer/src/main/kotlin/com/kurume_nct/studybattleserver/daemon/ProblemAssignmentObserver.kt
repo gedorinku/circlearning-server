@@ -30,19 +30,27 @@ object ProblemAssignmentObserver : Daemon {
         problemWithdrawQueue.addAll(assignments)
     }
 
-    private fun withdrawProblemsIfOutOfDuration() = transaction {
+    private fun withdrawProblemsIfOutOfDuration() {
+        if (problemWithdrawQueue.isEmpty()) {
+            return
+        }
+
         val now = DateTime.now()
+
         while (problemWithdrawQueue.isNotEmpty()) {
             val first = problemWithdrawQueue.peek()
             if (now < first.withdrawAt) {
                 break
             }
-            problemWithdrawQueue.poll()
 
-            val assignment = ProblemAssignment.findById(first.id) ?: continue
-            assignment.problem.assignedUser = null
-            assignment.problem.flush()
-            assignment.delete()
+            transaction {
+                problemWithdrawQueue.poll()
+
+                val assignment = ProblemAssignment.findById(first.id) ?: return@transaction
+                assignment.problem.assignedUser = null
+                assignment.problem.flush()
+                assignment.delete()
+            }
         }
     }
 

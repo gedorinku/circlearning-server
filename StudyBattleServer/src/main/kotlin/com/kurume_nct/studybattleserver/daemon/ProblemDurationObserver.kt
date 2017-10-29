@@ -30,27 +30,34 @@ object ProblemDurationObserver : Daemon {
         problemCloseQueue.addAll(problems)
     }
 
-    private fun closeProblemsIfOutOfDuration() = transaction {
+    private fun closeProblemsIfOutOfDuration() {
+        if (problemCloseQueue.isEmpty()) {
+            return
+        }
+
         val now = DateTime.now()
+
         while (problemCloseQueue.isNotEmpty()) {
             val first = problemCloseQueue.peek()
             if (now < first.closeAt) {
                 break
             }
 
-            problemCloseQueue.poll()
-            val problem = Problem.findById(first.id) ?: continue
-            if (problem.state != ProblemState.Opening) {
-                continue
+            transaction {
+                problemCloseQueue.poll()
+                val problem = Problem.findById(first.id) ?: return@transaction
+                if (problem.state != ProblemState.Opening) {
+                    return@transaction
+                }
+                problem.state = ProblemState.Judging
+                problem.assignedUser = null
+                ProblemAssignment
+                        .find { ProblemAssignments.problem.eq(problem.id) }
+                        .forEach {
+                            it.delete()
+                        }
+                problem.flush()
             }
-            problem.state = ProblemState.Judging
-            problem.assignedUser = null
-            ProblemAssignment
-                    .find { ProblemAssignments.problem.eq(problem.id) }
-                    .forEach {
-                        it.delete()
-                    }
-            problem.flush()
         }
     }
 

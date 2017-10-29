@@ -32,17 +32,24 @@ object ChallengePhaseObsever : Daemon {
         phaseCloseQueue.addAll(problems)
     }
 
-    private fun closeChallengePhaseIfOutOfDuration() = transaction {
+    private fun closeChallengePhaseIfOutOfDuration() {
+        if (phaseCloseQueue.isEmpty()) {
+            return
+        }
+
         val now = DateTime.now()
+
         while (phaseCloseQueue.isNotEmpty()) {
             val first = phaseCloseQueue.peek()
             if (now < first.phaseEndsAt) {
                 break
             }
 
-            phaseCloseQueue.poll()
-            val problem = Problem.findById(first.id) ?: continue
-            problem.state = ProblemState.Judged
+            transaction {
+                phaseCloseQueue.poll()
+                val problem = Problem.findById(first.id) ?: return@transaction
+                problem.state = ProblemState.Judged
+            }
         }
     }
 
