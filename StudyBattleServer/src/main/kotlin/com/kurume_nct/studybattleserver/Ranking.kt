@@ -1,10 +1,8 @@
 package com.kurume_nct.studybattleserver
 
 import com.google.gson.Gson
-import com.kurume_nct.studybattleserver.dao.Group
-import com.kurume_nct.studybattleserver.dao.ScoreHistories
-import com.kurume_nct.studybattleserver.dao.ScoreHistory
-import com.kurume_nct.studybattleserver.dao.User
+import com.kurume_nct.studybattleserver.dao.*
+import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.ktor.http.HttpStatusCode
 import org.jetbrains.ktor.locations.get
@@ -61,11 +59,20 @@ fun Route.getRanking() = get<Ranking> {
 
 private fun getRankingResponse(group: Group, since: DateTime): List<Pair<UserGetResponse, Int>> = transaction {
     val scoreHistories = ScoreHistory
-            .find { ScoreHistories.createdAt.greaterEq(since) }
-            .sortedBy { it.user.id.value }
-    val users = scoreHistories
-            .map { it.user }
-            .distinctBy { it.id }
+            .find {
+                ScoreHistories.createdAt.greaterEq(since) and
+                        ScoreHistories.group.eq(group.id)
+            }
+            .sortedBy {
+                it.user.id.value
+            }
+    val users = Belonging
+            .find {
+                Belongings.group.eq(group.id)
+            }
+            .map {
+                it.user
+            }
     val ranking = mutableMapOf<User, Int>()
 
     users.forEach {
