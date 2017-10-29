@@ -36,7 +36,9 @@ fun Route.getRanking() = get<Ranking> {
         call.respond(HttpStatusCode(HttpStatusCode.BadRequest.value, "group id"))
         return@get
     }
-    val group = Group.findById(groupId)
+    val group = transaction {
+        Group.findById(groupId)
+    }
     if (group == null) {
         call.respond(HttpStatusCode(404, "group not found"))
         return@get
@@ -57,7 +59,7 @@ fun Route.getRanking() = get<Ranking> {
     call.respond(json)
 }
 
-private fun getRankingResponse(group: Group, since: DateTime): List<Pair<UserGetResponse, Int>> {
+private fun getRankingResponse(group: Group, since: DateTime): List<Pair<UserGetResponse, Int>> = transaction {
     val scoreHistories = ScoreHistory
             .find { ScoreHistories.createdAt.greaterEq(since) }
             .sortedBy { it.user.id.value }
@@ -73,7 +75,7 @@ private fun getRankingResponse(group: Group, since: DateTime): List<Pair<UserGet
         ranking[it.user] = ranking[it.user]!! + it.score
     }
 
-    return ranking
+    ranking
             .toList()
             .sortedBy { it.second }
             .reversed()
