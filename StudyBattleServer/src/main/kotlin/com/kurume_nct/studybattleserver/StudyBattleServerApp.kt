@@ -214,7 +214,7 @@ class ProblemOpen
  * authenticationKey
  * groupId
  */
-@location("/problem/challenge")
+@location("/my_problem/challenge")
 class MyCallengePhaseProblemsGet
 
 /**
@@ -222,7 +222,7 @@ class MyCallengePhaseProblemsGet
  * authenticationKey
  * groupId
  */
-@location("/problem/judged")
+@location("/my_problem/judged")
 class MyJudgedProblemsGet
 
 /**
@@ -230,15 +230,18 @@ class MyJudgedProblemsGet
  * authenticationKey
  * groupId
  */
-@location("/problem/judging")
+@location("/my_problem/judging")
 class MyJudgingProblemsGet
+
+@location("/problem/challenge")
+class ChallengePhaseProblemsGet
 
 /**
  * GET
  * authenticationKey
  * groupId
  */
-@location("/problem/collecting")
+@location("/my_problem/collecting")
 class MyCollectingProblemsGet
 
 @location("/problem/request_new")
@@ -409,6 +412,7 @@ fun Application.studyBattleServerApp() {
         getMyJudgingProblems()
         getMyCollectingProblems()
         getMyChallengePhaseProblems()
+        getChallengePhaseProblems()
         getAssignedProblems()
         requestProblem()
         passProblem()
