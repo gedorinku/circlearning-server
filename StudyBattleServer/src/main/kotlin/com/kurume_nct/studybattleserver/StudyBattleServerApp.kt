@@ -381,9 +381,9 @@ data class CommentCreate(val authenticationKey: String = "",
 private val random = SecureRandom()
 
 fun Application.studyBattleServerApp() {
-    connectDataBase()
-
     registerItems()
+
+    connectDataBase()
 
     install(DefaultHeaders)
     install(Compression)
