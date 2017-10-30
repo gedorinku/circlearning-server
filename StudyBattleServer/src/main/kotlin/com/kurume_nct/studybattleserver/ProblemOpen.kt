@@ -43,12 +43,17 @@ fun Route.openProblem() = get<ProblemOpen> {
         return@get
     }
 
-    if (problem.assignedUser?.id != user.id) {
+    val assignedUserId = transaction {
+        problem.assignedUser?.id
+    }
+    if (assignedUserId != user.id) {
         call.respond(HttpStatusCode(HttpStatusCode.BadRequest.value, "not assigned"))
         return@get
     }
 
-    val itemId = problem.attachedItemId
+    val itemId = transaction {
+        problem.attachedItemId
+    }
     val action = if (itemId != Air.id) {
         val item = ItemRegistry.registeredItems[itemId]
         if (item == null) {
