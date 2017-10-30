@@ -152,5 +152,6 @@ class Problem(id: EntityID<Int>) : IntEntity(id) {
     fun switchChallengePhase() = transaction {
         challengePhaseStartsAt = DateTime.now()
         state = ProblemState.ChallengePhase
+        flush()
     }
 }
