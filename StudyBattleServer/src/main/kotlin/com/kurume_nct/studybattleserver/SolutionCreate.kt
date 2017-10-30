@@ -2,6 +2,7 @@ package com.kurume_nct.studybattleserver
 
 import com.google.gson.Gson
 import com.kurume_nct.studybattleserver.dao.*
+import com.kurume_nct.studybattleserver.item.Air
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.ktor.http.HttpStatusCode
 import org.jetbrains.ktor.locations.post
@@ -46,7 +47,9 @@ fun Route.createSolution() = post<SolutionCreate> { _ ->
         ProblemAssignment.find { ProblemAssignments.problem.eq(problem.id) }
                 .map { it.delete() }
         val receivedItem = Lottery.getRandomItem()
-        user.giveItem(receivedItem, 1, problem.group)
+        if (receivedItem.id != Air.id) {
+            user.giveItem(receivedItem, 1, problem.group)
+        }
 
         closeProblemIfAllUsersSubmitted(problem, problem.group)
 
