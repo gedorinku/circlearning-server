@@ -42,7 +42,7 @@ fun Route.getUnjudgedMySolutions() = get<UnjudgedMySolutionsGet> {
                                     Solutions.judgingState.eq(JudgingState.WaitingForJudge))
                 }
                 .filter {
-                    it.problem.owner.id != user.id && it.problem.group.id != group.id
+                    it.problem.owner.id != user.id && it.problem.group.id == group.id
                 }
                 .toList()
                 .map { SolutionGetResponse.fromSolution(it) }
