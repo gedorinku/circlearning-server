@@ -3,6 +3,7 @@ package com.kurume_nct.studybattleserver.daemon
 import com.kurume_nct.studybattleserver.dao.Problem
 import com.kurume_nct.studybattleserver.dao.ProblemState
 import com.kurume_nct.studybattleserver.dao.Problems
+import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.joda.time.DateTime
 import java.util.*
@@ -25,7 +26,10 @@ object ChallengePhaseObsever : Daemon {
 
     private fun fetchProblems() = transaction {
         val problems = Problem
-                .find { Problems.id.greater(sinceId) }
+                .find {
+                    Problems.id.greater(sinceId) and
+                            Problems.state.eq(ProblemState.ChallengePhase)
+                }
                 .map { it.toCache() }
                 .toList()
         sinceId = problems.lastOrNull()?.id ?: sinceId
@@ -60,6 +64,7 @@ object ChallengePhaseObsever : Daemon {
     }
 
     private fun Problem.toCache() = transaction {
-        ChallengePhaseCache(id.value, challengePhaseStartsAt + Problems.challengePahseDuration)
+        val self = this@toCache
+        ChallengePhaseCache(self.id.value, self.challengePhaseStartsAt + Problems.challengePahseDuration)
     }
 }

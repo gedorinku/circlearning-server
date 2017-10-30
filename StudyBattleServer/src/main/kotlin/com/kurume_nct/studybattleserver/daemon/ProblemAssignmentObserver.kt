@@ -2,6 +2,7 @@ package com.kurume_nct.studybattleserver.daemon
 
 import com.kurume_nct.studybattleserver.dao.ProblemAssignment
 import com.kurume_nct.studybattleserver.dao.ProblemAssignments
+import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.joda.time.DateTime
 import java.util.*
@@ -24,7 +25,9 @@ object ProblemAssignmentObserver : Daemon {
 
     private fun fetchAssignments() = transaction {
         val assignments = ProblemAssignment
-                .find { ProblemAssignments.id.greater(sinceId) }
+                .find {
+                    ProblemAssignments.id.greater(sinceId)
+                }
                 .map { it.toCache() }
         sinceId = assignments.lastOrNull()?.id ?: sinceId
         problemWithdrawQueue.addAll(assignments)
@@ -61,6 +64,7 @@ object ProblemAssignmentObserver : Daemon {
     }
 
     private fun ProblemAssignment.toCache() = transaction {
-        AssignmentCache(id.value, closeAt)
+        val self = this@toCache
+        AssignmentCache(self.id.value, self.closeAt)
     }
 }

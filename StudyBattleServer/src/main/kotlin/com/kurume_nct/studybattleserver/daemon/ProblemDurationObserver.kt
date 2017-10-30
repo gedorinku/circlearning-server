@@ -1,6 +1,7 @@
 package com.kurume_nct.studybattleserver.daemon
 
 import com.kurume_nct.studybattleserver.dao.*
+import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.joda.time.DateTime
 import java.util.*
@@ -23,7 +24,9 @@ object ProblemDurationObserver : Daemon {
 
     private fun fetchProblems() = transaction {
         val problems = Problem
-                .find { Problems.id.greater(sinceId) }
+                .find {
+                    Problems.id.greater(sinceId)
+                }
                 .map { it.toCache() }
                 .toList()
         sinceId = problems.lastOrNull()?.id ?: sinceId
@@ -67,6 +70,8 @@ object ProblemDurationObserver : Daemon {
     }
 
     private fun Problem.toCache() = transaction {
-        ProblemCache(id.value, createdAt + duration)
+        //Transactionに同名のメンバーがあったため。
+        val self = this@toCache
+        ProblemCache(self.id.value, self.createdAt + self.duration)
     }
 }
