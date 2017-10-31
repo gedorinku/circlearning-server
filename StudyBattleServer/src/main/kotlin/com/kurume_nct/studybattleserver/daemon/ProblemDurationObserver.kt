@@ -52,7 +52,11 @@ object ProblemDurationObserver : Daemon {
                 if (problem.state != ProblemState.Opening) {
                     return@transaction
                 }
-                problem.state = ProblemState.Judging
+                problem.state = if (problem.fetchSubmittedSolutions().isEmpty()) {
+                    ProblemState.Judged
+                } else {
+                    ProblemState.Judging
+                }
                 problem.assignedUser = null
                 ProblemAssignment
                         .find { ProblemAssignments.problem.eq(problem.id) }
