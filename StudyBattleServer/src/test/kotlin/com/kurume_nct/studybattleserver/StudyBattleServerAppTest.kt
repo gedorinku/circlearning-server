@@ -397,20 +397,15 @@ class StudyBattleServerAppTest {
         }
 
         val createSolution: (SolutionCreate, TestApplicationCall.() -> Unit) -> Unit
-                = { (authenticationKey, text, problemId, imageIds, attachedItemId), test ->
-            val imageIdsEncoded = imageIds
-                    .mapIndexed { index, id -> "imageIds" to id.toString() }
-            val values = mutableListOf(
-                    "authenticationKey" to authenticationKey,
-                    "text" to text,
-                    "problemId" to problemId.toString(),
-                    "attachedItemId" to attachedItemId.toString())
-            values.addAll(imageIdsEncoded)
+                = { solutionCreate, test ->
+            val json = Gson().toJson(solutionCreate)
 
             test(
                     handleRequest(HttpMethod.Post, "/solution/create") {
-                        addHeader(HttpHeaders.ContentType, "application/x-www-form-urlencoded")
-                        body = values.formUrlEncode()
+                        addHeader(HttpHeaders.ContentType, "application/JSON")
+                        addHeader("Data-Type", "JSON")
+                        addHeader("Script-Charset", "utf-8")
+                        body = json
                     }
                 )
         }

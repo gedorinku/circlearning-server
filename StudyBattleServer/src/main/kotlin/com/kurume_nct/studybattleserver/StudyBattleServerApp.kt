@@ -265,32 +265,7 @@ data class SolutionCreate(val authenticationKey: String = "",
                           val text: String = "",
                           val problemId: Int = -1,
                           val imageIds: List<Int> = emptyList(),
-                          val attachedItemId: Int = 0) {
-
-    companion object {
-
-        fun create(values: ValuesMap): SolutionCreate? {
-            val authenticationKey = values["authenticationKey"] ?: return null
-            val text = values["text"] ?: return null
-            val problemId = values["problemId"]?.toIntOrNull() ?: return null
-            val imageIds = mutableListOf<Int?>()
-            val attachedItemId = values["attachedItemId"]?.toIntOrNull() ?: return null
-
-            values.forEach { s, list ->
-                if (s == "imageIds") {
-                    imageIds.addAll(list.map {
-                        it.toIntOrNull()
-                    })
-                }
-            }
-            imageIds.forEach {
-                it ?: return null
-            }
-
-            return SolutionCreate(authenticationKey, text, problemId, imageIds.filterNotNull(), attachedItemId)
-        }
-    }
-}
+                          val attachedItemId: Int = 0)
 
 @location("/solution/{id}")
 data class SolutionGet(val authenticationKey: String = "",

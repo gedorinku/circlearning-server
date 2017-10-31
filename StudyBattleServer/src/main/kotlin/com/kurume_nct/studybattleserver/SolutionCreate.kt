@@ -6,7 +6,7 @@ import com.kurume_nct.studybattleserver.item.Air
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.ktor.http.HttpStatusCode
 import org.jetbrains.ktor.locations.post
-import org.jetbrains.ktor.request.receive
+import org.jetbrains.ktor.request.receiveStream
 import org.jetbrains.ktor.response.respond
 import org.jetbrains.ktor.routing.Route
 
@@ -16,11 +16,18 @@ import org.jetbrains.ktor.routing.Route
 data class SolutionCreateResponse(val id: Int, val receivedItemId: Int)
 
 fun Route.createSolution() = post<SolutionCreate> { _ ->
-    val solutionCreate = SolutionCreate.create(call.receive())
-    if (solutionCreate == null) {
-        call.respond(HttpStatusCode.BadRequest)
-        return@post
+    val requestJson = call.receiveStream().use {
+        val buffer = mutableListOf<Byte>()
+        var temp = it.read()
+        while (temp != -1) {
+            buffer.add(temp.toByte())
+            temp = it.read()
+        }
+        String(buffer.toByteArray(), Charsets.UTF_8)
     }
+    val gson = Gson()
+    val solutionCreate = gson.fromJson(requestJson, SolutionCreate::class.java)
+
     val user = verifyCredentials(solutionCreate.authenticationKey)
     if (user == null) {
         call.respond(HttpStatusCode.Unauthorized)
