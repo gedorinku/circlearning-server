@@ -55,6 +55,7 @@ data class SolutionGetResponse(val id: Int,
             val comments = solution
                     .fetchComments()
                     .map { CommentGetResponse.fromComment(it) }
+                    .sortedBy { it.id }
 
             return transaction {
                 SolutionGetResponse(solution.id.value,
