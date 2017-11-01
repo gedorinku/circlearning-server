@@ -326,32 +326,7 @@ data class CommentCreate(val authenticationKey: String = "",
                          val solutionId: Int = 0,
                          val text: String = "",
                          val imageIds: List<Int> = emptyList(),
-                         val replyTo: Int = 0) {
-
-    companion object {
-
-        fun create(values: ValuesMap): CommentCreate? {
-            val authenticationKey = values["authenticationKey"] ?: return null
-            val text = values["text"] ?: return null
-            val solutionId = values["solutionId"]?.toIntOrNull() ?: return null
-            val imageIds = mutableListOf<Int?>()
-            val replyTo = values["replyTo"]?.toIntOrNull() ?: 0
-
-            values.forEach { s, list ->
-                if (s == "imageIds") {
-                    imageIds.addAll(list.map {
-                        it.toIntOrNull()
-                    })
-                }
-            }
-            imageIds.forEach {
-                it ?: return null
-            }
-
-            return CommentCreate(authenticationKey, solutionId, text, imageIds.filterNotNull(), replyTo)
-        }
-    }
-}
+                         val replyTo: Int = 0)
 
 private val random = SecureRandom()
 
