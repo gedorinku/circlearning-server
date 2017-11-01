@@ -3,6 +3,7 @@ package com.kurume_nct.studybattleserver
 import com.google.gson.Gson
 import com.kurume_nct.studybattleserver.dao.Group
 import com.kurume_nct.studybattleserver.dao.Problem
+import com.kurume_nct.studybattleserver.dao.ProblemState
 import com.kurume_nct.studybattleserver.dao.Problems
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -47,6 +48,7 @@ fun Route.requestProblem() = post<ProblemRequest> { _ ->
             Problems.group.eq(group.id) and
                     Problems.assignedUser.isNull() and
                     Problems.startedAt.lessEq(DateTime.now()) and
+                    Problems.state.eq(ProblemState.Opening)
                     Problems.owner.neq(user.id)
         }.toList()
     }
