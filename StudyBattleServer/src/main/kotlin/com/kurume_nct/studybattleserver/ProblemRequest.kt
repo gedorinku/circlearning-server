@@ -48,7 +48,7 @@ fun Route.requestProblem() = post<ProblemRequest> { _ ->
             Problems.group.eq(group.id) and
                     Problems.assignedUser.isNull() and
                     Problems.startedAt.lessEq(DateTime.now()) and
-                    Problems.state.eq(ProblemState.Opening)
+                    Problems.state.eq(ProblemState.Opening) and
                     Problems.owner.neq(user.id)
         }.toList()
     }
