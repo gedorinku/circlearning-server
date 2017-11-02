@@ -117,6 +117,7 @@ class User(id: EntityID<Int>) : IntEntity(id) {
         ScoreHistory
                 .find {
                     ScoreHistories.createdAt.between(range.start, range.endInclusive) and
+                            ScoreHistories.user.eq(this@User.id) and
                             ScoreHistories.group.eq(group.id)
                 }
                 .sumBy { it.score }
