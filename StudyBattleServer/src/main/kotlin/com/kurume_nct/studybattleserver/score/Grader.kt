@@ -26,10 +26,11 @@ object Grader {
         val correctRate = correctCount / assignedUsers.size.toDouble()
         val defaultScore = getScore(correctRate)
         val firstAcceptScore = getFirstAcceptScore(defaultScore)
+        val group = problem.group
 
-        getFirstAcceptedUser(solutions)?.addScore(firstAcceptScore)
+        getFirstAcceptedUser(solutions)?.addScore(firstAcceptScore, group)
 
-        problem.owner.addScore(firstAcceptScore)
+        problem.owner.addScore(firstAcceptScore, group)
 
         val registeredItems = ItemRegistry.registeredItems
 
@@ -38,7 +39,7 @@ object Grader {
                 .forEach {
                     val item = registeredItems[it.attachedItemId]
                     val score = item?.onScore(it, defaultScore) ?: defaultScore
-                    it.author.addScore(score)
+                    it.author.addScore(score, group)
                 }
     }
 

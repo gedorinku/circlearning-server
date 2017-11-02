@@ -3,6 +3,7 @@ package com.kurume_nct.studybattleserver.daemon
 import com.kurume_nct.studybattleserver.dao.Problem
 import com.kurume_nct.studybattleserver.dao.ProblemState
 import com.kurume_nct.studybattleserver.dao.Problems
+import com.kurume_nct.studybattleserver.score.Grader
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.joda.time.DateTime
@@ -52,7 +53,9 @@ object ChallengePhaseObsever : Daemon {
             transaction {
                 phaseCloseQueue.poll()
                 val problem = Problem.findById(first.id) ?: return@transaction
+                Grader.scoreSolutions(problem)
                 problem.state = ProblemState.Judged
+                problem.flush()
             }
         }
     }

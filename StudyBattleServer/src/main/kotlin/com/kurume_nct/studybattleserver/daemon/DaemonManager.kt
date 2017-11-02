@@ -27,13 +27,21 @@ object DaemonManager {
             if (slowUpdateInterval.millis <= now - lastSlowUpdate) {
                 println("${DateTime.now()}:${javaClass.simpleName}:on slow update...")
                 daemons.forEach {
-                    it.onSlowUpdate()
+                    try {
+                        it.onSlowUpdate()
+                    } catch (e: Throwable) {
+                        e.printStackTrace()
+                    }
                 }
                 lastSlowUpdate = now
             }
 
             daemons.forEach {
-                it.onFastUpdate()
+                try {
+                    it.onFastUpdate()
+                } catch (e: Throwable) {
+                    e.printStackTrace()
+                }
             }
 
             delay(fastUpdateInterval.standardSeconds, TimeUnit.SECONDS)

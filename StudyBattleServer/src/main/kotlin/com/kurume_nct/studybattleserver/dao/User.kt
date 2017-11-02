@@ -95,10 +95,12 @@ class User(id: EntityID<Int>) : IntEntity(id) {
         return@transaction Pair(itemStacks, HttpStatusCode.OK)
     }
 
-    fun addScore(score: Int) = transaction {
+    fun addScore(score: Int, group: Group) = transaction {
         ScoreHistory.new {
             this.user = this@User
             this.score = score
+            this.group = group
+            this.createdAt = DateTime.now()
         }
     }
 

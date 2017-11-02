@@ -9,7 +9,7 @@ import com.kurume_nct.studybattleserver.dao.User
 object MagicHand : Item() {
 
     override fun onOpenProblem(problem: Problem, user: User): OpenAction {
-        user.addScore(-10)
+        user.addScore(-10, problem.group)
         return super.onOpenProblem(problem, user)
     }
 }
