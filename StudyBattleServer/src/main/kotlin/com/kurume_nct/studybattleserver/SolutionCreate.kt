@@ -67,7 +67,7 @@ fun Route.createSolution() = post<SolutionCreate> { _ ->
 }
 
 private fun closeProblemIfAllUsersSubmitted(problem: Problem, group: Group) = transaction {
-    if (group.fetchUsers().size != problem.fetchSubmittedSolutions().size) {
+    if (problem.fetchSubmittedSolutions().size <= group.fetchUsers().size - 1) {
         return@transaction
     }
 
