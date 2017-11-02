@@ -83,7 +83,7 @@ fun Route.createProblem() = post<ProblemCreate> {
             point = 0
             this.group = group
             state = ProblemState.Opening
-            durationPerUserMillis = durationMillis / maxOf(1, group.countOfUsers())
+            durationPerUserMillis = durationMillis / maxOf(1, group.countOfUsers() - 1)
         }
     }
 
