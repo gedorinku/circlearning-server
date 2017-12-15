@@ -3,7 +3,10 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/studybattleserver.iml" filepath="$PROJECT_DIR$/.idea/modules/studybattleserver.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/studybattleserver.iml" filepath="$PROJECT_DIR$/.idea/modules/studybattleserver.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/studybattleserver_main.iml" filepath="$PROJECT_DIR$/.idea/modules/studybattleserver_main.iml" group="studybattleserver" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/studybattleserver_main.iml" filepath="$PROJECT_DIR$/.idea/modules/studybattleserver_main.iml" group="studybattleserver" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/studybattleserver_test.iml" filepath="$PROJECT_DIR$/.idea/modules/studybattleserver_test.iml" group="studybattleserver" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/studybattleserver_test.iml" filepath="$PROJECT_DIR$/.idea/modules/studybattleserver_test.iml" group="studybattleserver" />
     </modules>
   </component>
