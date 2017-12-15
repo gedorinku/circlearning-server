@@ -1,4 +1,4 @@
 machine:
   pre:
-    - ./configure.sh
+    - ./study-battle-server/configure.sh
 
