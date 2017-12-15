@@ -1,4 +1,4 @@
 machine:
   pre:
-    - ./study-battle-server/configure.sh
+    - ./circlearning-server/configure.sh
 
