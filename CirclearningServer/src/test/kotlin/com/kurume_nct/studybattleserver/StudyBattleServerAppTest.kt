@@ -3,6 +3,14 @@ package com.kurume_nct.studybattleserver
 import com.google.gson.Gson
 import com.google.gson.JsonArray
 import com.kurume_nct.studybattleserver.dao.*
+import com.kurume_nct.studybattleserver.routing.*
+import com.kurume_nct.studybattleserver.routing.group.GroupGetResponse
+import com.kurume_nct.studybattleserver.routing.image.ImageUploadResponse
+import com.kurume_nct.studybattleserver.routing.problem.ProblemCreateResponse
+import com.kurume_nct.studybattleserver.routing.problem.ProblemGetResponse
+import com.kurume_nct.studybattleserver.routing.solution.SolutionCreateResponse
+import com.kurume_nct.studybattleserver.routing.solution.SolutionGetResponse
+import com.kurume_nct.studybattleserver.routing.user.UserGetResponse
 import org.jetbrains.exposed.dao.EntityID
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.transactions.transaction

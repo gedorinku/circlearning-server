@@ -7,6 +7,21 @@ import com.kurume_nct.studybattleserver.daemon.ProblemAssignmentObserver
 import com.kurume_nct.studybattleserver.daemon.ProblemDurationObserver
 import com.kurume_nct.studybattleserver.dao.*
 import com.kurume_nct.studybattleserver.item.*
+import com.kurume_nct.studybattleserver.routing.*
+import com.kurume_nct.studybattleserver.routing.group.*
+import com.kurume_nct.studybattleserver.routing.image.getImage
+import com.kurume_nct.studybattleserver.routing.image.getImageById
+import com.kurume_nct.studybattleserver.routing.image.uploadImage
+import com.kurume_nct.studybattleserver.routing.myproblem.*
+import com.kurume_nct.studybattleserver.routing.mysolution.getMyJudgedSolutions
+import com.kurume_nct.studybattleserver.routing.mysolution.getMyChallengePhaseSolutions
+import com.kurume_nct.studybattleserver.routing.mysolution.getMyUnjudgedSolutions
+import com.kurume_nct.studybattleserver.routing.problem.*
+import com.kurume_nct.studybattleserver.routing.solution.createSolution
+import com.kurume_nct.studybattleserver.routing.solution.getSolution
+import com.kurume_nct.studybattleserver.routing.solution.judgeSolution
+import com.kurume_nct.studybattleserver.routing.user.getUserById
+import com.kurume_nct.studybattleserver.routing.user.searchUsers
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils.create
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -35,6 +50,7 @@ data class Login(val userName: String = "", val password: String = "") {
 
     companion object {
 
+        //Ktorのバグ???を回避するために最悪なことをする
         fun create(values: ValuesMap): Login? {
             val userName = values["userName"] ?: return null
             val password = values["password"] ?: return null
@@ -297,10 +313,10 @@ data class SolutionJudge(val authenticationKey: String = "",
 }
 
 @location("/my_solution/judged")
-class JudgedMySolutionsGet
+class MyJudgedSolutionsGet
 
 @location("/my_solution/unjudged")
-class UnjudgedMySolutionsGet
+class MyUnjudgedSolutionsGet
 
 /**
  * GET
@@ -372,8 +388,8 @@ fun Application.studyBattleServerApp() {
         passProblem()
         createSolution()
         getSolution()
-        getJudgedMySolutions()
-        getUnjudgedMySolutions()
+        getMyJudgedSolutions()
+        getMyUnjudgedSolutions()
         getMyChallengePhaseSolutions()
         judgeSolution()
         attachToGroup()

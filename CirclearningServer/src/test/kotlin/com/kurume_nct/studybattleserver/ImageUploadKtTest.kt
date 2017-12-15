@@ -1,5 +1,6 @@
 package com.kurume_nct.studybattleserver
 
+import com.kurume_nct.studybattleserver.routing.image.getFileExtension
 import org.junit.Test
 
 import java.io.File
