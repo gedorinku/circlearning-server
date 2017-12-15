@@ -1,3 +1,3 @@
-cp ~/study-battle-server/StudyBattleServer/database.properties.sample ~/study-battle-server/StudyBattleServer/database.properties
-cat ~/study-battle-server/db_setup | mysql -u root
+cp ~/circlearning-server/CirclearningServer/database.properties.sample ~/circlearing-server/CirclearningServer/database.properties
+cat ~/circlearning-server/db_setup | mysql -u root
 
